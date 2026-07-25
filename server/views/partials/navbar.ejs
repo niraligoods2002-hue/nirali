@@ -1,0 +1,77 @@
+<header class="header" data-auth="<%= user ? 'true' : 'false' %>" data-role="<%= user?.role || '' %>" data-name="<%= user?.name || '' %>">
+  <div class="container">
+    <a href="/" class="logo">
+      <img src="/images/branding/nirali-gujarati-logo-transparent.png" alt="નિરાલી" class="logo-image" />
+    </a>
+
+    <nav class="nav" id="main-nav">
+      <a href="/shop" class="<%= path === '/shop' ? 'active' : '' %>">Shop</a>
+      <a href="/about" class="<%= path === '/about' ? 'active' : '' %>">About</a>
+      <a href="/reviews" class="<%= path === '/reviews' ? 'active' : '' %>">Reviews</a>
+      <a href="/contact" class="<%= path === '/contact' ? 'active' : '' %>">Contact</a>
+
+      <% if (!user) { %>
+        <div class="mobile-auth">
+          <a href="/login">Login</a>
+          <a href="/signup">Sign Up</a>
+        </div>
+      <% } else { %>
+        <div class="mobile-auth">
+          <span>Hi, <%= user.name.split(' ')[0] %></span>
+          <a href="/account">My Account</a>
+          <% if (user.role === 'admin') { %>
+            <a href="/admin">Admin Dashboard</a>
+          <% } %>
+          <button id="mobile-logout">Logout</button>
+        </div>
+      <% } %>
+    </nav>
+
+    <div class="actions">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" title="Switch theme">
+        <svg class="theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+        <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6.5 6.5 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+      </button>
+      <button class="icon-btn" id="search-toggle" type="button" aria-label="Search products" aria-expanded="false" aria-controls="header-search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+      <form class="header-search" id="header-search" action="/shop" method="get" role="search">
+        <input id="header-search-input" type="search" name="search" placeholder="Search sarees..." autocomplete="off" />
+        <button type="submit">Search</button>
+      </form>
+
+      <% if (!user) { %>
+        <div class="auth-btns">
+          <a href="/login" class="login-btn">Login</a>
+          <a href="/signup" class="signup-btn">Sign Up</a>
+        </div>
+      <% } else { %>
+        <div class="user-wrap" id="user-wrap">
+          <button class="user-btn" id="user-btn">
+            <div class="avatar"><%= user.name.charAt(0).toUpperCase() %></div>
+          </button>
+          <div class="dropdown" id="user-dropdown">
+            <div class="dropdown-header">
+              <span class="dropdown-name"><%= user.name %></span>
+              <span class="dropdown-email"><%= user.email %></span>
+            </div>
+            <a href="/account" class="dropdown-item">My Account</a>
+            <% if (user.role === 'admin') { %>
+              <a href="/admin" class="dropdown-item">Admin Dashboard</a>
+            <% } %>
+            <button class="dropdown-item" id="nav-logout">Logout</button>
+          </div>
+        </div>
+      <% } %>
+
+      <a href="/cart" class="cart-btn" aria-label="Cart">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+        <span class="cart-badge" id="cart-count">0</span>
+      </a>
+
+      <button class="menu-btn" id="menu-btn" aria-label="Menu">
+        <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+    </div>
+  </div>
+</header>

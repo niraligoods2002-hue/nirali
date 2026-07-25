@@ -1,0 +1,11 @@
+**/node_modules/
+**/.env
+**/.env.*
+!**/.env.example
+.chrome-video-profile*/
+.reference-frames/
+.reference-video.html
+.qoder/
+server/tmp/
+server/cloudflared-windows-amd64.exe
+*.log

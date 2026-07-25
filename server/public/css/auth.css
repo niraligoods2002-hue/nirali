@@ -1,0 +1,139 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px 40px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px 40px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.auth-brand .brand-icon {
+  color: var(--primary);
+  font-size: 28px;
+  display: none;
+}
+
+.auth-logo {
+  width: 62px;
+  height: 82px;
+  border: none;
+  border-radius: 0;
+  object-fit: contain;
+}
+
+.auth-brand .brand-text {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 8px;
+  color: #fff;
+}
+
+.auth-card h1 {
+  font-size: 26px;
+  text-align: center;
+  margin-bottom: 18px;
+  color: #fff;
+}
+
+.auth-note {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 26px;
+  text-align: center;
+}
+
+.auth-form .btn-primary {
+  margin-top: 12px;
+}
+
+.auth-secondary-action {
+  width: 100%;
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.auth-secondary-action:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 24px;
+  color: #888;
+  font-size: 0.95rem;
+}
+
+.auth-link a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+.auth-inline-link {
+  margin: -4px 0 10px;
+  text-align: right;
+}
+
+.auth-inline-link a {
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.auth-status {
+  min-height: 24px;
+  margin-top: 16px;
+  color: var(--muted);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.auth-status.success {
+  color: #72d6a0;
+}
+
+.auth-status.error {
+  color: #ff8f8f;
+}
+
+@media (max-width: 500px) {
+  .auth-card {
+    padding: 36px 24px;
+  }
+
+  .auth-brand .brand-text {
+    font-size: 22px;
+    letter-spacing: 6px;
+  }
+
+  .auth-card h1 {
+    font-size: 22px;
+  }
+}

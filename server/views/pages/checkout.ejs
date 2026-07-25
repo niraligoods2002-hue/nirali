@@ -1,0 +1,130 @@
+<div class="checkout-page">
+  <div class="container">
+    <div class="checkout-header">
+      <span class="section-tag">CHECKOUT</span>
+      <h1>Complete Your Order</h1>
+    </div>
+
+    <div class="checkout-layout">
+      <form class="checkout-form" id="checkout-form">
+        <h3>Payment Method</h3>
+        <div class="payment-methods" role="radiogroup" aria-label="Choose payment method">
+          <label class="payment-method-card active">
+            <input type="radio" name="paymentMethod" value="cod" checked />
+            <span class="payment-method-icon">₹</span>
+            <span>
+              <strong>Cash on Delivery</strong>
+              <small>Pay when your saree arrives</small>
+            </span>
+            <em>Available</em>
+          </label>
+          <label class="payment-method-card disabled">
+            <input type="radio" name="paymentMethod" value="razorpay" disabled />
+            <span class="payment-method-icon">↗</span>
+            <span>
+              <strong>Online Payment</strong>
+              <small>UPI, card, wallet coming soon</small>
+            </span>
+            <em>Soon</em>
+          </label>
+        </div>
+
+        <div class="shipping-heading">
+          <h3 id="shipping-details">Delivery Address</h3>
+          <button type="button" class="address-change-button" id="change-address">Change</button>
+        </div>
+        <section class="selected-address-card" id="selected-address-card" hidden></section>
+        <section class="address-picker" id="address-picker" hidden>
+          <div class="address-picker-heading"><strong>Saved Addresses</strong><button type="button" id="add-new-address">+ Add New Address</button></div>
+          <div id="saved-address-list"></div>
+        </section>
+        <p class="saved-address-status" id="saved-address-status" hidden></p>
+        <div class="checkout-address-modal" id="checkout-address-modal" hidden>
+        <section class="checkout-address-dialog" role="dialog" aria-modal="true" aria-labelledby="checkout-address-dialog-title">
+        <div class="checkout-address-dialog-head">
+          <div><h3 id="checkout-address-dialog-title">Delivery Address</h3><p>Add or change the address for this order.</p></div>
+          <button type="button" id="close-address-modal" aria-label="Close address form">×</button>
+        </div>
+        <div class="address-form-fields" id="address-form-fields">
+          <div class="form-row two-col">
+            <label>Address Type
+              <select name="addressType"><option>Home</option><option>Work</option><option>Other</option></select>
+            </label>
+            <label class="address-default-label"><input type="checkbox" name="isDefault" /> Make this my default</label>
+          </div>
+        <div class="form-row">
+          <label>
+            Full Name
+            <input type="text" name="name" required />
+          </label>
+        </div>
+        <div class="form-row">
+          <label>
+            Email
+            <input type="email" name="email" required />
+          </label>
+        </div>
+        <div class="form-row" id="checkout-phone-field">
+          <label>
+            Phone
+            <span class="checkout-phone-row">
+              <input type="tel" name="phone" required inputmode="tel" autocomplete="tel" maxlength="10" placeholder="10-digit mobile number" />
+            </span>
+          </label>
+        </div>
+        <div class="form-row">
+          <label>
+            House / Flat Number
+            <input type="text" name="houseNumber" required />
+          </label>
+        </div>
+        <div class="form-row">
+          <label>
+            Street / Area Address
+            <textarea name="address" rows="3" required></textarea>
+          </label>
+        </div>
+        <div class="form-row">
+          <label>
+            City / Village
+            <span class="city-autocomplete">
+              <input type="text" name="city" autocomplete="off" autocapitalize="words" aria-autocomplete="list" aria-controls="india-city-options" required />
+              <span class="city-suggestions" id="india-city-options" role="listbox" hidden></span>
+            </span>
+          </label>
+          <input type="hidden" name="taluka" value="-" />
+        </div>
+        <div class="form-row two-col">
+          <label>
+            District
+            <input type="text" name="district" required />
+          </label>
+          <label>
+            State
+            <input type="text" name="state" value="Gujarat" required />
+          </label>
+        </div>
+        <div class="form-row">
+          <label>
+            PIN Code
+            <input type="text" name="pincode" required inputmode="numeric" maxlength="6" pattern="[0-9]{6}" />
+          </label>
+        </div>
+        <p class="location-lookup-status" id="location-lookup-status" aria-live="polite" hidden></p>
+        <div class="address-form-actions">
+          <button type="button" class="btn-secondary" id="save-address">Change</button>
+          <button type="button" class="address-cancel-button" id="cancel-address">Cancel</button>
+        </div>
+        </div>
+        </section>
+        </div>
+        <button type="submit" class="btn-primary">Place Order</button>
+      </form>
+
+      <div class="order-summary">
+        <h3>Order Summary</h3>
+        <div id="checkout-summary"></div>
+      </div>
+    </div>
+  </div>
+</div>

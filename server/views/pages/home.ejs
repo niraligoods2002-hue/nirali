@@ -1,0 +1,95 @@
+<%
+  const heroProducts = ((homeProducts || []).filter(product => product.bestseller || product.featured || product.newArrival).length
+    ? (homeProducts || []).filter(product => product.bestseller || product.featured || product.newArrival)
+    : (homeProducts || [])
+  ).slice(0, 3);
+  const mobileTiles = Object.values((homeProducts || []).reduce((tiles, product) => {
+    const category = product.category || 'Saree';
+    if (!tiles[category]) {
+      tiles[category] = product;
+    }
+    return tiles;
+  }, {}));
+%>
+
+<section class="hero masterpiece-hero" data-masterpiece-slider>
+  <div class="hero-promo-strip">Nirali Masterpiece Collection Is Live Now</div>
+
+  <% if (mobileTiles.length) { %>
+    <div class="mobile-hero-tiles" aria-label="Featured categories">
+      <% mobileTiles.forEach((product) => { %>
+        <a href="/shop?filter=<%= encodeURIComponent(product.category) %>" class="mobile-hero-tile">
+          <img src="<%= product.image %>" alt="<%= product.category %>" />
+          <span><%= product.category %></span>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <% if (heroProducts.length) { %>
+    <div class="hero-slides">
+      <% heroProducts.forEach((product, index) => { %>
+        <article class="hero-slide <%= index === 0 ? 'active' : '' %>" data-slide="<%= index %>">
+          <div class="hero-backdrop" style="background-image: url('<%= product.image %>')"></div>
+          <div class="hero-content">
+            <span class="hero-tag"><%= product.bestseller ? 'MASTERPIECE PICK' : product.newArrival ? 'NEW MASTERPIECE' : 'FEATURED MASTERPIECE' %></span>
+            <h1><%= product.name %></h1>
+            <p>Handpicked sarees for weddings, festivals, receptions, and elegant special moments.</p>
+            <div class="hero-actions">
+              <a href="/products/<%= product.slug %>" class="hero-btn">View Details</a>
+              <a href="/shop" class="hero-btn-secondary">Shop Collection</a>
+            </div>
+            <div class="hero-product-meta">
+              <span><%= product.category %></span>
+              <strong>₹<%= Number(product.price || 0).toLocaleString('en-IN') %></strong>
+            </div>
+          </div>
+          <a class="hero-product-showcase" href="/products/<%= product.slug %>" aria-label="View <%= product.name %>">
+            <img src="<%= product.image %>" alt="<%= product.name %>" />
+            <span>Limited Piece</span>
+          </a>
+        </article>
+      <% }) %>
+    </div>
+
+    <% if (heroProducts.length > 1) { %>
+      <div class="hero-slider-dots" aria-label="Masterpiece banner slides">
+        <% heroProducts.forEach((product, index) => { %>
+          <button type="button" class="<%= index === 0 ? 'active' : '' %>" data-slide-dot="<%= index %>" aria-label="Show <%= product.name %>"></button>
+        <% }) %>
+      </div>
+    <% } %>
+  <% } else { %>
+    <div class="hero-content hero-empty-content">
+      <span class="hero-tag">MASTERPIECE COLLECTION</span>
+      <h1>Grace Woven in Every Saree</h1>
+      <p>Discover premium sarees selected for weddings, festivals, receptions, and elegant occasions.</p>
+      <a href="/shop" class="hero-btn">Shop Now</a>
+    </div>
+  <% } %>
+</section>
+
+<section class="featured-section">
+  <div class="container">
+    <span class="section-tag">EXPLORE THE COLLECTION</span>
+    <h2>Shop by Category</h2>
+    <div id="featured-products-root" class="category-browser" data-products='<%- JSON.stringify(homeProducts) %>'></div>
+    <div class="text-center">
+      <a href="/shop" class="btn-secondary">View All Products</a>
+    </div>
+  </div>
+</section>
+
+<section class="about-section">
+  <div class="container about-row">
+    <div class="about-image">
+      <img src="/images/about/about.jpg" alt="About Nirali Saree" />
+    </div>
+    <div class="about-text">
+      <span class="section-tag">OUR STORY</span>
+      <h2>Crafted with Passion</h2>
+      <p>At Nirali Saree, we believe every saree tells a story. Our collection brings together master artisans and contemporary designs to create pieces that are timeless yet modern.</p>
+      <a href="/about" class="btn-secondary">Read More</a>
+    </div>
+  </div>
+</section>

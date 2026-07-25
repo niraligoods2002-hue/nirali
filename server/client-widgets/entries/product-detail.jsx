@@ -1,0 +1,82 @@
+import React, { useState } from "react";
+import { createRoot } from "react-dom/client";
+
+function ProductDetail() {
+  const root = document.getElementById("product-detail-root");
+  const product = JSON.parse(root?.dataset.product || "{}");
+  const [quantity, setQuantity] = useState(1);
+  const [added, setAdded] = useState(false);
+  const [openSection, setOpenSection] = useState("details");
+  const details = product.details || {};
+
+  const handleAddToCart = () => {
+    if (window.LuxoraCart?.addToCart && window.LuxoraCart.addToCart(product, quantity)) {
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2000);
+    }
+  };
+
+  const sections = [
+    {
+      id: "details",
+      label: "Details",
+      content: (
+        <dl className="product-detail-list">
+          <div><dt>Length</dt><dd>{details.length || "5.5 m"}</dd></div>
+          <div><dt>Width</dt><dd>{details.width || "1.1 m"}</dd></div>
+          <div><dt>Blouse Piece</dt><dd>{details.blousePiece || "Included"}</dd></div>
+          <div><dt>Blouse</dt><dd>{details.blouse || "The model may be wearing a styled blouse for photography."}</dd></div>
+          <div><dt>Wash Care</dt><dd>{details.washCare || "Dry clean only"}</dd></div>
+          <div><dt>Fabric</dt><dd>{details.fabric || product.category}</dd></div>
+          <div><dt>Disclaimer</dt><dd>{details.disclaimer || "Colours may vary slightly because of lighting and screen settings."}</dd></div>
+          <div><dt>What You Will Receive</dt><dd>{details.contents || "1 Saree"}</dd></div>
+          <div><dt>SKU</dt><dd>{details.sku || product.slug?.toUpperCase()}</dd></div>
+        </dl>
+      ),
+    },
+    { id: "description", label: "Description", content: <p>{product.description}</p> },
+    { id: "manufacturing", label: "Manufacturing Information", content: <p>{details.manufacturing || "Designed and packed in India."}</p> },
+    { id: "returns", label: "Return & Exchange Policy", content: <p>{details.returnPolicy || "Easy returns within 5 days of delivery."}</p> },
+    { id: "delivery", label: "Delivery", content: <p>{details.delivery || "Dispatched within 3-5 business days."}</p> },
+  ];
+
+  return (
+    <>
+      <div className="product-actions">
+        <div className="quantity-selector">
+          <button aria-label="Decrease quantity" onClick={() => setQuantity((q) => Math.max(1, q - 1))}>-</button>
+          <span>{quantity}</span>
+          <button aria-label="Increase quantity" onClick={() => setQuantity((q) => q + 1)}>+</button>
+        </div>
+        <button className="btn-primary add-to-cart-btn" onClick={handleAddToCart} disabled={added}>
+          {added ? "Added to Cart" : "Add to Cart"}
+        </button>
+      </div>
+
+      <div className="product-accordions">
+        {sections.map((section) => (
+          <section className="product-accordion" key={section.id}>
+            <button type="button" onClick={() => setOpenSection(openSection === section.id ? "" : section.id)}>
+              {section.label}
+              <span>{openSection === section.id ? "-" : "+"}</span>
+            </button>
+            {openSection === section.id && <div className="product-accordion-content">{section.content}</div>}
+          </section>
+        ))}
+      </div>
+    </>
+  );
+}
+
+const root = document.getElementById("product-detail-root");
+if (root) createRoot(root).render(<ProductDetail />);
+
+const mainProductImage = document.getElementById("product-main-image");
+document.querySelectorAll("[data-product-image]").forEach((thumbnail) => {
+  thumbnail.addEventListener("click", () => {
+    if (!mainProductImage) return;
+    mainProductImage.src = thumbnail.dataset.productImage;
+    document.querySelectorAll("[data-product-image]").forEach((button) => button.classList.remove("active"));
+    thumbnail.classList.add("active");
+  });
+});

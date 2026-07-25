@@ -1,0 +1,374 @@
+/* Variables */
+:root {
+  --primary: #75c3c5;
+  --primary-light: #b8e0e0;
+  --primary-dark: #0b5659;
+  --primary-hover: #9bd4d5;
+  --on-primary: #071b1d;
+  --secondary: #4f9d9f;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --bg: #063d40;
+  --surface: #0a4b4e;
+  --surface-2: #126166;
+  --text: #f2fbfb;
+  --text-light: #b7d6d7;
+  --text-muted: #78adaf;
+  --border: rgba(157, 211, 211, 0.25);
+  --header-bg: #050505;
+  --footer-bg: #050505;
+  --card-bg: #073d41;
+  --card-image-bg: #0d5458;
+  --hero-bg: linear-gradient(135deg, #063d40 0%, #0b5256 100%);
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  --transition: 0.3s ease;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+html[data-theme="light"] {
+  --primary: #1a3d63;
+  --primary-light: #4a7fa7;
+  --primary-dark: #0a1931;
+  --primary-hover: #4a7fa7;
+  --on-primary: #f6fafd;
+  --bg: #f6fafd;
+  --surface: #ffffff;
+  --surface-2: #e4f0f9;
+  --text: #0a1931;
+  --text-light: #1a3d63;
+  --text-muted: #4a7fa7;
+  --border: rgba(26, 61, 99, 0.18);
+  --header-bg: #050505;
+  --footer-bg: #050505;
+  --card-bg: #ffffff;
+  --card-image-bg: #d4e6f4;
+  --hero-bg: linear-gradient(135deg, #f6fafd 0%, #d4e6f4 100%);
+}
+
+body {
+  min-height: 100vh;
+  font-family: Inter, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+input,
+textarea {
+  font-family: inherit;
+}
+
+/* Page content spacing for fixed header */
+.page-content {
+  padding-top: 80px;
+  min-height: 100vh;
+}
+
+.container {
+  width: min(92%, 1280px);
+  margin: 0 auto;
+}
+
+/* Typography */
+h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: clamp(1.2rem, 2vw, 2rem);
+  font-weight: 600;
+}
+
+p {
+  color: var(--text-light);
+}
+
+/* Utilities */
+.section-tag {
+  color: var(--primary);
+  letter-spacing: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-block;
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  padding: 14px 28px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(74, 127, 167, 0.3);
+}
+
+.btn-secondary {
+  display: inline-block;
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  padding: 14px 28px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.btn-secondary:hover {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+/* Form styles */
+.form-row {
+  margin-bottom: 20px;
+}
+
+.form-row label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.form-row input,
+.form-row textarea,
+.form-row select {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  transition: var(--transition);
+}
+
+.form-row input:focus,
+.form-row textarea:focus,
+.form-row select:focus {
+  border-color: var(--primary);
+}
+
+.form-row input::placeholder,
+.form-row textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.password-row {
+  position: relative;
+}
+
+.password-row input {
+  padding-right: 70px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.toggle-password:hover {
+  color: var(--primary);
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-content {
+    padding-top: 68px;
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    width: min(calc(100% - 32px), 1280px);
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    min-height: 46px;
+    padding: 12px 22px;
+  }
+}
+
+/* Palette-aware component surfaces */
+.header { background: #050505 !important; border-color: rgba(255, 255, 255, 0.12) !important; }
+.footer { background: #050505 !important; }
+.home-cta { background: var(--surface-2) !important; }
+.hero { background: var(--hero-bg) !important; }
+.product-card, .featured-card { background: var(--card-bg) !important; }
+.product-image, .card-image { background: var(--card-image-bg) !important; }
+
+html[data-theme="light"] .product-card,
+html[data-theme="light"] .featured-card,
+html[data-theme="light"] .review-card,
+html[data-theme="light"] .contact-card,
+html[data-theme="light"] .cart-item,
+html[data-theme="light"] .order-summary,
+html[data-theme="light"] .product-info,
+html[data-theme="light"] .product-accordion,
+html[data-theme="light"] .auth-card {
+  box-shadow: 0 10px 26px rgba(26, 61, 99, 0.1);
+}
+
+html[data-theme="light"] .product-card h3,
+html[data-theme="light"] .product-card h4,
+html[data-theme="light"] .product-card .product-name,
+html[data-theme="light"] .shop-header h1,
+html[data-theme="light"] .page-title,
+html[data-theme="light"] .section-title,
+html[data-theme="light"] .nav a,
+html[data-theme="light"] .icon-btn,
+html[data-theme="light"] .cart-btn {
+  color: var(--text) !important;
+}
+
+/* Existing page styles use a few fixed dark colors. These overrides keep those
+   components consistent with the selected palette without changing their layout. */
+.hero { background: var(--hero-bg) !important; }
+.featured-section h2,
+.category-row-header h3,
+.about-text h2,
+.product-card-title,
+.product-card-price,
+.product-card-view,
+.product-card-title,
+.product-card-price { color: var(--text) !important; }
+.category-row-header p,
+.about-text p,
+.product-card-rating { color: var(--text-light) !important; }
+.hero-btn,
+.product-card-badge,
+.category-row-controls button:hover,
+.signup-btn,
+.cart-badge { color: var(--on-primary) !important; }
+.hero-btn:hover { background: var(--primary-hover) !important; }
+.product-card {
+  border-color: rgba(212, 175, 55, 0.38) !important;
+  box-shadow: 0 0 0 1px rgba(230, 183, 29, 0.07), 0 12px 30px rgba(6, 18, 35, 0.16) !important;
+}
+.product-card:hover {
+  border-color: rgba(233, 196, 84, 0.82) !important;
+  box-shadow: 0 0 0 2px rgba(255, 209, 59, 0.15), 0 18px 40px rgba(212, 175, 55, 0.19) !important;
+}
+.product-card-image { background: var(--card-image-bg) !important; }
+.product-card-price .old { color: var(--text-muted) !important; }
+.about-section { background: var(--surface-2) !important; }
+.signup-btn { background: var(--primary) !important; border-color: var(--primary) !important; }
+
+/* The navigation and footer stay black in both display modes. */
+.header .nav a { color: #e2e7ed !important; }
+.header .nav a:hover,
+.header .nav a.active { color: #fff !important; }
+.header .icon-btn,
+.header .cart-btn,
+.header .theme-toggle { color: #f6fafd !important; }
+.header .theme-toggle { border-color: rgba(255, 255, 255, 0.22) !important; }
+.footer h4 { color: #fff !important; }
+.footer a { color: #b8bcc3 !important; }
+.footer a:hover { color: #e6c46a !important; }

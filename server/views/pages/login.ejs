@@ -1,0 +1,30 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <span class="brand-icon">◆</span>
+      <img src="/images/branding/nirali-woman-mark.png" alt="Nirali logo" class="auth-logo" />
+      <span class="brand-text">NIRALI</span>
+    </div>
+    <span class="section-tag">WELCOME BACK</span>
+    <h1>Sign In</h1>
+
+    <form class="auth-form" id="login-form">
+      <div class="form-row">
+        <label>
+          Email
+          <input type="email" name="email" id="email" required />
+        </label>
+      </div>
+      <div class="form-row password-row">
+        <label>
+          Password
+          <input type="password" name="password" id="password" required minlength="6" />
+        </label>
+        <button type="button" class="toggle-password" id="toggle-password">Show</button>
+      </div>
+      <p class="auth-inline-link"><a href="/forgot-password">Forgot password?</a></p>
+      <button type="submit" class="btn-primary btn-block">Sign In</button>
+      <p class="auth-link">Don't have an account? <a href="/signup">Sign up</a></p>
+    </form>
+  </div>
+</div>

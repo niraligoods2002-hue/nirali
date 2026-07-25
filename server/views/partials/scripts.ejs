@@ -1,0 +1,5 @@
+<script src="/js/navbar.js"></script>
+<script src="/js/cart-widget.js"></script>
+<% if (locals.widgetScript) { %>
+<script type="module" src="/js/widgets/<%= widgetScript %>.js"></script>
+<% } %>

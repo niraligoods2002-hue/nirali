@@ -1,0 +1,57 @@
+<div class="reviews-page">
+  <div class="container">
+    <div class="reviews-header">
+      <span class="section-tag">TESTIMONIALS</span>
+      <h1>Customer Reviews</h1>
+    </div>
+
+    <section class="review-submit-panel">
+      <% if (user) { %>
+        <div>
+          <span class="section-tag">SHARE YOUR EXPERIENCE</span>
+          <h2>Write a Review</h2>
+        </div>
+        <form class="review-form" id="review-form">
+          <label>
+            Rating
+            <input type="hidden" name="rating" id="review-rating" value="5" />
+            <div class="review-rating-buttons" role="radiogroup" aria-label="Choose rating">
+              <% for (let i = 1; i <= 5; i++) { %>
+                <button type="button" class="review-star-btn active" data-rating="<%= i %>" aria-label="<%= i %> star<%= i > 1 ? 's' : '' %>" aria-checked="<%= i === 5 ? 'true' : 'false' %>" role="radio">★</button>
+              <% } %>
+            </div>
+          </label>
+          <label>
+            Review
+            <textarea name="text" id="review-text" rows="4" minlength="10" maxlength="600" required placeholder="Tell us about your saree shopping experience"></textarea>
+          </label>
+          <button type="submit" class="btn-primary">Submit Review</button>
+        </form>
+      <% } else { %>
+        <div>
+          <span class="section-tag">SHARE YOUR EXPERIENCE</span>
+          <h2>Want to write a review?</h2>
+          <p>Sign in first, then you can share your rating and message.</p>
+        </div>
+        <a href="/login?redirect=/reviews" class="btn-primary">Sign In to Review</a>
+      <% } %>
+    </section>
+
+    <div class="reviews-grid">
+      <% reviews.forEach(review => { %>
+        <div class="review-card">
+          <div class="review-stars">
+            <% for (let i = 0; i < 5; i++) { %>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="<%= i < review.rating ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <% } %>
+          </div>
+          <p class="review-text">"<%= review.text %>"</p>
+          <div class="review-author">
+            <span class="review-name"><%= review.name %></span>
+            <span class="review-date"><%= review.date %></span>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</div>

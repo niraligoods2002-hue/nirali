@@ -1,0 +1,19 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script>
+  (() => {
+    const savedTheme = localStorage.getItem('nirali-theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.dataset.theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+  })();
+</script>
+<title><%= title || 'Nirali Saree' %></title>
+<link rel="icon" type="image/png" sizes="32x32" href="/images/branding/nirali-favicon-32.png?v=2" />
+<link rel="apple-touch-icon" sizes="256x256" href="/images/branding/nirali-favicon.png?v=2" />
+<link rel="stylesheet" href="/css/globals.css" />
+<link rel="stylesheet" href="/css/product-card.css" />
+<link rel="stylesheet" href="/css/navbar.css" />
+<link rel="stylesheet" href="/css/footer.css" />
+<% if (locals.pageStyle) { %>
+<link rel="stylesheet" href="/css/<%= pageStyle %>.css" />
+<% } %>

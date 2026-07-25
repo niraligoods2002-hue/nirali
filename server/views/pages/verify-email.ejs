@@ -1,0 +1,32 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <span class="brand-icon">◆</span>
+      <img src="/images/branding/nirali-woman-mark.png" alt="Nirali logo" class="auth-logo" />
+      <span class="brand-text">NIRALI</span>
+    </div>
+    <span class="section-tag">EMAIL OTP</span>
+    <h1>Verify Your Email</h1>
+    <p class="auth-note">
+      Enter the 6-digit OTP sent to your email address.
+    </p>
+
+    <form class="auth-form" id="verify-email-form">
+      <div class="form-row">
+        <label>
+          Email
+          <input type="email" name="email" id="verify-email" required />
+        </label>
+      </div>
+      <div class="form-row">
+        <label>
+          OTP
+          <input type="text" name="otp" id="verify-otp" required inputmode="numeric" maxlength="6" pattern="[0-9]{6}" />
+        </label>
+      </div>
+      <button type="submit" class="btn-primary btn-block">Verify Email</button>
+      <button type="button" class="auth-secondary-action" id="resend-otp">Resend OTP</button>
+      <p class="auth-link">Already verified? <a href="/login">Sign in</a></p>
+    </form>
+  </div>
+</div>

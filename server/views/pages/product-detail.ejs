@@ -1,0 +1,35 @@
+<div class="product-detail-page">
+  <div class="container">
+    <div class="product-detail-row">
+      <div class="product-gallery">
+        <div class="product-image">
+          <img id="product-main-image" src="<%= product.images?.[0] || product.image %>" alt="<%= product.name %>" />
+        </div>
+        <% if (product.images?.length > 1) { %>
+          <div class="product-thumbnails" aria-label="Product images">
+            <% product.images.forEach((image, index) => { %>
+              <button type="button" class="product-thumbnail <%= index === 0 ? 'active' : '' %>" data-product-image="<%= image %>" aria-label="View image <%= index + 1 %>">
+                <img src="<%= image %>" alt="<%= product.name %> view <%= index + 1 %>" loading="lazy" />
+              </button>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+      <div class="product-info">
+        <span class="product-category"><%= product.category %></span>
+        <h1><%= product.name %></h1>
+        <div class="product-price">
+          <% if (product.discountPrice) { %>
+            <span class="current">₹<%= product.discountPrice.toLocaleString() %></span>
+            <span class="old">₹<%= product.price.toLocaleString() %></span>
+          <% } else { %>
+            <span class="current">₹<%= product.price.toLocaleString() %></span>
+          <% } %>
+        </div>
+        <p class="product-description"><%= product.description %></p>
+
+        <div id="product-detail-root" data-product='<%- JSON.stringify(product) %>'></div>
+      </div>
+    </div>
+  </div>
+</div>
