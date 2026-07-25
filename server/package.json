@@ -8,7 +8,7 @@
     "dev": "nodemon server.js",
     "test": "node --test test/*.test.js",
     "build:widgets": "cd client-widgets && npm run build",
-    "build:production": "npm --prefix client-widgets ci && npm --prefix client-widgets run build",
+    "build:production": "npm --prefix client-widgets ci --include=dev && npm --prefix client-widgets run build",
     "seed": "node seed/seedProducts.js",
     "import:kalki": "node seed/importKalkiSarees.js",
     "import:category-catalog": "node seed/importCategoryCatalog.js",
