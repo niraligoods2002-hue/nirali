@@ -34,12 +34,20 @@ function hashResetToken(token) {
   return crypto.createHash("sha256").update(String(token)).digest("hex");
 }
 
+function otpCooldownSeconds(user) {
+  if (!user.emailVerificationOtpLastSentAt) return 0;
+  return Math.max(
+    0,
+    Math.ceil((60_000 - (Date.now() - user.emailVerificationOtpLastSentAt.getTime())) / 1000)
+  );
+}
+
 async function sendEmailOtp(email, otp) {
   await sendOtpEmail(email, otp);
 }
 
 async function setEmailVerificationOtp(user) {
-  if (user.emailVerificationOtpLastSentAt && Date.now() - user.emailVerificationOtpLastSentAt.getTime() < 60_000) {
+  if (otpCooldownSeconds(user) > 0) {
     const error = new Error("Please wait 60 seconds before requesting another OTP");
     error.status = 429;
     throw error;
@@ -86,6 +94,15 @@ exports.register = async (req, res) => {
       const user = await User.findById(existingUser._id).select(
         "+emailVerificationOtpHash +emailVerificationOtpExpires +emailVerificationOtpAttempts +emailVerificationOtpLastSentAt"
       );
+      const retryAfter = otpCooldownSeconds(user);
+      if (retryAfter > 0) {
+        return res.status(200).json({
+          requiresVerification: true,
+          email: user.email,
+          retryAfter,
+          message: "Your account is awaiting verification. Enter the OTP already sent to your email.",
+        });
+      }
       await setEmailVerificationOtp(user);
       return res.status(200).json({
         requiresVerification: true,
@@ -154,6 +171,15 @@ exports.login = async (req, res) => {
     }
 
     if (user.isEmailVerified === false) {
+      const retryAfter = otpCooldownSeconds(user);
+      if (retryAfter > 0) {
+        return res.status(403).json({
+          requiresVerification: true,
+          email: user.email,
+          retryAfter,
+          message: "Please verify your email using the OTP already sent.",
+        });
+      }
       await setEmailVerificationOtp(user);
       return res.status(403).json({
         requiresVerification: true,

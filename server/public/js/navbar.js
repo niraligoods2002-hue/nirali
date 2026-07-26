@@ -166,12 +166,11 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({ name, email, password })
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Signup failed');
-
         if (data.requiresVerification && data.email) {
           goToEmailVerification(data.email);
           return;
         }
+        if (!res.ok) throw new Error(data.message || 'Signup failed');
 
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
