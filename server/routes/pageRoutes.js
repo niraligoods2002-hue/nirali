@@ -38,6 +38,7 @@ function normalizeProduct(p) {
     images: p.images || [p.image],
     description: p.description,
     colors: p.colors || [],
+    colorImages: p.colorImages instanceof Map ? Object.fromEntries(p.colorImages) : (p.colorImages || {}),
     sizes: p.sizes || ["Free Size"],
     stock: p.stock || 0,
     featured: p.featured,

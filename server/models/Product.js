@@ -45,6 +45,12 @@ const productSchema = new mongoose.Schema(
       },
     ],
 
+    colorImages: {
+      type: Map,
+      of: String,
+      default: {},
+    },
+
     sizes: [
       {
         type: String,

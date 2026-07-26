@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 function ProductDetail() {
@@ -9,6 +9,24 @@ function ProductDetail() {
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || "");
   const [openSection, setOpenSection] = useState("details");
   const details = product.details || {};
+  const colorImages = product.colorImages || {};
+
+  const showColorImage = (color) => {
+    setSelectedColor(color);
+    const image = colorImages[color];
+    const mainImage = document.getElementById("product-main-image");
+    if (!image || !mainImage) return;
+    mainImage.src = image;
+    document.querySelectorAll("[data-product-image]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.productImage === image);
+    });
+  };
+
+  useEffect(() => {
+    const handleThumbnailColor = (event) => setSelectedColor(event.detail.color);
+    window.addEventListener("product-color-change", handleThumbnailColor);
+    return () => window.removeEventListener("product-color-change", handleThumbnailColor);
+  }, []);
 
   const handleAddToCart = () => {
     const cartProduct = { ...product, selectedColor };
@@ -53,7 +71,7 @@ function ProductDetail() {
                 type="button"
                 key={color}
                 className={selectedColor === color ? "active" : ""}
-                onClick={() => setSelectedColor(color)}
+                onClick={() => showColorImage(color)}
                 aria-pressed={selectedColor === color}
               >
                 {color}
@@ -92,11 +110,17 @@ const root = document.getElementById("product-detail-root");
 if (root) createRoot(root).render(<ProductDetail />);
 
 const mainProductImage = document.getElementById("product-main-image");
+const productData = JSON.parse(document.getElementById("product-detail-root")?.dataset.product || "{}");
 document.querySelectorAll("[data-product-image]").forEach((thumbnail) => {
   thumbnail.addEventListener("click", () => {
     if (!mainProductImage) return;
     mainProductImage.src = thumbnail.dataset.productImage;
     document.querySelectorAll("[data-product-image]").forEach((button) => button.classList.remove("active"));
     thumbnail.classList.add("active");
+    const selectedColor = Object.entries(productData.colorImages || {})
+      .find(([, image]) => image === thumbnail.dataset.productImage)?.[0];
+    if (selectedColor) {
+      window.dispatchEvent(new CustomEvent("product-color-change", { detail: { color: selectedColor } }));
+    }
   });
 });
