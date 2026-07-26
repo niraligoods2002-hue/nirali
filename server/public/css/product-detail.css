@@ -165,8 +165,14 @@
 
 .product-color-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.5rem;
+  max-height: 220px;
+  max-width: 260px;
+  overflow-y: auto;
+  padding-right: 0.4rem;
+  scrollbar-width: thin;
+  scrollbar-color: #8b1e3f #eee6de;
 }
 
 .product-color-list button {
@@ -176,6 +182,8 @@
   color: #33261f;
   cursor: pointer;
   padding: 0.55rem 0.85rem;
+  text-align: left;
+  width: 100%;
 }
 
 .product-color-list button.active {
