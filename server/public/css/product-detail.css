@@ -33,13 +33,22 @@
 }
 
 .product-thumbnails {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
   gap: 10px;
   margin-top: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  padding-bottom: 8px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--surface);
 }
 
 .product-thumbnail {
+  flex: 0 0 86px;
   overflow: hidden;
   padding: 0;
   border: 2px solid transparent;
@@ -48,6 +57,7 @@
   cursor: pointer;
   opacity: 0.7;
   transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  scroll-snap-align: start;
 }
 
 .product-thumbnail:hover,
@@ -295,8 +305,11 @@
   }
 
   .product-thumbnails {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
+  }
+
+  .product-thumbnail {
+    flex-basis: 72px;
   }
 
   .product-price .current {

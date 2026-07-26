@@ -53,6 +53,10 @@
     </div>
 
     <% if (heroProducts.length > 1) { %>
+      <div class="hero-slider-arrows" aria-label="Masterpiece slider controls">
+        <button type="button" data-slide-prev aria-label="Previous masterpiece">←</button>
+        <button type="button" data-slide-next aria-label="Next masterpiece">→</button>
+      </div>
       <div class="hero-slider-dots" aria-label="Masterpiece banner slides">
         <% heroProducts.forEach((product, index) => { %>
           <button type="button" class="<%= index === 0 ? 'active' : '' %>" data-slide-dot="<%= index %>" aria-label="Show <%= product.name %>"></button>

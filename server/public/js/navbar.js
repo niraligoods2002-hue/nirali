@@ -432,7 +432,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (masterpieceSlider) {
     const slides = Array.from(masterpieceSlider.querySelectorAll('[data-slide]'));
     const dots = Array.from(masterpieceSlider.querySelectorAll('[data-slide-dot]'));
+    const previousButton = masterpieceSlider.querySelector('[data-slide-prev]');
+    const nextButton = masterpieceSlider.querySelector('[data-slide-next]');
     let activeSlide = 0;
+    let autoSlideTimer;
+    let touchStartX = 0;
 
     const showSlide = (index) => {
       activeSlide = index;
@@ -445,14 +449,51 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     dots.forEach((dot) => {
-      dot.addEventListener('click', () => showSlide(Number(dot.dataset.slideDot)));
+      dot.addEventListener('click', () => {
+        showSlide(Number(dot.dataset.slideDot));
+        restartAutoSlide();
+      });
     });
 
-    if (slides.length > 1) {
-      setInterval(() => {
+    const startAutoSlide = () => {
+      if (slides.length < 2) return;
+      clearInterval(autoSlideTimer);
+      autoSlideTimer = setInterval(() => {
         showSlide((activeSlide + 1) % slides.length);
       }, 5200);
-    }
+    };
+
+    const stopAutoSlide = () => clearInterval(autoSlideTimer);
+    const restartAutoSlide = () => {
+      stopAutoSlide();
+      startAutoSlide();
+    };
+
+    previousButton?.addEventListener('click', () => {
+      showSlide((activeSlide - 1 + slides.length) % slides.length);
+      restartAutoSlide();
+    });
+    nextButton?.addEventListener('click', () => {
+      showSlide((activeSlide + 1) % slides.length);
+      restartAutoSlide();
+    });
+
+    masterpieceSlider.addEventListener('mouseenter', stopAutoSlide);
+    masterpieceSlider.addEventListener('mouseleave', startAutoSlide);
+    masterpieceSlider.addEventListener('touchstart', (event) => {
+      touchStartX = event.touches[0]?.clientX || 0;
+      stopAutoSlide();
+    }, { passive: true });
+    masterpieceSlider.addEventListener('touchend', (event) => {
+      const touchEndX = event.changedTouches[0]?.clientX || 0;
+      const distance = touchEndX - touchStartX;
+      if (Math.abs(distance) > 45) {
+        showSlide((activeSlide + (distance < 0 ? 1 : -1) + slides.length) % slides.length);
+      }
+      startAutoSlide();
+    }, { passive: true });
+
+    startAutoSlide();
   }
 
   // Update cart count

@@ -224,6 +224,30 @@
   background: #e6c46a;
 }
 
+.hero-slider-arrows {
+  position: absolute;
+  inset: 50% 22px auto;
+  z-index: 4;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.hero-slider-arrows button {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.35rem;
+  pointer-events: auto;
+}
+
 /* Featured Section */
 .featured-section {
   padding: 110px 0 100px;
@@ -477,6 +501,15 @@
   .hero-slider-dots button.active {
     width: 54px;
     background: #e6c46a;
+  }
+
+  .hero-slider-arrows {
+    inset: 50% 10px auto;
+  }
+
+  .hero-slider-arrows button {
+    width: 40px;
+    height: 40px;
   }
 
   .featured-section,
