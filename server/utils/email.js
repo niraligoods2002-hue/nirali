@@ -9,6 +9,9 @@ async function sendOtpEmail(to, otp) {
     port: Number(EMAIL_PORT || 587),
     secure: EMAIL_SECURE === "true",
     auth: { user: EMAIL_USER, pass: EMAIL_PASS },
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 15_000,
   });
 
   await transporter.sendMail({
@@ -36,6 +39,9 @@ async function sendPasswordResetEmail(to, resetUrl) {
     port: Number(EMAIL_PORT || 587),
     secure: EMAIL_SECURE === "true",
     auth: { user: EMAIL_USER, pass: EMAIL_PASS },
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 15_000,
   });
 
   await transporter.sendMail({

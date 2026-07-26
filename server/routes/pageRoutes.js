@@ -158,6 +158,7 @@ router.get("/checkout", requireUserPage, (req, res) => {
 });
 
 router.get("/login", (req, res) => {
+  if (req.user) return res.redirect(req.user.role === "admin" ? "/admin" : "/");
   res.render("pages/login", {
     layout: "layouts/main",
     title: "Sign In | Nirali Saree",
@@ -168,6 +169,7 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/signup", (req, res) => {
+  if (req.user) return res.redirect(req.user.role === "admin" ? "/admin" : "/");
   res.render("pages/signup", {
     layout: "layouts/main",
     title: "Sign Up | Nirali Saree",

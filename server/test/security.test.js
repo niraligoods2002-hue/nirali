@@ -64,3 +64,21 @@ test("all admin client routes are served by the protected admin shell", () => {
     "/admin/users",
   ]);
 });
+
+test("authenticated users cannot get stuck on the sign-in page", () => {
+  const loginRoute = pageRoutes.stack
+    .map((layer) => layer.route)
+    .find((route) => route?.path === "/login");
+  const handler = loginRoute.stack[0].handle;
+  const response = {
+    redirectTarget: null,
+    redirect(target) { this.redirectTarget = target; return this; },
+    render() { throw new Error("The login page should not render for an authenticated user"); },
+  };
+
+  handler({ user: { role: "user" } }, response);
+  assert.equal(response.redirectTarget, "/");
+
+  handler({ user: { role: "admin" } }, response);
+  assert.equal(response.redirectTarget, "/admin");
+});

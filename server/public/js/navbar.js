@@ -11,10 +11,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const getLoginRedirect = (fallback) => {
     const redirectParam = new URLSearchParams(window.location.search).get('redirect');
-    if (redirectParam && redirectParam.startsWith('/') && !redirectParam.startsWith('//')) {
-      return redirectParam;
-    }
-    return localStorage.getItem('redirectAfterLogin') || fallback;
+    const storedRedirect = localStorage.getItem('redirectAfterLogin');
+    const authPages = new Set(['/login', '/signup', '/verify-email', '/forgot-password', '/reset-password']);
+    const isSafeRedirect = (value) => {
+      if (!value || !value.startsWith('/') || value.startsWith('//')) return false;
+      try {
+        return !authPages.has(new URL(value, window.location.origin).pathname);
+      } catch {
+        return false;
+      }
+    };
+
+    if (isSafeRedirect(redirectParam)) return redirectParam;
+    if (isSafeRedirect(storedRedirect)) return storedRedirect;
+    return fallback;
   };
 
   const goToEmailVerification = (email) => {
@@ -22,6 +32,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const redirect = getLoginRedirect('/');
     localStorage.setItem('redirectAfterLogin', redirect);
     window.location.href = `/verify-email?email=${encodeURIComponent(email)}`;
+  };
+
+  const readApiResponse = async (response) => {
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) return response.json();
+
+    await response.text();
+    throw new Error(
+      response.status >= 500
+        ? 'The server is temporarily unavailable. Please wait a moment and try again.'
+        : `The server returned an unexpected response (${response.status}).`
+    );
   };
 
   const applyTheme = (theme) => {
@@ -119,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
-        const data = await res.json();
+        const data = await readApiResponse(res);
         if (!res.ok) {
           if (data.requiresVerification && data.email) {
             goToEmailVerification(data.email);
@@ -165,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password })
         });
-        const data = await res.json();
+        const data = await readApiResponse(res);
         if (data.requiresVerification && data.email) {
           goToEmailVerification(data.email);
           return;
@@ -204,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
             otp: otpInput.value
           })
         });
-        const data = await res.json();
+        const data = await readApiResponse(res);
         if (!res.ok) throw new Error(data.message || 'Email verification failed');
 
         localStorage.setItem('token', data.token);
@@ -225,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: emailInput.value })
         });
-        const data = await res.json();
+        const data = await readApiResponse(res);
         if (!res.ok) throw new Error(data.message || 'Could not resend OTP');
         alert(data.message || 'OTP sent');
       } catch (err) {
@@ -250,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: document.getElementById('forgot-email').value })
         });
-        const data = await response.json();
+        const data = await readApiResponse(response);
         if (!response.ok) throw new Error(data.message || 'Could not send reset link');
         status.className = 'auth-status success';
         status.textContent = data.message;
@@ -295,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token, password })
         });
-        const data = await response.json();
+        const data = await readApiResponse(response);
         if (!response.ok) throw new Error(data.message || 'Could not reset password');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -361,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
             text: document.getElementById('review-text').value
           })
         });
-        const data = await res.json();
+        const data = await readApiResponse(res);
         if (!res.ok) throw new Error(data.message || 'Could not submit review');
 
         alert('Thank you! Your review has been submitted.');
