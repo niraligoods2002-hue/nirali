@@ -56,9 +56,11 @@ async function sendEmailOtp(email, otp) {
 }
 
 async function setEmailVerificationOtp(user) {
-  if (otpCooldownSeconds(user) > 0) {
+  const retryAfter = otpCooldownSeconds(user);
+  if (retryAfter > 0) {
     const error = new Error("Please wait 60 seconds before requesting another OTP");
     error.status = 429;
+    error.retryAfter = retryAfter;
     throw error;
   }
   const otp = generateOtp();
@@ -285,7 +287,10 @@ exports.resendEmailOtp = async (req, res) => {
     res.json({ message: "New OTP sent" });
   } catch (error) {
     console.error("Resend email OTP error:", error);
-    res.status(error.status || 500).json({ message: error.status ? error.message : "Server error sending OTP" });
+    res.status(error.status || 500).json({
+      message: error.status ? error.message : "Server error sending OTP",
+      ...(error.retryAfter ? { retryAfter: error.retryAfter } : {}),
+    });
   }
 };
 

@@ -27,8 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return fallback;
   };
 
-  const goToEmailVerification = (email) => {
+  const otpCooldownKey = (email) => `otpCooldownUntil:${String(email || '').trim().toLowerCase()}`;
+
+  const goToEmailVerification = (email, cooldownSeconds = 60) => {
     localStorage.setItem('pendingVerificationEmail', email);
+    localStorage.setItem(otpCooldownKey(email), String(Date.now() + cooldownSeconds * 1000));
     const redirect = getLoginRedirect('/');
     localStorage.setItem('redirectAfterLogin', redirect);
     window.location.href = `/verify-email?email=${encodeURIComponent(email)}`;
@@ -144,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await readApiResponse(res);
         if (!res.ok) {
           if (data.requiresVerification && data.email) {
-            goToEmailVerification(data.email);
+            goToEmailVerification(data.email, data.retryAfter || 60);
             return;
           }
           throw new Error(data.message || 'Login failed');
@@ -189,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await readApiResponse(res);
         if (data.requiresVerification && data.email) {
-          goToEmailVerification(data.email);
+          goToEmailVerification(data.email, data.retryAfter || 60);
           return;
         }
         if (!res.ok) throw new Error(data.message || 'Signup failed');
@@ -213,6 +216,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const resendBtn = document.getElementById('resend-otp');
     const emailFromUrl = new URLSearchParams(window.location.search).get('email');
     emailInput.value = emailFromUrl || localStorage.getItem('pendingVerificationEmail') || '';
+    let resendTimer;
+
+    const startResendCountdown = (seconds) => {
+      const cooldownUntil = Date.now() + Math.max(0, Number(seconds) || 0) * 1000;
+      localStorage.setItem(otpCooldownKey(emailInput.value), String(cooldownUntil));
+      clearInterval(resendTimer);
+
+      const updateResendButton = () => {
+        const remaining = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000));
+        resendBtn.disabled = remaining > 0;
+        resendBtn.textContent = remaining > 0 ? `Resend OTP in ${remaining}s` : 'Resend OTP';
+        if (remaining === 0) clearInterval(resendTimer);
+      };
+
+      updateResendButton();
+      resendTimer = setInterval(updateResendButton, 250);
+    };
+
+    const savedCooldownUntil = Number(localStorage.getItem(otpCooldownKey(emailInput.value)) || 0);
+    if (savedCooldownUntil > Date.now()) {
+      startResendCountdown(Math.ceil((savedCooldownUntil - Date.now()) / 1000));
+    }
 
     verifyEmailForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -248,7 +273,11 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({ email: emailInput.value })
         });
         const data = await readApiResponse(res);
-        if (!res.ok) throw new Error(data.message || 'Could not resend OTP');
+        if (!res.ok) {
+          if (data.retryAfter) startResendCountdown(data.retryAfter);
+          throw new Error(data.message || 'Could not resend OTP');
+        }
+        startResendCountdown(60);
         alert(data.message || 'OTP sent');
       } catch (err) {
         alert(err.message);
