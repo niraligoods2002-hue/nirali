@@ -10,6 +10,7 @@ const EMPTY_FORM = {
   price: "",
   discountPrice: "",
   images: "",
+  colors: "",
   stock: "",
   featured: false,
   bestseller: false,
@@ -25,6 +26,7 @@ function normalizeProduct(p) {
     oldPrice: p.discountPrice || p.oldPrice,
     description: p.description,
     images: p.images || [p.image],
+    colors: p.colors || [],
     image: p.images?.[0] || p.image,
     stock: p.stock || 0,
     featured: p.featured,
@@ -83,6 +85,7 @@ export default function AdminProducts() {
       price: p.price?.toString() || "",
       discountPrice: p.oldPrice?.toString() || "",
       images: (p.images || []).join(", "),
+      colors: (p.colors || []).join(", "),
       stock: p.stock?.toString() || "0",
       featured: p.featured || false,
       bestseller: p.bestseller || false,
@@ -147,6 +150,7 @@ export default function AdminProducts() {
         price: Number(form.price),
         discountPrice: form.discountPrice ? Number(form.discountPrice) : undefined,
         images,
+        colors: form.colors.split(",").map((value) => value.trim()).filter(Boolean),
         stock: Number(form.stock) || 0,
         featured: form.featured,
         bestseller: form.bestseller,
@@ -265,6 +269,11 @@ export default function AdminProducts() {
                 Description
                 <textarea name="description" rows="3" value={form.description} onChange={handleChange} required />
               </label>
+              <label>
+                Color options
+                <input name="colors" value={form.colors} onChange={handleChange} placeholder="Rani Pink, Wine, Teal" />
+              </label>
+              <small className="admin-image-help">Separate each color with a comma.</small>
               <div className="admin-form-row">
                 <label>
                   Price (₹)

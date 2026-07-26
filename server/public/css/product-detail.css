@@ -154,6 +154,36 @@
   margin-bottom: 12px;
 }
 
+.product-color-options {
+  margin: 1.25rem 0;
+}
+
+.product-color-options > span {
+  display: block;
+  margin-bottom: 0.65rem;
+}
+
+.product-color-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.product-color-list button {
+  border: 1px solid #c9b9a7;
+  border-radius: 999px;
+  background: #fff;
+  color: #33261f;
+  cursor: pointer;
+  padding: 0.55rem 0.85rem;
+}
+
+.product-color-list button.active {
+  border-color: #8b1e3f;
+  background: #8b1e3f;
+  color: #fff;
+}
+
 .product-accordions {
   margin-top: 32px;
   border-top: 1px solid var(--border);

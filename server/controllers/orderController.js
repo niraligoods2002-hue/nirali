@@ -71,6 +71,7 @@ exports.createOrder = async (req, res) => {
     if (!phone) return res.status(400).json({ message: "Enter a valid Indian mobile number" });
 
     const requested = new Map();
+    const requestedVariants = new Map();
     for (const item of items) {
       const productId = String(item.id || item.product || "");
       const quantity = Number(item.quantity);
@@ -78,7 +79,17 @@ exports.createOrder = async (req, res) => {
         return res.status(400).json({ message: "Cart contains an invalid product or quantity" });
       }
       requested.set(productId, (requested.get(productId) || 0) + quantity);
-      if (requested.get(productId) > 10) return res.status(400).json({ message: "Maximum quantity is 10 per product" });
+      const color = String(item.color || "").trim();
+      const variantKey = `${productId}:${color}`;
+      const existingVariant = requestedVariants.get(variantKey);
+      requestedVariants.set(variantKey, {
+        productId,
+        color,
+        quantity: (existingVariant?.quantity || 0) + quantity,
+      });
+      if (requestedVariants.get(variantKey).quantity > 10) {
+        return res.status(400).json({ message: "Maximum quantity is 10 per color" });
+      }
     }
 
     const products = await Product.find({ _id: { $in: [...requested.keys()] } });
@@ -98,15 +109,24 @@ exports.createOrder = async (req, res) => {
         throw error;
       }
       reserved.push({ product: product._id, quantity });
-      cleanItems.push({
-        product: product._id,
-        name: product.name,
-        slug: product.slug,
-        image: product.images?.[0] || "/images/products/saree1.jpg",
-        category: product.category,
-        price: product.price,
-        quantity,
-      });
+      const productVariants = [...requestedVariants.values()].filter((variant) => variant.productId === String(product._id));
+      for (const variant of productVariants) {
+        if (product.colors?.length && !product.colors.includes(variant.color)) {
+          const error = new Error(`Select a valid color for ${product.name}`);
+          error.status = 400;
+          throw error;
+        }
+        cleanItems.push({
+          product: product._id,
+          name: product.name,
+          slug: product.slug,
+          image: product.images?.[0] || "/images/products/saree1.jpg",
+          category: product.category,
+          color: variant.color,
+          price: product.price,
+          quantity: variant.quantity,
+        });
+      }
     }
 
     const calculatedSubtotal = cleanItems.reduce(

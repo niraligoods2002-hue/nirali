@@ -53,22 +53,23 @@ function CartPage() {
     <div className="cart-layout">
       <div className="cart-items">
         {cart.map((item) => (
-          <div className="cart-item" key={item.id}>
+          <div className="cart-item" key={item.cartId || item.id}>
             <div className="cart-item-image">
               <img src={item.image} alt={item.name} />
             </div>
             <div className="cart-item-info">
               <span className="cart-item-category">{item.category}</span>
               <a href={`/products/${item.slug}`} className="cart-item-name">{item.name}</a>
+              {item.color && <span className="cart-item-category">Color: {item.color}</span>}
               <span className="cart-item-price">₹{item.price.toLocaleString()}</span>
             </div>
             <div className="quantity-selector">
-              <button onClick={() => updateQty(item.id, item.quantity - 1)}>-</button>
+              <button onClick={() => updateQty(item.cartId || item.id, item.quantity - 1)}>-</button>
               <span>{item.quantity}</span>
-              <button onClick={() => updateQty(item.id, item.quantity + 1)}>+</button>
+              <button onClick={() => updateQty(item.cartId || item.id, item.quantity + 1)}>+</button>
             </div>
             <div className="item-total">₹{(item.price * item.quantity).toLocaleString()}</div>
-            <button className="remove-btn" onClick={() => remove(item.id)} aria-label="Remove">
+            <button className="remove-btn" onClick={() => remove(item.cartId || item.id)} aria-label="Remove">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>

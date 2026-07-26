@@ -6,11 +6,13 @@ function ProductDetail() {
   const product = JSON.parse(root?.dataset.product || "{}");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || "");
   const [openSection, setOpenSection] = useState("details");
   const details = product.details || {};
 
   const handleAddToCart = () => {
-    if (window.LuxoraCart?.addToCart && window.LuxoraCart.addToCart(product, quantity)) {
+    const cartProduct = { ...product, selectedColor };
+    if (window.LuxoraCart?.addToCart && window.LuxoraCart.addToCart(cartProduct, quantity)) {
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
     }
@@ -42,6 +44,24 @@ function ProductDetail() {
 
   return (
     <>
+      {product.colors?.length > 0 && (
+        <div className="product-color-options">
+          <span>Color: <strong>{selectedColor}</strong></span>
+          <div className="product-color-list">
+            {product.colors.map((color) => (
+              <button
+                type="button"
+                key={color}
+                className={selectedColor === color ? "active" : ""}
+                onClick={() => setSelectedColor(color)}
+                aria-pressed={selectedColor === color}
+              >
+                {color}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       <div className="product-actions">
         <div className="quantity-selector">
           <button aria-label="Decrease quantity" onClick={() => setQuantity((q) => Math.max(1, q - 1))}>-</button>
