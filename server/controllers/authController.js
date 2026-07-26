@@ -43,7 +43,16 @@ function otpCooldownSeconds(user) {
 }
 
 async function sendEmailOtp(email, otp) {
-  await sendOtpEmail(email, otp);
+  try {
+    await sendOtpEmail(email, otp);
+  } catch (error) {
+    console.error("OTP email delivery failed:", error.message);
+    const deliveryError = new Error(
+      "We could not send the verification email. Please check the email settings and try again."
+    );
+    deliveryError.status = 503;
+    throw deliveryError;
+  }
 }
 
 async function setEmailVerificationOtp(user) {
@@ -56,9 +65,9 @@ async function setEmailVerificationOtp(user) {
   user.emailVerificationOtpHash = hashOtp(otp);
   user.emailVerificationOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
   user.emailVerificationOtpAttempts = 0;
+  await sendEmailOtp(user.email, otp);
   user.emailVerificationOtpLastSentAt = new Date();
   await user.save();
-  await sendEmailOtp(user.email, otp);
 }
 
 // Helper: shape user response
