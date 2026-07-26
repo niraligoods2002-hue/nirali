@@ -165,12 +165,13 @@
 
 .product-color-list {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 0.5rem;
-  max-height: 220px;
-  max-width: 260px;
-  overflow-y: auto;
-  padding-right: 0.4rem;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.5rem;
   scrollbar-width: thin;
   scrollbar-color: #8b1e3f #eee6de;
 }
@@ -182,8 +183,8 @@
   color: #33261f;
   cursor: pointer;
   padding: 0.55rem 0.85rem;
-  text-align: left;
-  width: 100%;
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .product-color-list button.active {
