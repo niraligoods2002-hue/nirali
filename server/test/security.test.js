@@ -4,6 +4,7 @@ const { safeEqual, rateLimit } = require("../middleware/securityMiddleware");
 const Order = require("../models/Order");
 const User = require("../models/User");
 const pageRoutes = require("../routes/pageRoutes");
+const productRoutes = require("../routes/api/productRoutes");
 const { hashResetToken } = require("../controllers/authController");
 
 test("constant-time string comparison handles equal and unequal values", () => {
@@ -81,4 +82,13 @@ test("authenticated users cannot get stuck on the sign-in page", () => {
 
   handler({ user: { role: "admin" } }, response);
   assert.equal(response.redirectTarget, "/admin");
+});
+
+test("the complete product inventory is exposed only through the protected admin route", () => {
+  const adminInventoryRoute = productRoutes.stack
+    .map((layer) => layer.route)
+    .find((route) => route?.path === "/admin/all");
+  assert.ok(adminInventoryRoute);
+  assert.equal(adminInventoryRoute.methods.get, true);
+  assert.equal(adminInventoryRoute.stack.length, 3);
 });

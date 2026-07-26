@@ -54,7 +54,7 @@ function requireUserPage(req, res, next) {
 
 router.get("/", async (req, res) => {
   try {
-    const products = await Product.find().sort({ category: 1, createdAt: -1 });
+    const products = await Product.find({ stock: { $gt: 0 } }).sort({ category: 1, createdAt: -1 });
     res.render("pages/home", {
       layout: "layouts/main",
       title: "Nirali Saree | Elegant Sarees",
@@ -79,7 +79,7 @@ router.get("/", async (req, res) => {
 
 router.get("/shop", async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find({ stock: { $gt: 0 } });
     res.render("pages/shop", {
       layout: "layouts/main",
       title: "Shop | Nirali Saree",
@@ -108,7 +108,7 @@ router.get("/shop", async (req, res) => {
 
 router.get("/products/:slug", async (req, res) => {
   try {
-    const product = await Product.findOne({ slug: req.params.slug });
+    const product = await Product.findOne({ slug: req.params.slug, stock: { $gt: 0 } });
     if (!product) return res.status(404).render("pages/shop", {
       layout: "layouts/main",
       title: "Not Found | Nirali Saree",

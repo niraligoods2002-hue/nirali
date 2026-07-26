@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { adminCreateProduct, adminUpdateProduct, adminDeleteProduct, uploadProductImage } from "../api.js";
+import { adminCreateProduct, adminFetchProducts, adminUpdateProduct, adminDeleteProduct, uploadProductImage } from "../api.js";
 
 const EMPTY_FORM = {
   name: "",
@@ -46,8 +46,7 @@ export default function AdminProducts() {
   const loadProducts = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/products");
-      const data = await res.json();
+      const data = await adminFetchProducts();
       setProducts(Array.isArray(data) ? data.map(normalizeProduct) : []);
     } catch {
       setProducts([]);

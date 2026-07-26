@@ -4,6 +4,7 @@ const {
   uploadProductImage,
   createProduct,
   getAllProducts,
+  getAllProductsForAdmin,
   getProductBySlug,
   updateProduct,
   deleteProduct,
@@ -23,6 +24,8 @@ const handleImageUpload = (req, res, next) => {
 
 // GET     /api/products         (public)
 router.get("/", getAllProducts);
+
+router.get("/admin/all", protect, adminOnly, getAllProductsForAdmin);
 
 // GET     /api/products/:slug   (public)
 router.get("/:slug", getProductBySlug);

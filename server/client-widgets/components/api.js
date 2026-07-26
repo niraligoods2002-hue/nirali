@@ -74,6 +74,11 @@ export async function adminCreateProduct(productData) {
   return data;
 }
 
+export async function adminFetchProducts() {
+  const { data } = await api.get("/products/admin/all");
+  return data;
+}
+
 export async function uploadProductImage(imageFile) {
   const formData = new FormData();
   formData.append("image", imageFile);
