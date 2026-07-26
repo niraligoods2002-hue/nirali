@@ -33,8 +33,10 @@
 }
 
 .product-thumbnails {
-  display: flex;
+  display: flex !important;
   flex-wrap: nowrap;
+  width: 100%;
+  max-width: 100%;
   gap: 10px;
   margin-top: 12px;
   overflow-x: auto;
@@ -48,7 +50,7 @@
 }
 
 .product-thumbnail {
-  flex: 0 0 86px;
+  flex: 0 0 86px !important;
   overflow: hidden;
   padding: 0;
   border: 2px solid transparent;
