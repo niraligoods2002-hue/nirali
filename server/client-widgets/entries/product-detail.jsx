@@ -74,18 +74,25 @@ function ProductDetail() {
             {selectedColorStock > 0 ? `${selectedColorStock} available in this color` : "Sold out"}
           </small>
           <div className="product-color-list">
-            {product.colors.map((color) => (
-              <button
-                type="button"
-                key={color}
-                className={selectedColor === color ? "active" : ""}
-                onClick={() => showColorImage(color)}
-                aria-pressed={selectedColor === color}
-                disabled={Object.hasOwn(colorStock, color) && Number(colorStock[color]) <= 0}
-              >
-                {color}{Object.hasOwn(colorStock, color) && Number(colorStock[color]) <= 0 ? " — Sold out" : ""}
-              </button>
-            ))}
+            {product.colors.map((color) => {
+              const isOutOfStock = Object.hasOwn(colorStock, color) && Number(colorStock[color]) <= 0;
+              return (
+                <button
+                  type="button"
+                  key={color}
+                  className={[
+                    selectedColor === color ? "active" : "",
+                    isOutOfStock ? "out-of-stock" : "",
+                  ].filter(Boolean).join(" ")}
+                  onClick={() => showColorImage(color)}
+                  aria-pressed={selectedColor === color}
+                  aria-label={`${color}${isOutOfStock ? ", out of stock" : ""}`}
+                >
+                  <span>{color}</span>
+                  {isOutOfStock && <small>Out of stock</small>}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}

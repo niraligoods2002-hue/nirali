@@ -202,6 +202,9 @@
 }
 
 .product-color-list button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   border: 1px solid #c9b9a7;
   border-radius: 999px;
   background: #fff;
@@ -218,10 +221,27 @@
   color: #fff;
 }
 
-.product-color-list button:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-  text-decoration: line-through;
+.product-color-list button.out-of-stock {
+  border-style: dashed;
+  opacity: 0.72;
+}
+
+.product-color-list button.out-of-stock small {
+  border-radius: 999px;
+  background: #e8d9da;
+  color: #7b1f2b;
+  padding: 0.18rem 0.42rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.product-color-list button.out-of-stock.active {
+  opacity: 1;
+}
+
+.product-color-list button.out-of-stock.active small {
+  background: #fff;
+  color: #8b1e3f;
 }
 
 .product-accordions {
