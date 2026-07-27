@@ -51,6 +51,15 @@ const productSchema = new mongoose.Schema(
       default: {},
     },
 
+    colorStock: {
+      type: Map,
+      of: {
+        type: Number,
+        min: 0,
+      },
+      default: {},
+    },
+
     sizes: [
       {
         type: String,

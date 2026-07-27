@@ -10,9 +10,14 @@ function ProductDetail() {
   const [openSection, setOpenSection] = useState("details");
   const details = product.details || {};
   const colorImages = product.colorImages || {};
+  const colorStock = product.colorStock || {};
+  const selectedColorStock = selectedColor && Object.hasOwn(colorStock, selectedColor)
+    ? Number(colorStock[selectedColor] || 0)
+    : Number(product.stock || 0);
 
   const showColorImage = (color) => {
     setSelectedColor(color);
+    setQuantity(1);
     const image = colorImages[color];
     const mainImage = document.getElementById("product-main-image");
     if (!image || !mainImage) return;
@@ -65,6 +70,9 @@ function ProductDetail() {
       {product.colors?.length > 0 && (
         <div className="product-color-options">
           <span>Color: <strong>{selectedColor}</strong></span>
+          <small className="product-color-stock">
+            {selectedColorStock > 0 ? `${selectedColorStock} available in this color` : "Sold out"}
+          </small>
           <div className="product-color-list">
             {product.colors.map((color) => (
               <button
@@ -73,8 +81,9 @@ function ProductDetail() {
                 className={selectedColor === color ? "active" : ""}
                 onClick={() => showColorImage(color)}
                 aria-pressed={selectedColor === color}
+                disabled={Object.hasOwn(colorStock, color) && Number(colorStock[color]) <= 0}
               >
-                {color}
+                {color}{Object.hasOwn(colorStock, color) && Number(colorStock[color]) <= 0 ? " — Sold out" : ""}
               </button>
             ))}
           </div>
@@ -84,10 +93,10 @@ function ProductDetail() {
         <div className="quantity-selector">
           <button aria-label="Decrease quantity" onClick={() => setQuantity((q) => Math.max(1, q - 1))}>-</button>
           <span>{quantity}</span>
-          <button aria-label="Increase quantity" onClick={() => setQuantity((q) => q + 1)}>+</button>
+          <button aria-label="Increase quantity" onClick={() => setQuantity((q) => Math.min(selectedColorStock, q + 1))} disabled={quantity >= selectedColorStock}>+</button>
         </div>
-        <button className="btn-primary add-to-cart-btn" onClick={handleAddToCart} disabled={added}>
-          {added ? "Added to Cart" : "Add to Cart"}
+        <button className="btn-primary add-to-cart-btn" onClick={handleAddToCart} disabled={added || selectedColorStock <= 0}>
+          {selectedColorStock <= 0 ? "Out of Stock" : added ? "Added to Cart" : "Add to Cart"}
         </button>
       </div>
 

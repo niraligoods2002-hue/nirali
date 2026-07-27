@@ -11,6 +11,7 @@ const EMPTY_FORM = {
   discountPrice: "",
   images: "",
   colors: "",
+  colorStock: "",
   stock: "",
   featured: false,
   bestseller: false,
@@ -27,6 +28,7 @@ function normalizeProduct(p) {
     description: p.description,
     images: p.images || [p.image],
     colors: p.colors || [],
+    colorStock: p.colorStock || {},
     image: p.images?.[0] || p.image,
     stock: p.stock || 0,
     featured: p.featured,
@@ -86,6 +88,7 @@ export default function AdminProducts() {
       discountPrice: p.oldPrice?.toString() || "",
       images: (p.images || []).join(", "),
       colors: (p.colors || []).join(", "),
+      colorStock: Object.entries(p.colorStock || {}).map(([color, stock]) => `${color}:${stock}`).join(", "),
       stock: p.stock?.toString() || "0",
       featured: p.featured || false,
       bestseller: p.bestseller || false,
@@ -151,7 +154,15 @@ export default function AdminProducts() {
         discountPrice: form.discountPrice ? Number(form.discountPrice) : undefined,
         images,
         colors: form.colors.split(",").map((value) => value.trim()).filter(Boolean),
-        stock: Number(form.stock) || 0,
+        colorStock: Object.fromEntries(
+          form.colorStock.split(",").map((entry) => entry.trim()).filter(Boolean).map((entry) => {
+            const separator = entry.lastIndexOf(":");
+            return [entry.slice(0, separator).trim(), Math.max(0, Number(entry.slice(separator + 1)) || 0)];
+          }).filter(([color]) => color)
+        ),
+        stock: form.colorStock.trim()
+          ? form.colorStock.split(",").reduce((total, entry) => total + Math.max(0, Number(entry.slice(entry.lastIndexOf(":") + 1)) || 0), 0)
+          : Number(form.stock) || 0,
         featured: form.featured,
         bestseller: form.bestseller,
       };
@@ -274,6 +285,11 @@ export default function AdminProducts() {
                 <input name="colors" value={form.colors} onChange={handleChange} placeholder="Rani Pink, Wine, Teal" />
               </label>
               <small className="admin-image-help">Separate each color with a comma.</small>
+              <label>
+                Stock per color
+                <input name="colorStock" value={form.colorStock} onChange={handleChange} placeholder="Rani Pink:10, Wine:10, Teal:10" />
+              </label>
+              <small className="admin-image-help">Use Color:Quantity, separated by commas. Total stock is calculated automatically.</small>
               <div className="admin-form-row">
                 <label>
                   Price (₹)

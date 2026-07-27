@@ -6,6 +6,16 @@ const { normalizeIndianPhone } = require("../utils/phone");
 const PDFDocument = require("pdfkit");
 const path = require("path");
 
+async function restoreProductInventory(item) {
+  const product = await Product.findById(item.product).select("colorStock");
+  if (!product) return;
+  const increments = { stock: item.quantity };
+  if (item.color && product.colorStock?.has(item.color)) {
+    increments[`colorStock.${item.color}`] = item.quantity;
+  }
+  await Product.updateOne({ _id: item.product }, { $inc: increments });
+}
+
 function shapeOrder(order) {
   return {
     id: order._id,
@@ -98,17 +108,6 @@ exports.createOrder = async (req, res) => {
     const cleanItems = [];
     for (const product of products) {
       const quantity = requested.get(String(product._id));
-      const reservedProduct = await Product.findOneAndUpdate(
-        { _id: product._id, stock: { $gte: quantity } },
-        { $inc: { stock: -quantity } },
-        { new: true }
-      );
-      if (!reservedProduct) {
-        const error = new Error(`${product.name} does not have enough stock`);
-        error.status = 409;
-        throw error;
-      }
-      reserved.push({ product: product._id, quantity });
       const productVariants = [...requestedVariants.values()].filter((variant) => variant.productId === String(product._id));
       for (const variant of productVariants) {
         if (product.colors?.length && !product.colors.includes(variant.color)) {
@@ -116,6 +115,38 @@ exports.createOrder = async (req, res) => {
           error.status = 400;
           throw error;
         }
+      }
+
+      if (product.colorStock?.size) {
+        for (const variant of productVariants) {
+          const colorStockPath = `colorStock.${variant.color}`;
+          const reservedProduct = await Product.findOneAndUpdate(
+            { _id: product._id, stock: { $gte: variant.quantity }, [colorStockPath]: { $gte: variant.quantity } },
+            { $inc: { stock: -variant.quantity, [colorStockPath]: -variant.quantity } },
+            { returnDocument: "after" }
+          );
+          if (!reservedProduct) {
+            const error = new Error(`${variant.color} is out of stock for ${product.name}`);
+            error.status = 409;
+            throw error;
+          }
+          reserved.push({ product: product._id, quantity: variant.quantity, color: variant.color });
+        }
+      } else {
+        const reservedProduct = await Product.findOneAndUpdate(
+          { _id: product._id, stock: { $gte: quantity } },
+          { $inc: { stock: -quantity } },
+          { returnDocument: "after" }
+        );
+        if (!reservedProduct) {
+          const error = new Error(`${product.name} does not have enough stock`);
+          error.status = 409;
+          throw error;
+        }
+        reserved.push({ product: product._id, quantity });
+      }
+
+      for (const variant of productVariants) {
         cleanItems.push({
           product: product._id,
           name: product.name,
@@ -193,7 +224,7 @@ exports.createOrder = async (req, res) => {
     });
   } catch (error) {
     if (reserved.length) {
-      await Promise.allSettled(reserved.map((item) => Product.updateOne({ _id: item.product }, { $inc: { stock: item.quantity } })));
+      await Promise.allSettled(reserved.map(restoreProductInventory));
     }
     if (error.code === 11000 && error.keyPattern?.idempotencyKey) {
       const order = await Order.findOne({ user: req.user._id, idempotencyKey: req.get("Idempotency-Key") || req.body.idempotencyKey });
@@ -380,7 +411,7 @@ exports.updateOrderStatus = async (req, res) => {
       const claim = await Order.updateOne({ _id: order._id, inventoryRestored: false }, { $set: { inventoryRestored: true } });
       if (claim.modifiedCount) {
         try {
-          await Promise.all(order.items.map((item) => Product.updateOne({ _id: item.product }, { $inc: { stock: item.quantity } })));
+          await Promise.all(order.items.map(restoreProductInventory));
           order.inventoryRestored = true;
         } catch (restoreError) {
           await Order.updateOne({ _id: order._id }, { $set: { inventoryRestored: false } });

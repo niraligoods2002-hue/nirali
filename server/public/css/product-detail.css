@@ -181,6 +181,12 @@
   margin-bottom: 0.65rem;
 }
 
+.product-color-stock {
+  display: block;
+  margin: -0.35rem 0 0.7rem;
+  color: var(--text-muted);
+}
+
 .product-color-list {
   display: flex;
   flex-direction: row;
@@ -210,6 +216,12 @@
   border-color: #8b1e3f;
   background: #8b1e3f;
   color: #fff;
+}
+
+.product-color-list button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  text-decoration: line-through;
 }
 
 .product-accordions {
