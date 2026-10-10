@@ -1,35 +1,117 @@
-<div class="product-detail-page">
+<div class="product-editorial-page section-padding">
   <div class="container">
-    <div class="product-detail-row">
-      <div class="product-gallery">
-        <div class="product-image">
-          <img id="product-main-image" src="<%= product.images?.[0] || product.image %>" alt="<%= product.name %>" />
+    
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumbs" aria-label="Breadcrumbs">
+      <a href="/">Home</a>
+      <span class="separator">/</span>
+      <a href="/shop">Shop</a>
+      <span class="separator">/</span>
+      <a href="/shop?filter=<%= encodeURIComponent('category:' + product.category) %>"><%= product.category %></a>
+      <span class="separator">/</span>
+      <span class="current"><%= product.name %></span>
+    </nav>
+
+    <!-- Two-Column Product Detail Layout -->
+    <div class="product-detail-layout">
+      
+      <!-- Left Column: High-Res Gallery -->
+      <div class="product-gallery-col">
+        <div class="product-main-view">
+          <img
+            id="product-main-image"
+            src="<%= product.images?.[0] || product.image %>"
+            alt="<%= product.name %>"
+            class="product-featured-img"
+          />
+          <% if (product.badge) { %>
+            <div class="product-featured-badge">
+              <span class="badge-gold"><%= product.badge %></span>
+            </div>
+          <% } %>
         </div>
+
         <% if (product.images?.length > 1) { %>
-          <div class="product-thumbnails" aria-label="Product images">
-            <% product.images.forEach((image, index) => { %>
-              <button type="button" class="product-thumbnail <%= index === 0 ? 'active' : '' %>" data-product-image="<%= image %>" aria-label="View image <%= index + 1 %>">
-                <img src="<%= image %>" alt="<%= product.name %> view <%= index + 1 %>" loading="lazy" />
+          <div class="product-thumbnails-strip" aria-label="Product thumbnail views">
+            <% product.images.forEach((img, idx) => { %>
+              <button
+                type="button"
+                class="product-thumb-btn <%= idx === 0 ? 'active' : '' %>"
+                data-product-image="<%= img %>"
+                aria-label="View angle <%= idx + 1 %>"
+              >
+                <img src="<%= img %>" alt="<%= product.name %> thumbnail <%= idx + 1 %>" loading="lazy" />
               </button>
             <% }) %>
           </div>
         <% } %>
       </div>
-      <div class="product-info">
-        <span class="product-category"><%= product.category %></span>
-        <h1><%= product.name %></h1>
-        <div class="product-price">
-          <% if (product.discountPrice) { %>
-            <span class="current">₹<%= product.discountPrice.toLocaleString() %></span>
-            <span class="old">₹<%= product.price.toLocaleString() %></span>
-          <% } else { %>
-            <span class="current">₹<%= product.price.toLocaleString() %></span>
-          <% } %>
-        </div>
-        <p class="product-description"><%= product.description %></p>
 
+      <!-- Right Column: Product Narrative, Pricing & Purchase -->
+      <div class="product-info-col">
+        <div class="product-header-block">
+          <span class="section-eyebrow"><%= product.category %></span>
+          <h1 class="product-hero-title"><%= product.name %></h1>
+
+          <div class="product-price-block">
+            <% if (product.discountPrice && product.discountPrice < product.price) { %>
+              <span class="product-current-price">₹<%= Number(product.discountPrice).toLocaleString('en-IN') %></span>
+              <span class="product-original-price">₹<%= Number(product.price).toLocaleString('en-IN') %></span>
+              <span class="badge-gold discount-badge">
+                Save <%= Math.round(((product.price - product.discountPrice) / product.price) * 100) %>%
+              </span>
+            <% } else { %>
+              <span class="product-current-price">₹<%= Number(product.price).toLocaleString('en-IN') %></span>
+            <% } %>
+            <span class="tax-inclusive-tag">Inclusive of all taxes &bull; Complimentary Shipping</span>
+          </div>
+        </div>
+
+        <!-- Mount React interactive widget for color variants, stepper, cart button, accordions -->
         <div id="product-detail-root" data-product="<%= JSON.stringify(product) %>"></div>
       </div>
+
     </div>
+
+    <!-- Related Curations Section -->
+    <% if (locals.relatedProducts && relatedProducts.length > 0) { %>
+      <section class="related-curations-section">
+        <div class="section-header text-center">
+          <span class="section-eyebrow">COMPLEMENTARY PIECES</span>
+          <h2 class="section-title">You May Also Admire</h2>
+          <p class="section-desc">More handcrafted selections from our <%= product.category %> edit.</p>
+        </div>
+
+        <div class="related-products-grid">
+          <% relatedProducts.forEach((related) => { %>
+            <article class="product-card">
+              <div class="product-card-media">
+                <a href="/products/<%= related.slug %>" class="product-card-image-link" aria-label="View <%= related.name %>">
+                  <img src="<%= related.image %>" alt="<%= related.name %>" class="product-card-img" loading="lazy" />
+                </a>
+                <% if (related.badge) { %>
+                  <div class="product-card-badges">
+                    <span class="product-badge badge-gold"><%= related.badge %></span>
+                  </div>
+                <% } %>
+              </div>
+              <div class="product-card-info">
+                <span class="product-card-category"><%= related.category %></span>
+                <h3 class="product-card-title">
+                  <a href="/products/<%= related.slug %>"><%= related.name %></a>
+                </h3>
+                <div class="product-card-pricing">
+                  <span class="price-current">₹<%= Number(related.discountPrice || related.price).toLocaleString('en-IN') %></span>
+                  <% if (related.discountPrice && related.discountPrice < related.price) { %>
+                    <span class="price-original">₹<%= Number(related.price).toLocaleString('en-IN') %></span>
+                  <% } %>
+                </div>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+    <% } %>
+
   </div>
 </div>

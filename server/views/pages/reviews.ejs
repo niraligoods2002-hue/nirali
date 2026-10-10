@@ -1,57 +1,96 @@
-<div class="reviews-page">
+<div class="reviews-editorial-page section-padding">
   <div class="container">
-    <div class="reviews-header">
-      <span class="section-tag">TESTIMONIALS</span>
-      <h1>Customer Reviews</h1>
+    
+    <nav class="breadcrumbs" aria-label="Breadcrumbs">
+      <a href="/">Home</a>
+      <span class="separator">/</span>
+      <span class="current">Patron Diaries</span>
+    </nav>
+
+    <div class="reviews-editorial-header text-center">
+      <span class="section-eyebrow">CLIENT REFLECTIONS</span>
+      <h1 class="reviews-hero-title">Patron Diaries</h1>
+      <p class="reviews-hero-sub">
+        Honest words and experiences shared by women who have draped NIRALI handlooms for life’s most cherished celebrations.
+      </p>
+      <div class="story-divider" style="margin: 1.5rem auto;"></div>
     </div>
 
+    <!-- Review Submission Panel -->
     <section class="review-submit-panel">
       <% if (user) { %>
-        <div>
-          <span class="section-tag">SHARE YOUR EXPERIENCE</span>
-          <h2>Write a Review</h2>
+        <div class="submit-panel-header">
+          <span class="section-eyebrow">SHARE YOUR EXPERIENCE</span>
+          <h2 class="submit-title">Write a Review</h2>
+          <p class="submit-sub">Share your thoughts on the weave, drape, packaging, and service.</p>
         </div>
+
         <form class="review-form" id="review-form">
-          <label>
-            Rating
+          <div class="form-group">
+            <label class="form-label">Your Rating</label>
             <input type="hidden" name="rating" id="review-rating" value="5" />
             <div class="review-rating-buttons" role="radiogroup" aria-label="Choose rating">
               <% for (let i = 1; i <= 5; i++) { %>
-                <button type="button" class="review-star-btn active" data-rating="<%= i %>" aria-label="<%= i %> star<%= i > 1 ? 's' : '' %>" aria-checked="<%= i === 5 ? 'true' : 'false' %>" role="radio">★</button>
+                <button
+                  type="button"
+                  class="review-star-btn active"
+                  data-rating="<%= i %>"
+                  aria-label="<%= i %> star<%= i > 1 ? 's' : '' %>"
+                  aria-checked="<%= i === 5 ? 'true' : 'false' %>"
+                  role="radio"
+                >
+                  ★
+                </button>
               <% } %>
             </div>
-          </label>
-          <label>
-            Review
-            <textarea name="text" id="review-text" rows="4" minlength="10" maxlength="600" required placeholder="Tell us about your saree shopping experience"></textarea>
-          </label>
-          <button type="submit" class="btn-primary">Submit Review</button>
+          </div>
+
+          <div class="form-group">
+            <label for="review-text" class="form-label">Your Review & Thoughts</label>
+            <textarea
+              name="text"
+              id="review-text"
+              rows="4"
+              minlength="10"
+              maxlength="600"
+              class="form-textarea"
+              required
+              placeholder="Tell other patrons about the fabric texture, zari luster, and how it draped on your occasion..."
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary">Submit for Approval</button>
+          <p class="review-status" id="review-status" role="status"></p>
         </form>
       <% } else { %>
-        <div>
-          <span class="section-tag">SHARE YOUR EXPERIENCE</span>
-          <h2>Want to write a review?</h2>
-          <p>Sign in first, then you can share your rating and message.</p>
+        <div class="review-signin-prompt text-center">
+          <span class="section-eyebrow">SHARE YOUR EXPERIENCE</span>
+          <h2 class="submit-title">Cherish a NIRALI Saree?</h2>
+          <p class="submit-sub">Sign in to your patron account to submit a review and rating.</p>
+          <a href="/login?redirect=/reviews" class="btn-primary" style="margin-top: 1rem;">Sign In to Review</a>
         </div>
-        <a href="/login?redirect=/reviews" class="btn-primary">Sign In to Review</a>
       <% } %>
     </section>
 
-    <div class="reviews-grid">
+    <!-- Reviews Grid -->
+    <div class="reviews-editorial-grid">
       <% reviews.forEach(review => { %>
-        <div class="review-card">
-          <div class="review-stars">
+        <article class="review-editorial-card">
+          <div class="review-stars-gold">
             <% for (let i = 0; i < 5; i++) { %>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="<%= i < review.rating ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span class="star <%= i < review.rating ? 'filled' : 'empty' %>">★</span>
             <% } %>
           </div>
-          <p class="review-text">"<%= review.text %>"</p>
-          <div class="review-author">
-            <span class="review-name"><%= review.name %></span>
-            <span class="review-date"><%= review.date %></span>
+          <blockquote class="review-editorial-quote">
+            “<%= review.text %>”
+          </blockquote>
+          <div class="review-editorial-author">
+            <strong class="author-name"><%= review.name %></strong>
+            <span class="review-meta-date">Verified Patron &bull; <%= review.date %></span>
           </div>
-        </div>
+        </article>
       <% }) %>
     </div>
+
   </div>
 </div>

@@ -1,30 +1,43 @@
 <div class="auth-page">
   <div class="auth-card">
     <div class="auth-brand">
-      <span class="brand-icon">◆</span>
-      <img src="/images/branding/nirali-woman-mark.png" alt="Nirali logo" class="auth-logo" />
-      <span class="brand-text">NIRALI</span>
+      <a href="/" class="auth-brand-link" aria-label="NIRALI Home">
+        <img src="/images/nirali-logo.png" alt="NIRALI" class="auth-logo-img logo-light" />
+        <img src="/images/nirali-logo-dark.png" alt="NIRALI" class="auth-logo-img logo-dark" />
+      </a>
     </div>
-    <span class="section-tag">WELCOME BACK</span>
-    <h1>Sign In</h1>
+
+    <div class="auth-card-header text-center">
+      <span class="section-eyebrow">CLIENT ACCESS</span>
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-subtitle">Sign in to manage your orders, saved addresses, and curations.</p>
+    </div>
 
     <form class="auth-form" id="login-form">
-      <div class="form-row">
-        <label>
-          Email
-          <input type="email" name="email" id="email" required />
-        </label>
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <input type="email" name="email" id="email" class="form-input" required autocomplete="email" placeholder="name@domain.com" />
       </div>
-      <div class="form-row password-row">
-        <label>
-          Password
-          <input type="password" name="password" id="password" required minlength="6" />
-        </label>
-        <button type="button" class="toggle-password" id="toggle-password">Show</button>
+
+      <div class="form-group password-group">
+        <div class="password-label-row">
+          <label for="password" class="form-label">Password</label>
+          <a href="/forgot-password" class="auth-forgot-link">Forgot?</a>
+        </div>
+        <div class="password-input-wrap">
+          <input type="password" name="password" id="password" class="form-input" required minlength="6" autocomplete="current-password" placeholder="••••••••" />
+          <button type="button" class="toggle-password" id="toggle-password" aria-label="Toggle password visibility">Show</button>
+        </div>
       </div>
-      <p class="auth-inline-link"><a href="/forgot-password">Forgot password?</a></p>
-      <button type="submit" class="btn-primary btn-block">Sign In</button>
-      <p class="auth-link">Don't have an account? <a href="/signup">Sign up</a></p>
+
+      <button type="submit" class="btn-primary btn-block auth-submit-btn">Sign In to Account</button>
+      <div class="auth-status" id="auth-status"></div>
+
+      <div class="auth-footer-nav text-center">
+        <p class="auth-switch-text">
+          New to NIRALI? <a href="/signup" class="btn-text-link">Create an Account &rarr;</a>
+        </p>
+      </div>
     </form>
   </div>
 </div>

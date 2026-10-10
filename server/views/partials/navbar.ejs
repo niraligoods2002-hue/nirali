@@ -1,53 +1,233 @@
-<header class="header" data-auth="<%= user ? 'true' : 'false' %>" data-role="<%= user?.role || '' %>" data-name="<%= user?.name || '' %>">
-  <div class="container">
-    <a href="/" class="logo">
-      <img src="/images/branding/nirali-gujarati-logo-transparent.png" alt="નિરાલી" class="logo-image" />
-    </a>
+<!-- Announcement Bar -->
+<div class="announcement-bar" role="region" aria-label="Store announcement">
+  <div class="announcement-inner">
+    <span class="announcement-text">
+      COMPLIMENTARY SHIPPING ACROSS INDIA ON ORDERS ABOVE ₹2,999
+    </span>
+  </div>
+</div>
 
-    <nav class="nav" id="main-nav">
-      <a href="/shop" class="<%= path === '/shop' ? 'active' : '' %>">Shop</a>
-      <a href="/about" class="<%= path === '/about' ? 'active' : '' %>">About</a>
-      <a href="/reviews" class="<%= path === '/reviews' ? 'active' : '' %>">Reviews</a>
-      <a href="/contact" class="<%= path === '/contact' ? 'active' : '' %>">Contact</a>
+<!-- Main Editorial Luxury Header -->
+<header class="header" id="site-header" data-auth="<%= user ? 'true' : 'false' %>" data-role="<%= user?.role || '' %>" data-name="<%= user?.name || '' %>">
+  <div class="header-container">
+    
+    <!-- 1. Left: Official NIRALI Logo -->
+    <div class="brand-wrapper">
+      <a href="/" class="brand-logo" aria-label="NIRALI Homepage">
+        <img src="/images/nirali-logo.png" alt="NIRALI Sarees" class="brand-logo-img logo-light" />
+        <img src="/images/nirali-logo-dark.png" alt="NIRALI Sarees" class="brand-logo-img logo-dark" />
+      </a>
+    </div>
 
-      <% if (!user) { %>
-        <div class="mobile-auth">
-          <a href="/login">Login</a>
-          <a href="/signup">Sign Up</a>
+    <!-- 2. Center: All Navigation Links (Genuinely centered horizontally via 1fr auto 1fr grid) -->
+    <nav class="nav nav-center" id="main-nav" aria-label="Primary navigation">
+      
+      <!-- Nav Item 1: SHOP with Mega Menu -->
+      <div class="nav-item-mega" data-mega="shop">
+        <a href="/shop" class="nav-link nav-mega-trigger <%= path === '/shop' ? 'active' : '' %>" aria-haspopup="true" aria-expanded="false" id="shop-trigger">
+          <span>SHOP</span>
+          <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </a>
+
+        <!-- Shop Mega Menu Dropdown -->
+        <div class="mega-menu" id="shop-mega-menu" role="region" aria-labelledby="shop-trigger">
+          <div class="mega-menu-inner">
+            
+            <!-- Col 1: By Fabric & Silhouette -->
+            <div class="mega-col">
+              <span class="mega-col-heading">By Fabric & Silhouette</span>
+              <ul class="mega-list">
+                <li><a href="/shop?filter=category:Chiffon%20Saree">Chiffon Sarees <span class="badge-tag">Featherlight</span></a></li>
+                <li><a href="/shop?filter=category:Cotton%20Saree">Cotton Sarees <span class="badge-tag">Handspun</span></a></li>
+                <li><a href="/shop?filter=category:Designer%20Saree">Designer Sarees <span class="badge-tag">Artisanal</span></a></li>
+                <li><a href="/shop?filter=category:Georgette%20Saree">Georgette Sarees <span class="badge-tag">Fluid</span></a></li>
+                <li><a href="/shop?filter=category:Printed%20Saree">Printed Sarees <span class="badge-tag">Block Print</span></a></li>
+                <li class="mega-all-item"><a href="/shop" class="mega-link-all">Explore All Handlooms &rarr;</a></li>
+              </ul>
+            </div>
+
+            <!-- Col 2: Curated Occasions -->
+            <div class="mega-col">
+              <span class="mega-col-heading">Curated Occasions</span>
+              <ul class="mega-list">
+                <li><a href="/shop?filter=category:Designer%20Saree">Bridal & Wedding Trousseau</a></li>
+                <li><a href="/shop?filter=category:Georgette%20Saree">Festive & Celebrations</a></li>
+                <li><a href="/shop?filter=category:Chiffon%20Saree">Cocktail & Sangeet Soirée</a></li>
+                <li><a href="/shop?filter=category:Cotton%20Saree">Everyday Elegance & Poise</a></li>
+                <li><a href="/shop?filter=featured">Royal Zari Masterpieces</a></li>
+              </ul>
+            </div>
+
+            <!-- Col 3: Archives & Curations -->
+            <div class="mega-col">
+              <span class="mega-col-heading">Atelier Curations</span>
+              <ul class="mega-list">
+                <li><a href="/new-arrivals">New Arrivals <span class="badge-new-tag">New</span></a></li>
+                <li><a href="/best-sellers">Best Sellers <span class="badge-gold-tag">Popular</span></a></li>
+                <li><a href="/shop?filter=featured">Masterpiece Vault</a></li>
+                <li><a href="/reviews">Patron Diaries & Brides</a></li>
+                <li><a href="/about">Artisanal Heritage Story</a></li>
+              </ul>
+            </div>
+
+            <!-- Col 4: Visual Editorial Card -->
+            <div class="mega-col mega-col-feature">
+              <a href="/shop?filter=featured" class="mega-feature-card">
+                <div class="mega-feature-img-wrap">
+                  <img src="/images/products/saree1.jpg" alt="NIRALI Masterpiece" class="mega-feature-img" loading="lazy" />
+                  <span class="mega-feature-badge">ATELIER EDIT</span>
+                </div>
+                <div class="mega-feature-body">
+                  <span class="mega-feature-eyebrow">HEIRLOOM ZARI</span>
+                  <h4 class="mega-feature-title">Heritage Gujarati Handlooms</h4>
+                  <span class="mega-feature-action">Discover The Edit &rarr;</span>
+                </div>
+              </a>
+            </div>
+
+          </div>
         </div>
-      <% } else { %>
-        <div class="mobile-auth">
-          <span>Hi, <%= user.name.split(' ')[0] %></span>
-          <a href="/account">My Account</a>
-          <% if (user.role === 'admin') { %>
-            <a href="/admin">Admin Dashboard</a>
-          <% } %>
-          <button id="mobile-logout">Logout</button>
+      </div>
+
+      <!-- Nav Item 2: COLLECTIONS with Mega Menu -->
+      <div class="nav-item-mega" data-mega="collections">
+        <a href="/shop" class="nav-link nav-mega-trigger <%= (path.startsWith('/shop?filter=category') || path === '/shop') ? 'active' : '' %>" aria-haspopup="true" aria-expanded="false" id="collections-trigger">
+          <span>COLLECTIONS</span>
+          <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </a>
+
+        <!-- Collections Mega Menu Dropdown -->
+        <div class="mega-menu" id="collections-mega-menu" role="region" aria-labelledby="collections-trigger">
+          <div class="mega-menu-inner">
+            
+            <!-- Col 1: Signature Sarees with Descriptions -->
+            <div class="mega-col">
+              <span class="mega-col-heading">Signature Weaves</span>
+              <ul class="mega-list mega-list-desc">
+                <li>
+                  <a href="/shop?filter=category:Chiffon%20Saree">
+                    <strong class="item-head">Chiffon Sarees</strong>
+                    <span class="item-sub">Gossamer lightness with intricate zari edging</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/shop?filter=category:Cotton%20Saree">
+                    <strong class="item-head">Cotton Sarees</strong>
+                    <span class="item-sub">Breathable handspun luxury for timeless poise</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/shop?filter=category:Designer%20Saree">
+                    <strong class="item-head">Designer Sarees</strong>
+                    <span class="item-sub">Bespoke embroidery on pure ceremonial silks</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Col 2: Contemporary Weaves with Descriptions -->
+            <div class="mega-col">
+              <span class="mega-col-heading">Contemporary Craft</span>
+              <ul class="mega-list mega-list-desc">
+                <li>
+                  <a href="/shop?filter=category:Georgette%20Saree">
+                    <strong class="item-head">Georgette Sarees</strong>
+                    <span class="item-sub">Sculpted fluidity with shimmering border details</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/shop?filter=category:Printed%20Saree">
+                    <strong class="item-head">Printed Sarees</strong>
+                    <span class="item-sub">Authentic hand-block and heritage Indian motifs</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/shop">
+                    <strong class="item-head">Complete Catalog</strong>
+                    <span class="item-sub">Explore every handloom in our private reserve</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Col 3: Curated House Themes -->
+            <div class="mega-col">
+              <span class="mega-col-heading">Curated Series</span>
+              <ul class="mega-list">
+                <li><a href="/best-sellers">The Royal Best Sellers</a></li>
+                <li><a href="/new-arrivals">Fresh from the Looms</a></li>
+                <li><a href="/about#craftsmanship">Artisan Cooperative Edit</a></li>
+                <li><a href="/reviews">Patron Testimonials</a></li>
+                <li class="mega-all-item"><a href="/shop" class="mega-link-all">View All Collections &rarr;</a></li>
+              </ul>
+            </div>
+
+            <!-- Col 4: Visual Editorial Card -->
+            <div class="mega-col mega-col-feature">
+              <a href="/new-arrivals" class="mega-feature-card">
+                <div class="mega-feature-img-wrap">
+                  <img src="/images/products/saree2.jpg" alt="New Season Edit" class="mega-feature-img" loading="lazy" />
+                  <span class="mega-feature-badge">FRESH WEAVES</span>
+                </div>
+                <div class="mega-feature-body">
+                  <span class="mega-feature-eyebrow">NEW ARRIVALS</span>
+                  <h4 class="mega-feature-title">Pure Georgette & Gilded Weave</h4>
+                  <span class="mega-feature-action">Shop New Arrivals &rarr;</span>
+                </div>
+              </a>
+            </div>
+
+          </div>
         </div>
-      <% } %>
+      </div>
+
+      <!-- Nav Item 3: BEST SELLERS -->
+      <a href="/best-sellers" class="nav-link <%= path === '/best-sellers' ? 'active' : '' %>">BEST SELLERS</a>
+
+      <!-- Nav Item 4: ABOUT US -->
+      <a href="/about" class="nav-link <%= path === '/about' ? 'active' : '' %>">ABOUT US</a>
+
+      <!-- Nav Item 5: CONTACT -->
+      <a href="/contact" class="nav-link <%= path === '/contact' ? 'active' : '' %>">CONTACT</a>
+
     </nav>
 
+    <!-- 3. Right: Utility & Action Icons -->
     <div class="actions">
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch theme" title="Switch theme">
-        <svg class="theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
-        <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6.5 6.5 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+      
+      <!-- Search Toggle Button -->
+      <button class="icon-btn search-toggle-btn" id="search-toggle" type="button" aria-label="Search collection" aria-expanded="false" aria-controls="header-search" title="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
       </button>
-      <button class="icon-btn" id="search-toggle" type="button" aria-label="Search products" aria-expanded="false" aria-controls="header-search">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      </button>
+
+      <!-- Expandable Search Form -->
       <form class="header-search" id="header-search" action="/shop" method="get" role="search">
-        <input id="header-search-input" type="search" name="search" placeholder="Search sarees..." autocomplete="off" />
-        <button type="submit">Search</button>
+        <input id="header-search-input" type="search" name="search" placeholder="Search sarees by fabric, weave, occasion..." autocomplete="off" />
+        <button type="submit" aria-label="Submit search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
       </form>
 
+      <!-- User Account -->
       <% if (!user) { %>
-        <div class="auth-btns">
-          <a href="/login" class="login-btn">Login</a>
-          <a href="/signup" class="signup-btn">Sign Up</a>
-        </div>
+        <a href="/login" class="icon-btn account-link" aria-label="Sign In or Register" title="Account">
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
       <% } else { %>
         <div class="user-wrap" id="user-wrap">
-          <button class="user-btn" id="user-btn">
+          <button class="user-btn" id="user-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="User account menu">
             <div class="avatar"><%= user.name.charAt(0).toUpperCase() %></div>
           </button>
           <div class="dropdown" id="user-dropdown">
@@ -55,23 +235,165 @@
               <span class="dropdown-name"><%= user.name %></span>
               <span class="dropdown-email"><%= user.email %></span>
             </div>
-            <a href="/account" class="dropdown-item">My Account</a>
+            <a href="/account" class="dropdown-item">My Account & Orders</a>
+            <a href="/account?tab=wishlist" class="dropdown-item">Saved Wishlist</a>
             <% if (user.role === 'admin') { %>
-              <a href="/admin" class="dropdown-item">Admin Dashboard</a>
+              <a href="/admin" class="dropdown-item dropdown-item-admin">Admin Atelier</a>
             <% } %>
-            <button class="dropdown-item" id="nav-logout">Logout</button>
+            <button class="dropdown-item dropdown-item-logout" id="nav-logout" type="button">Sign Out</button>
           </div>
         </div>
       <% } %>
 
-      <a href="/cart" class="cart-btn" aria-label="Cart">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+      <!-- Wishlist Quick Link -->
+      <a href="/account?tab=wishlist" class="icon-btn wishlist-link" aria-label="Wishlist" title="Wishlist">
+        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+      </a>
+
+      <!-- Shopping Bag with Live Cart Count -->
+      <a href="/cart" class="cart-btn" aria-label="Shopping Bag" title="Shopping Bag">
+        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
         <span class="cart-badge" id="cart-count">0</span>
       </a>
 
-      <button class="menu-btn" id="menu-btn" aria-label="Menu">
-        <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      <!-- Light / Dark Theme Switcher -->
+      <button class="icon-btn theme-toggle-btn" id="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle theme">
+        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="theme-icon sun-icon">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
       </button>
+
+      <!-- Mobile Menu Hamburger -->
+      <button class="menu-btn" id="menu-btn" type="button" aria-label="Open mobile navigation" aria-expanded="false" aria-controls="mobile-drawer">
+        <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
     </div>
   </div>
 </header>
+
+<!-- Mobile Navigation Drawer & Backdrop -->
+<div class="mobile-nav-backdrop" id="mobile-nav-backdrop" aria-hidden="true"></div>
+<aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile Navigation" aria-hidden="true">
+  <div class="mobile-drawer-header">
+    <a href="/" class="mobile-drawer-logo" aria-label="NIRALI Homepage">
+      <img src="/images/nirali-logo.png" alt="NIRALI Sarees" class="logo-light" />
+      <img src="/images/nirali-logo-dark.png" alt="NIRALI Sarees" class="logo-dark" />
+    </a>
+    <button class="mobile-drawer-close" id="mobile-drawer-close" type="button" aria-label="Close navigation menu">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="mobile-drawer-body">
+    
+    <!-- Mobile Navigation Links -->
+    <nav class="mobile-nav-list">
+      
+      <!-- Mobile Shop Accordion -->
+      <div class="mobile-accordion-item">
+        <button type="button" class="mobile-accordion-trigger" data-accordion="mobile-shop-links" aria-expanded="false">
+          <span>SHOP</span>
+          <svg class="accordion-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="mobile-accordion-content" id="mobile-shop-links">
+          <a href="/shop?filter=category:Chiffon%20Saree" class="mobile-sublink">Chiffon Sarees</a>
+          <a href="/shop?filter=category:Cotton%20Saree" class="mobile-sublink">Cotton Sarees</a>
+          <a href="/shop?filter=category:Designer%20Saree" class="mobile-sublink">Designer Sarees</a>
+          <a href="/shop?filter=category:Georgette%20Saree" class="mobile-sublink">Georgette Sarees</a>
+          <a href="/shop?filter=category:Printed%20Saree" class="mobile-sublink">Printed Sarees</a>
+          <a href="/shop" class="mobile-sublink view-all-link">All Handcrafted Sarees &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Mobile Collections Accordion -->
+      <div class="mobile-accordion-item">
+        <button type="button" class="mobile-accordion-trigger" data-accordion="mobile-collections-links" aria-expanded="false">
+          <span>COLLECTIONS</span>
+          <svg class="accordion-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="mobile-accordion-content" id="mobile-collections-links">
+          <a href="/shop?filter=category:Designer%20Saree" class="mobile-sublink">Bridal & Wedding Trousseau</a>
+          <a href="/shop?filter=category:Georgette%20Saree" class="mobile-sublink">Festive Celebrations</a>
+          <a href="/shop?filter=category:Chiffon%20Saree" class="mobile-sublink">Cocktail & Sangeet Soirée</a>
+          <a href="/shop?filter=featured" class="mobile-sublink">Royal Zari Masterpieces</a>
+          <a href="/shop" class="mobile-sublink view-all-link">Browse All Collections &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Direct links -->
+      <a href="/best-sellers" class="mobile-nav-link <%= path === '/best-sellers' ? 'active' : '' %>">BEST SELLERS</a>
+      <a href="/about" class="mobile-nav-link <%= path === '/about' ? 'active' : '' %>">ABOUT US</a>
+      <a href="/contact" class="mobile-nav-link <%= path === '/contact' ? 'active' : '' %>">CONTACT</a>
+    </nav>
+
+    <!-- Mobile Drawer Footer Actions -->
+    <div class="mobile-drawer-footer">
+      
+      <!-- Theme Appearance Switcher -->
+      <div class="mobile-theme-row">
+        <span class="mobile-theme-title">Appearance</span>
+        <button class="mobile-theme-pill" id="mobile-theme-toggle" type="button" aria-label="Toggle theme">
+          <span class="mobile-theme-icon-slot">🌙</span>
+          <span class="theme-label-text">Dark Mode</span>
+        </button>
+      </div>
+
+      <!-- User Account -->
+      <% if (!user) { %>
+        <div class="mobile-auth-block">
+          <a href="/login" class="btn-primary mobile-btn-block">Sign In to Account</a>
+          <a href="/signup" class="btn-secondary mobile-btn-block" style="margin-top: 8px;">Create Account</a>
+        </div>
+      <% } else { %>
+        <div class="mobile-user-block">
+          <div class="mobile-user-header">
+            <span class="user-greeting">Welcome, <%= user.name %></span>
+            <span class="user-email"><%= user.email %></span>
+          </div>
+          <div class="mobile-user-nav">
+            <a href="/account" class="mobile-action-link">My Account & Orders</a>
+            <a href="/account?tab=wishlist" class="mobile-action-link">My Saved Wishlist</a>
+            <% if (user.role === 'admin') { %>
+              <a href="/admin" class="mobile-action-link admin-link">Admin Atelier Dashboard</a>
+            <% } %>
+            <button id="mobile-logout" type="button" class="mobile-logout-action">Sign Out</button>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- Concierge Details -->
+      <div class="mobile-concierge-strip">
+        <span class="concierge-label">CONCIERGE & STYLING</span>
+        <a href="tel:+919428176472" class="concierge-phone">+91 94281 76472</a>
+        <a href="https://wa.me/917623857001" target="_blank" rel="noopener" class="concierge-wa">WhatsApp Stylist &rarr;</a>
+      </div>
+
+    </div>
+  </div>
+</aside>

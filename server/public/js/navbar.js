@@ -49,20 +49,45 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   };
 
-  const applyTheme = (theme) => {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem('nirali-theme', theme);
+  const updateThemeIcons = (theme) => {
+    const isDark = theme === 'dark';
+    const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="theme-icon sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+    const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="theme-icon moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+
     if (themeToggle) {
-      const isDark = theme === 'dark';
       themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
-      themeToggle.setAttribute('title', isDark ? 'Light mode' : 'Dark mode');
+      themeToggle.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+      themeToggle.innerHTML = isDark ? sunSvg : moonSvg;
+    }
+    const mobileThemeBtn = document.getElementById('mobile-theme-toggle');
+    if (mobileThemeBtn) {
+      mobileThemeBtn.innerHTML = isDark
+        ? '<span class="mobile-theme-icon-slot">☀</span><span class="theme-label-text">Light Mode</span>'
+        : '<span class="mobile-theme-icon-slot">🌙</span><span class="theme-label-text">Dark Mode</span>';
     }
   };
 
+  const applyTheme = (theme) => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('nirali-theme', theme);
+    updateThemeIcons(theme);
+  };
+
+  const initialTheme = localStorage.getItem('nirali-theme') || document.documentElement.dataset.theme || 'light';
+  applyTheme(initialTheme);
+
   if (themeToggle) {
-    applyTheme(document.documentElement.dataset.theme || 'dark');
     themeToggle.addEventListener('click', () => {
-      applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+      const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(nextTheme);
+    });
+  }
+
+  const mobileThemeBtn = document.getElementById('mobile-theme-toggle');
+  if (mobileThemeBtn) {
+    mobileThemeBtn.addEventListener('click', () => {
+      const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(nextTheme);
     });
   }
 
@@ -83,22 +108,134 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Mobile menu
-  if (menuBtn && nav) {
-    menuBtn.addEventListener('click', () => {
-      nav.classList.toggle('open');
+  // Mega Menu Interactions (Desktop Click toggle, keyboard nav, outside click, Escape)
+  const megaItems = document.querySelectorAll('.nav-item-mega');
+  const megaTriggers = document.querySelectorAll('.nav-mega-trigger');
+
+  const closeAllMegaMenus = () => {
+    megaItems.forEach(item => {
+      item.classList.remove('is-open');
+      const trigger = item.querySelector('.nav-mega-trigger');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
     });
+  };
+
+  megaTriggers.forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      const parent = trigger.closest('.nav-item-mega');
+      if (!parent) return;
+      const isOpen = parent.classList.contains('is-open');
+      closeAllMegaMenus();
+      if (!isOpen) {
+        e.preventDefault();
+        parent.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        const parent = trigger.closest('.nav-item-mega');
+        if (parent) {
+          closeAllMegaMenus();
+          parent.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+          const firstLink = parent.querySelector('.mega-menu a');
+          if (firstLink) firstLink.focus();
+        }
+      }
+    });
+  });
+
+  // Mobile Drawer Controls
+  const mobileDrawer = document.getElementById('mobile-drawer');
+  const mobileBackdrop = document.getElementById('mobile-nav-backdrop');
+  const mobileDrawerClose = document.getElementById('mobile-drawer-close');
+
+  const openMobileDrawer = () => {
+    if (mobileDrawer) {
+      mobileDrawer.classList.add('open');
+      mobileDrawer.setAttribute('aria-hidden', 'false');
+    }
+    if (mobileBackdrop) {
+      mobileBackdrop.classList.add('open');
+      mobileBackdrop.setAttribute('aria-hidden', 'false');
+    }
+    if (menuBtn) {
+      menuBtn.setAttribute('aria-expanded', 'true');
+    }
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeMobileDrawer = () => {
+    if (mobileDrawer) {
+      mobileDrawer.classList.remove('open');
+      mobileDrawer.setAttribute('aria-hidden', 'true');
+    }
+    if (mobileBackdrop) {
+      mobileBackdrop.classList.remove('open');
+      mobileBackdrop.setAttribute('aria-hidden', 'true');
+    }
+    if (menuBtn) {
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
+    document.body.style.overflow = '';
+  };
+
+  if (menuBtn) {
+    menuBtn.addEventListener('click', openMobileDrawer);
   }
+  if (mobileDrawerClose) {
+    mobileDrawerClose.addEventListener('click', closeMobileDrawer);
+  }
+  if (mobileBackdrop) {
+    mobileBackdrop.addEventListener('click', closeMobileDrawer);
+  }
+
+  // Mobile Accordion Items
+  document.querySelectorAll('.mobile-accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.mobile-accordion-item');
+      if (!item) return;
+      const isOpen = item.classList.contains('open');
+      item.classList.toggle('open', !isOpen);
+      trigger.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
+
+  // Global dismiss handlers for dropdowns, mega menus, search, and drawer
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      if (headerSearch && headerSearch.classList.contains('open')) {
+        headerSearch.classList.remove('open');
+        if (searchToggle) {
+          searchToggle.setAttribute('aria-expanded', 'false');
+          searchToggle.focus();
+        }
+      }
+      if (mobileDrawer && mobileDrawer.classList.contains('open')) {
+        closeMobileDrawer();
+      }
+      closeAllMegaMenus();
+      if (dropdown) dropdown.classList.remove('open');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-item-mega')) {
+      closeAllMegaMenus();
+    }
+    if (dropdown && !e.target.closest('#user-wrap')) {
+      dropdown.classList.remove('open');
+    }
+  });
 
   // User dropdown
   if (userBtn && dropdown) {
     userBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       dropdown.classList.toggle('open');
-    });
-
-    document.addEventListener('click', () => {
-      dropdown.classList.remove('open');
     });
   }
 
@@ -501,8 +638,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateCartCount() {
-  const cart = JSON.parse(localStorage.getItem('luxora_cart') || '[]');
-  const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const rawCart = localStorage.getItem('nirali_cart') || localStorage.getItem('luxora_cart') || '[]';
+  let cart = [];
+  try {
+    cart = JSON.parse(rawCart);
+  } catch {
+    cart = [];
+  }
+  const count = Array.isArray(cart) ? cart.reduce((sum, item) => sum + (Number(item?.quantity) || 1), 0) : 0;
   const badge = document.getElementById('cart-count');
   if (badge) {
     badge.textContent = count;

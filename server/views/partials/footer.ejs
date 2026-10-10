@@ -1,35 +1,96 @@
-<footer class="footer">
-  <div class="container">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <img src="/images/branding/nirali-gujarati-logo-transparent.png" alt="નિરાલી" class="footer-logo-image" />
-      </div>
-      <p class="footer-tagline">Elegant sarees for every occasion.</p>
-    </div>
-
-    <div class="footer-links">
-      <div class="footer-col">
-        <h4>Shop</h4>
-        <a href="/shop">All Products</a>
-        <a href="/shop?filter=new">New Arrivals</a>
-        <a href="/shop?filter=bestseller">Best Sellers</a>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <a href="/about">About Us</a>
-        <a href="/contact">Contact</a>
-        <a href="/reviews">Reviews</a>
-      </div>
-      <div class="footer-col">
-        <h4>Support</h4>
-        <a href="tel:+919428176472">Call: +91 94281 76472</a>
-        <a href="https://wa.me/917623857001" target="_blank" rel="noopener">WhatsApp: +91 76238 57001</a>
-        <a href="https://www.instagram.com/nirali_saree7001/" target="_blank" rel="noopener">Instagram: @nirali_saree7001</a>
+<footer class="footer" role="contentinfo">
+  <div class="container footer-container">
+    
+    <!-- Brand & Editorial Introduction -->
+    <div class="footer-brand-col">
+      <a href="/" class="footer-brand-link" aria-label="NIRALI Homepage">
+        <img src="/images/nirali-logo-dark.png" alt="NIRALI Sarees" class="footer-logo-img" />
+      </a>
+      <p class="footer-brand-desc">
+        Celebrating the timeless poetry of Indian handlooms and contemporary luxury sarees. Thoughtfully curated for weddings, festivals, and life’s most celebrated moments.
+      </p>
+      <div class="footer-heritage-badge">
+        <span class="badge-gold">Authentic NIRALI Craftsmanship</span>
       </div>
     </div>
 
-    <div class="footer-bottom">
-      <p>&copy; <%= new Date().getFullYear() %> Nirali Saree. All rights reserved.</p>
+    <!-- Navigation Columns -->
+    <div class="footer-links-grid">
+      
+      <!-- Column 1: Shop Collections -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Collections</h4>
+        <ul class="footer-list">
+          <li><a href="/shop">All Sarees</a></li>
+          <li><a href="/new-arrivals">New Arrivals</a></li>
+          <li><a href="/best-sellers">Best Sellers</a></li>
+          <li><a href="/shop?filter=category:Chiffon%20Sarees">Chiffon Sarees</a></li>
+          <li><a href="/shop?filter=category:Cotton%20Sarees">Cotton Sarees</a></li>
+          <li><a href="/shop?filter=category:Georgette%20Sarees">Georgette Sarees</a></li>
+          <li><a href="/shop?filter=category:Designer%20Sarees">Designer Sarees</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 2: The House of NIRALI -->
+      <div class="footer-col">
+        <h4 class="footer-heading">The House</h4>
+        <ul class="footer-list">
+          <li><a href="/about">About NIRALI</a></li>
+          <li><a href="/reviews">Patron Reviews</a></li>
+          <li><a href="/contact">Boutique & Concierge</a></li>
+          <li><a href="/account">My Account</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Customer Care & Policies -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Client Services</h4>
+        <ul class="footer-list">
+          <li><a href="/shipping-policy">Shipping & Delivery</a></li>
+          <li><a href="/return-policy">Returns & Exchanges</a></li>
+          <li><a href="/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms & Conditions</a></li>
+          <li><a href="/faq">Frequently Asked Questions</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Concierge & Contact -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Concierge</h4>
+        <p class="footer-contact-item">
+          <span>Direct Concierge:</span>
+          <a href="tel:+919428176472">+91 94281 76472</a>
+        </p>
+        <p class="footer-contact-item">
+          <span>WhatsApp Assistance:</span>
+          <a href="https://wa.me/917623857001" target="_blank" rel="noopener">+91 76238 57001</a>
+        </p>
+        <p class="footer-contact-item">
+          <span>Social Boutique:</span>
+          <a href="https://www.instagram.com/nirali_saree7001/" target="_blank" rel="noopener">@nirali_saree7001</a>
+        </p>
+        <p class="footer-contact-item">
+          <span>Atelier Hours:</span>
+          <strong>Mon – Sat, 10:00 AM – 7:00 PM IST</strong>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <p class="footer-copyright">
+        &copy; <%= new Date().getFullYear() %> NIRALI LUXURY SAREES. All rights reserved. Handcrafted in India.
+      </p>
+      <div class="footer-assurance-tags">
+        <span>Handcrafted Weaves</span>
+        <span>&bull;</span>
+        <span>Secure Payments</span>
+        <span>&bull;</span>
+        <span>Pan-India Delivery</span>
+      </div>
     </div>
   </div>
 </footer>

@@ -1,17 +1,39 @@
-<div class="cart-page">
+<div class="cart-editorial-page section-padding">
   <div class="container">
-    <div class="cart-header">
-      <span class="section-tag">YOUR CART</span>
-      <h1>Shopping Cart</h1>
+    
+    <nav class="breadcrumbs" aria-label="Breadcrumbs">
+      <a href="/">Home</a>
+      <span class="separator">/</span>
+      <a href="/shop">Shop</a>
+      <span class="separator">/</span>
+      <span class="current">Shopping Bag</span>
+    </nav>
+
+    <div class="cart-editorial-header">
+      <span class="section-eyebrow">YOUR CURATIONS</span>
+      <h1 class="cart-title">Shopping Bag</h1>
+      <p class="cart-sub">Review your selected heirloom weaves before proceeding to secure checkout.</p>
     </div>
 
+    <!-- React Cart Root -->
     <div id="cart-root"></div>
 
-    <div id="cart-empty" class="cart-empty hidden">
-      <span class="section-tag">YOUR CART</span>
-      <h2>Your cart is empty</h2>
-      <p>Discover our curated collection and find something you love.</p>
-      <a href="/shop" class="btn-primary">Continue Shopping</a>
+    <!-- Empty Cart Fallback -->
+    <div id="cart-empty" class="cart-empty-luxury hidden">
+      <div class="empty-icon-wrap">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+      </div>
+      <h2>Your shopping bag is empty</h2>
+      <p>Discover our curated collection of luxury handlooms and find something truly extraordinary.</p>
+      <div class="empty-cart-actions">
+        <a href="/shop" class="btn-primary">Explore All Sarees</a>
+        <a href="/shop?filter=new" class="btn-secondary">New Arrivals</a>
+      </div>
     </div>
+
   </div>
 </div>

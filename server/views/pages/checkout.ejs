@@ -1,130 +1,211 @@
-<div class="checkout-page">
+<div class="checkout-editorial-page section-padding">
   <div class="container">
-    <div class="checkout-header">
-      <span class="section-tag">CHECKOUT</span>
-      <h1>Complete Your Order</h1>
+    
+    <nav class="breadcrumbs" aria-label="Breadcrumbs">
+      <a href="/">Home</a>
+      <span class="separator">/</span>
+      <a href="/cart">Shopping Bag</a>
+      <span class="separator">/</span>
+      <span class="current">Checkout</span>
+    </nav>
+
+    <div class="checkout-editorial-header">
+      <span class="section-eyebrow">STEP 2 OF 2 &bull; SECURE CONCIERGE</span>
+      <h1 class="checkout-title">Complete Your Order</h1>
+      <p class="checkout-sub">Enter your delivery details and choose your preferred payment method.</p>
     </div>
 
     <div class="checkout-layout">
+      <!-- Left Column: Checkout Form (Address & Payment) -->
       <form class="checkout-form" id="checkout-form">
-        <h3>Payment Method</h3>
-        <div class="payment-methods" role="radiogroup" aria-label="Choose payment method">
-          <label class="payment-method-card active">
-            <input type="radio" name="paymentMethod" value="cod" checked />
-            <span class="payment-method-icon">₹</span>
-            <span>
-              <strong>Cash on Delivery</strong>
-              <small>Pay when your saree arrives</small>
-            </span>
-            <em>Available</em>
-          </label>
-          <label class="payment-method-card disabled">
-            <input type="radio" name="paymentMethod" value="razorpay" disabled />
-            <span class="payment-method-icon">↗</span>
-            <span>
-              <strong>Online Payment</strong>
-              <small>UPI, card, wallet coming soon</small>
-            </span>
-            <em>Soon</em>
-          </label>
+        
+        <!-- Section 1: Delivery Address -->
+        <div class="checkout-section-card">
+          <div class="shipping-heading">
+            <h3 id="shipping-details" class="checkout-step-title">
+              <span class="step-num">1</span>
+              Delivery Address
+            </h3>
+            <button type="button" class="address-change-button" id="change-address">Change Address</button>
+          </div>
+
+          <!-- Active Selected Address Display -->
+          <section class="selected-address-card" id="selected-address-card" hidden></section>
+
+          <!-- Address Picker for Saved Addresses -->
+          <section class="address-picker" id="address-picker" hidden>
+            <div class="address-picker-heading">
+              <strong>Your Saved Addresses</strong>
+              <button type="button" id="add-new-address" class="btn-text-link">+ Add New Address</button>
+            </div>
+            <div id="saved-address-list"></div>
+          </section>
+
+          <p class="saved-address-status" id="saved-address-status" hidden></p>
+
+          <!-- Address Input Modal -->
+          <div class="checkout-address-modal" id="checkout-address-modal" hidden>
+            <section class="checkout-address-dialog" role="dialog" aria-modal="true" aria-labelledby="checkout-address-dialog-title">
+              <div class="checkout-address-dialog-head">
+                <div>
+                  <h3 id="checkout-address-dialog-title">Delivery Address</h3>
+                  <p>Provide your delivery location for complimentary express courier.</p>
+                </div>
+                <button type="button" id="close-address-modal" aria-label="Close address form">&times;</button>
+              </div>
+
+              <div class="address-form-fields" id="address-form-fields">
+                <div class="form-row two-col">
+                  <label class="form-label">
+                    Address Label
+                    <select name="addressType" class="form-select">
+                      <option>Home</option>
+                      <option>Work</option>
+                      <option>Other</option>
+                    </select>
+                  </label>
+                  <label class="address-default-label form-checkbox-label">
+                    <input type="checkbox" name="isDefault" />
+                    <span>Set as primary delivery address</span>
+                  </label>
+                </div>
+
+                <div class="form-row">
+                  <label class="form-label">
+                    Full Name
+                    <input type="text" name="name" class="form-input" required placeholder="Recipient full name" />
+                  </label>
+                </div>
+
+                <div class="form-row">
+                  <label class="form-label">
+                    Email Address
+                    <input type="email" name="email" class="form-input" required placeholder="For tracking updates" />
+                  </label>
+                </div>
+
+                <div class="form-row" id="checkout-phone-field">
+                  <label class="form-label">
+                    Mobile Number
+                    <span class="checkout-phone-row">
+                      <input type="tel" name="phone" class="form-input" required inputmode="tel" autocomplete="tel" maxlength="10" placeholder="10-digit mobile number" />
+                    </span>
+                  </label>
+                </div>
+
+                <div class="form-row">
+                  <label class="form-label">
+                    House / Flat / Building
+                    <input type="text" name="houseNumber" class="form-input" required placeholder="Apt, Suite, Floor number" />
+                  </label>
+                </div>
+
+                <div class="form-row">
+                  <label class="form-label">
+                    Street / Society / Area
+                    <textarea name="address" rows="2" class="form-textarea" required placeholder="Street name, landmark"></textarea>
+                  </label>
+                </div>
+
+                <div class="form-row">
+                  <label class="form-label">
+                    City / Town
+                    <span class="city-autocomplete">
+                      <input type="text" name="city" class="form-input" autocomplete="off" autocapitalize="words" aria-autocomplete="list" aria-controls="india-city-options" required placeholder="e.g. Surat, Mumbai, New Delhi" />
+                      <span class="city-suggestions" id="india-city-options" role="listbox" hidden></span>
+                    </span>
+                  </label>
+                  <input type="hidden" name="taluka" value="-" />
+                </div>
+
+                <div class="form-row two-col">
+                  <label class="form-label">
+                    District
+                    <input type="text" name="district" class="form-input" required placeholder="District" />
+                  </label>
+                  <label class="form-label">
+                    State
+                    <input type="text" name="state" class="form-input" value="Gujarat" required placeholder="State" />
+                  </label>
+                </div>
+
+                <div class="form-row">
+                  <label class="form-label">
+                    PIN Code (6 Digits)
+                    <input type="text" name="pincode" class="form-input" required inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="e.g. 395003" />
+                  </label>
+                </div>
+
+                <p class="location-lookup-status" id="location-lookup-status" aria-live="polite" hidden></p>
+
+                <div class="address-form-actions">
+                  <button type="button" class="btn-primary" id="save-address">Save & Use Address</button>
+                  <button type="button" class="btn-secondary" id="cancel-address">Cancel</button>
+                </div>
+              </div>
+            </section>
+          </div>
         </div>
 
-        <div class="shipping-heading">
-          <h3 id="shipping-details">Delivery Address</h3>
-          <button type="button" class="address-change-button" id="change-address">Change</button>
-        </div>
-        <section class="selected-address-card" id="selected-address-card" hidden></section>
-        <section class="address-picker" id="address-picker" hidden>
-          <div class="address-picker-heading"><strong>Saved Addresses</strong><button type="button" id="add-new-address">+ Add New Address</button></div>
-          <div id="saved-address-list"></div>
-        </section>
-        <p class="saved-address-status" id="saved-address-status" hidden></p>
-        <div class="checkout-address-modal" id="checkout-address-modal" hidden>
-        <section class="checkout-address-dialog" role="dialog" aria-modal="true" aria-labelledby="checkout-address-dialog-title">
-        <div class="checkout-address-dialog-head">
-          <div><h3 id="checkout-address-dialog-title">Delivery Address</h3><p>Add or change the address for this order.</p></div>
-          <button type="button" id="close-address-modal" aria-label="Close address form">×</button>
-        </div>
-        <div class="address-form-fields" id="address-form-fields">
-          <div class="form-row two-col">
-            <label>Address Type
-              <select name="addressType"><option>Home</option><option>Work</option><option>Other</option></select>
+        <!-- Section 2: Payment Method -->
+        <div class="checkout-section-card">
+          <h3 class="checkout-step-title">
+            <span class="step-num">2</span>
+            Payment Method
+          </h3>
+          
+          <div class="payment-methods" role="radiogroup" aria-label="Choose payment method">
+            <label class="payment-method-card active">
+              <input type="radio" name="paymentMethod" value="cod" checked />
+              <span class="payment-method-icon">₹</span>
+              <span class="payment-method-details">
+                <strong>Cash on Delivery (COD)</strong>
+                <small>Pay in cash upon doorstep arrival of your parcel.</small>
+              </span>
+              <em class="payment-badge-active">Available</em>
             </label>
-            <label class="address-default-label"><input type="checkbox" name="isDefault" /> Make this my default</label>
+
+            <label class="payment-method-card disabled">
+              <input type="radio" name="paymentMethod" value="razorpay" disabled />
+              <span class="payment-method-icon">💳</span>
+              <span class="payment-method-details">
+                <strong>Instant Online Payment</strong>
+                <small>UPI, Credit/Debit Cards, NetBanking (Gateway Integration In Progress)</small>
+              </span>
+              <em class="payment-badge-soon">Coming Soon</em>
+            </label>
           </div>
-        <div class="form-row">
-          <label>
-            Full Name
-            <input type="text" name="name" required />
-          </label>
         </div>
-        <div class="form-row">
-          <label>
-            Email
-            <input type="email" name="email" required />
-          </label>
+
+        <!-- Submit Button -->
+        <div class="checkout-submit-bar">
+          <button type="submit" class="btn-primary btn-block place-order-btn">Place Order Securely</button>
+          <p class="checkout-guarantee-note">
+            By placing your order, you agree to NIRALI’s Terms of Service and 5-Day Return Policy.
+          </p>
         </div>
-        <div class="form-row" id="checkout-phone-field">
-          <label>
-            Phone
-            <span class="checkout-phone-row">
-              <input type="tel" name="phone" required inputmode="tel" autocomplete="tel" maxlength="10" placeholder="10-digit mobile number" />
-            </span>
-          </label>
-        </div>
-        <div class="form-row">
-          <label>
-            House / Flat Number
-            <input type="text" name="houseNumber" required />
-          </label>
-        </div>
-        <div class="form-row">
-          <label>
-            Street / Area Address
-            <textarea name="address" rows="3" required></textarea>
-          </label>
-        </div>
-        <div class="form-row">
-          <label>
-            City / Village
-            <span class="city-autocomplete">
-              <input type="text" name="city" autocomplete="off" autocapitalize="words" aria-autocomplete="list" aria-controls="india-city-options" required />
-              <span class="city-suggestions" id="india-city-options" role="listbox" hidden></span>
-            </span>
-          </label>
-          <input type="hidden" name="taluka" value="-" />
-        </div>
-        <div class="form-row two-col">
-          <label>
-            District
-            <input type="text" name="district" required />
-          </label>
-          <label>
-            State
-            <input type="text" name="state" value="Gujarat" required />
-          </label>
-        </div>
-        <div class="form-row">
-          <label>
-            PIN Code
-            <input type="text" name="pincode" required inputmode="numeric" maxlength="6" pattern="[0-9]{6}" />
-          </label>
-        </div>
-        <p class="location-lookup-status" id="location-lookup-status" aria-live="polite" hidden></p>
-        <div class="address-form-actions">
-          <button type="button" class="btn-secondary" id="save-address">Change</button>
-          <button type="button" class="address-cancel-button" id="cancel-address">Cancel</button>
-        </div>
-        </div>
-        </section>
-        </div>
-        <button type="submit" class="btn-primary">Place Order</button>
+
       </form>
 
-      <div class="order-summary">
-        <h3>Order Summary</h3>
-        <div id="checkout-summary"></div>
-      </div>
+      <!-- Right Column: Order Summary -->
+      <aside class="order-summary-col">
+        <div class="order-summary-card">
+          <h3 class="summary-card-title">Order Summary</h3>
+          <div id="checkout-summary"></div>
+
+          <div class="checkout-security-badges">
+            <div class="sec-badge">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              <span>SSL 256-Bit Encrypted</span>
+            </div>
+            <div class="sec-badge">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Authentic Handloom Guarantee</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
     </div>
   </div>
 </div>

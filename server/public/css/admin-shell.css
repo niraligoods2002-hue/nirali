@@ -1,5 +1,6 @@
 #admin-root {
   min-height: 100vh;
-  background: #0f172a;
-  color: #f8fafc;
+  background: var(--bg-primary, #F8F6F0);
+  color: var(--text-dark, #242521);
+  font-family: var(--font-body, 'Manrope', sans-serif);
 }

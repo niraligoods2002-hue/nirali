@@ -1,80 +1,315 @@
-.about-page {
-  min-height: 100vh;
-  padding: 120px 0 80px;
+/* ==========================================================================
+   NIRALI - LUXURY ABOUT & POLICY STYLES
+   ========================================================================== */
+
+.about-editorial-page,
+.policy-editorial-page {
+  background-color: var(--bg-primary);
+  min-height: 80vh;
 }
 
-.about-header {
-  text-align: center;
-  margin-bottom: 60px;
+.about-editorial-header {
+  max-width: 760px;
+  margin: 0 auto clamp(3rem, 6vw, 4.5rem);
 }
 
-.about-header h1 {
-  color: var(--text);
+.about-hero-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: var(--color-primary);
+  margin-top: 0.4rem;
+  margin-bottom: 0.8rem;
 }
 
-.about-row {
+.about-hero-sub {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Split Rows */
+.about-split-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.15fr;
   align-items: center;
-  gap: 60px;
+  gap: clamp(2.5rem, 6vw, 5.5rem);
+  margin-bottom: clamp(4rem, 7vw, 6.5rem);
 }
 
-.about-row.reverse .about-image {
-  order: 2;
+.about-split-row.reverse {
+  grid-template-columns: 1.15fr 1fr;
 }
 
-.about-row.reverse .about-text {
-  order: 1;
-}
-
-.about-image {
-  border-radius: var(--radius-lg);
+.about-image-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-xs);
   overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-secondary);
 }
 
-.about-image img {
+.about-image-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.about-text h2 {
-  color: var(--text);
-  margin-bottom: 20px;
+.about-img-caption {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  background-color: rgba(248, 246, 240, 0.94);
+  backdrop-filter: blur(4px);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  border: 1px solid var(--border-subtle);
 }
 
-.about-text p {
-  color: var(--text-light);
-  margin-bottom: 16px;
-  line-height: 1.7;
+.about-text-content {
+  display: flex;
+  flex-direction: column;
 }
 
-@media (max-width: 900px) {
-  .about-row,
-  .about-row.reverse {
+.about-section-heading {
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  color: var(--color-primary);
+  margin-top: 0.3rem;
+  margin-bottom: 1.25rem;
+}
+
+.about-lead-paragraph {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.65;
+  margin-bottom: 1.2rem;
+}
+
+.about-text-content p {
+  font-size: 0.94rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 1.2rem;
+}
+
+.about-cta-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Values Grid */
+.about-values-section {
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: clamp(4rem, 7vw, 6rem) 0;
+  margin-bottom: clamp(4rem, 7vw, 6.5rem);
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.value-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 2.2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+}
+
+.value-num {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-gold);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.value-card h3 {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--color-primary);
+  margin-bottom: 0.75rem;
+}
+
+.value-card p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
+   Policy Layout
+   ========================================================================== */
+.policy-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+.policy-sidebar {
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 2rem 1.6rem;
+  position: sticky;
+  top: calc(var(--header-height) + 1.5rem);
+}
+
+.policy-sidebar-title {
+  font-size: 1.15rem;
+  color: var(--color-primary);
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 1.25rem;
+}
+
+.policy-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 2rem;
+}
+
+.policy-nav-list a {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  padding: 0.4rem 0;
+  display: block;
+  transition: all var(--transition-fast);
+}
+
+.policy-nav-list a:hover,
+.policy-nav-list a.active {
+  color: var(--color-primary);
+  font-weight: 600;
+  padding-left: 4px;
+}
+
+.policy-concierge-card {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.concierge-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-gold);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.policy-concierge-card h5 {
+  font-size: 1rem;
+  color: var(--color-primary);
+  margin-bottom: 0.35rem;
+}
+
+.policy-concierge-card p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+
+.policy-content-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: clamp(2rem, 5vw, 3.5rem);
+  box-shadow: var(--shadow-sm);
+}
+
+.policy-header {
+  margin-bottom: 2.5rem;
+}
+
+.policy-main-title {
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  color: var(--color-primary);
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.policy-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.policy-sections-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+}
+
+.policy-section-item {
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 1.8rem;
+}
+
+.policy-section-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.policy-item-heading {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  color: var(--color-primary);
+  margin-bottom: 0.6rem;
+}
+
+.policy-item-text {
+  font-size: 0.94rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
+   Responsive About
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .about-split-row,
+  .about-split-row.reverse {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .policy-layout {
     grid-template-columns: 1fr;
   }
 
-  .about-row.reverse .about-image,
-  .about-row.reverse .about-text {
-    order: unset;
-  }
-
-  .about-page {
-    padding: 100px 0 60px;
+  .policy-sidebar {
+    position: static;
   }
 }
 
-@media (max-width: 520px) {
-  .about-page {
-    padding: 92px 0 52px;
-  }
-
-  .about-header {
-    margin-bottom: 32px;
-  }
-
-  .about-row {
-    gap: 28px;
+@media (max-width: 600px) {
+  .values-grid {
+    grid-template-columns: 1fr;
   }
 }

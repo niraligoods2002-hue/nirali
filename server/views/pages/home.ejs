@@ -3,97 +3,281 @@
     ? (homeProducts || []).filter(product => product.bestseller || product.featured || product.newArrival)
     : (homeProducts || [])
   ).slice(0, 3);
-  const mobileTiles = Object.values((homeProducts || []).reduce((tiles, product) => {
-    const category = product.category || 'Saree';
-    if (!tiles[category]) {
-      tiles[category] = product;
+
+  const featuredCategories = [
+    { name: "Chiffon Saree", label: "Chiffon Sarees", desc: "Featherlight elegance with delicate zari borders", filter: "category:Chiffon Saree" },
+    { name: "Georgette Saree", label: "Georgette Sarees", desc: "Flowing silhouettes crafted for royal celebrations", filter: "category:Georgette Saree" },
+    { name: "Cotton Saree", label: "Cotton Sarees", desc: "Breathable handloom weaves for daytime sophistication", filter: "category:Cotton Saree" },
+    { name: "Designer Saree", label: "Designer Sarees", desc: "Statement couture pieces tailored for weddings", filter: "category:Designer Saree" },
+    { name: "Printed Saree", label: "Printed Sarees", desc: "Artisanal floral and geometric handprints", filter: "category:Printed Saree" },
+  ];
+
+  // Map each category to a representative product image
+  const categoryImages = {};
+  (homeProducts || []).forEach(p => {
+    if (p.category && !categoryImages[p.category] && p.image) {
+      categoryImages[p.category] = p.image;
     }
-    return tiles;
-  }, {}));
+  });
 %>
 
-<section class="hero masterpiece-hero" data-masterpiece-slider>
-  <div class="hero-promo-strip">Nirali Masterpiece Collection Is Live Now</div>
+<!-- Editorial Luxury Hero Section -->
+<section class="hero-editorial" data-masterpiece-slider>
+  <div class="hero-editorial-grid">
+    
+    <!-- Hero Text Content -->
+    <div class="hero-content-col">
+      <div class="hero-badge-wrap">
+        <span class="badge-gold">HERITAGE COUTURE</span>
+      </div>
+      <h1 class="hero-headline">Tradition, Refined.</h1>
+      <p class="hero-editorial-sub">
+        Timeless Indian elegance, thoughtfully curated.
+      </p>
 
-  <% if (mobileTiles.length) { %>
-    <div class="mobile-hero-tiles" aria-label="Featured categories">
-      <% mobileTiles.forEach((product) => { %>
-        <a href="/shop?filter=<%= encodeURIComponent(product.category) %>" class="mobile-hero-tile">
-          <img src="<%= product.image %>" alt="<%= product.category %>" />
-          <span><%= product.category %></span>
-        </a>
-      <% }) %>
+      <div class="hero-cta-group">
+        <a href="/shop" class="btn-primary">Explore the Collection</a>
+        <a href="/about" class="btn-secondary">The Atelier Story</a>
+      </div>
+
+      <!-- Quick Curations -->
+      <div class="hero-quick-curations">
+        <span class="curation-label">Explore Edits:</span>
+        <a href="/new-arrivals" class="curation-pill">New Arrivals ✦</a>
+        <a href="/best-sellers" class="curation-pill">Best Sellers ★</a>
+      </div>
+
+      <!-- Hero Assurance Points -->
+      <div class="hero-meta-strip">
+        <div class="meta-item">
+          <strong>100%</strong>
+          <span>Authentic Handlooms</span>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-item">
+          <strong>Pan-India</strong>
+          <span>Express Shipping</span>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-item">
+          <strong>Curated</strong>
+          <span>Artisanal Weaves</span>
+        </div>
+      </div>
     </div>
-  <% } %>
 
-  <% if (heroProducts.length) { %>
-    <div class="hero-slides">
-      <% heroProducts.forEach((product, index) => { %>
-        <article class="hero-slide <%= index === 0 ? 'active' : '' %>" data-slide="<%= index %>">
-          <div class="hero-backdrop" style="background-image: url('<%= product.image %>')"></div>
-          <div class="hero-content">
-            <span class="hero-tag"><%= product.bestseller ? 'MASTERPIECE PICK' : product.newArrival ? 'NEW MASTERPIECE' : 'FEATURED MASTERPIECE' %></span>
-            <h1><%= product.name %></h1>
-            <p>Handpicked sarees for weddings, festivals, receptions, and elegant special moments.</p>
-            <div class="hero-actions">
-              <a href="/products/<%= product.slug %>" class="hero-btn">View Details</a>
-              <a href="/shop" class="hero-btn-secondary">Shop Collection</a>
-            </div>
-            <div class="hero-product-meta">
-              <span><%= product.category %></span>
-              <strong>₹<%= Number(product.price || 0).toLocaleString('en-IN') %></strong>
-            </div>
+    <!-- Hero Visual Showcase -->
+    <div class="hero-visual-col">
+      <% if (heroProducts.length > 0) { %>
+        <div class="hero-showcase-frame">
+          <div class="hero-image-wrapper">
+            <img
+              src="<%= heroProducts[0].image %>"
+              alt="<%= heroProducts[0].name %>"
+              class="hero-featured-image"
+              id="hero-active-image"
+            />
           </div>
-          <a class="hero-product-showcase" href="/products/<%= product.slug %>" aria-label="View <%= product.name %>">
-            <img src="<%= product.image %>" alt="<%= product.name %>" />
-            <span>Limited Piece</span>
-          </a>
-        </article>
-      <% }) %>
+          <div class="hero-floating-card">
+            <span class="floating-tag">CURATOR'S CHOICE</span>
+            <h3 class="floating-title"><%= heroProducts[0].name %></h3>
+            <div class="floating-price">₹<%= Number(heroProducts[0].price || 0).toLocaleString('en-IN') %></div>
+            <a href="/products/<%= heroProducts[0].slug %>" class="btn-text-link">View Piece &rarr;</a>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="hero-showcase-frame">
+          <div class="hero-image-wrapper">
+            <img src="/images/products/saree1.jpg" alt="NIRALI Luxury Saree" class="hero-featured-image" />
+          </div>
+        </div>
+      <% } %>
     </div>
 
-    <% if (heroProducts.length > 1) { %>
-      <div class="hero-slider-arrows" aria-label="Masterpiece slider controls">
-        <button type="button" data-slide-prev aria-label="Previous masterpiece">←</button>
-        <button type="button" data-slide-next aria-label="Next masterpiece">→</button>
-      </div>
-      <div class="hero-slider-dots" aria-label="Masterpiece banner slides">
-        <% heroProducts.forEach((product, index) => { %>
-          <button type="button" class="<%= index === 0 ? 'active' : '' %>" data-slide-dot="<%= index %>" aria-label="Show <%= product.name %>"></button>
-        <% }) %>
-      </div>
-    <% } %>
-  <% } else { %>
-    <div class="hero-content hero-empty-content">
-      <span class="hero-tag">MASTERPIECE COLLECTION</span>
-      <h1>Grace Woven in Every Saree</h1>
-      <p>Discover premium sarees selected for weddings, festivals, receptions, and elegant occasions.</p>
-      <a href="/shop" class="hero-btn">Shop Now</a>
-    </div>
-  <% } %>
+  </div>
 </section>
 
-<section class="featured-section">
-  <div class="container">
-    <span class="section-tag">EXPLORE THE COLLECTION</span>
-    <h2>Shop by Category</h2>
-    <div id="featured-products-root" class="category-browser" data-products="<%= JSON.stringify(homeProducts) %>"></div>
-    <div class="text-center">
-      <a href="/shop" class="btn-secondary">View All Products</a>
+<!-- Brand Assurance Bar (Pillars of NIRALI) -->
+<section class="luxury-pillars-bar">
+  <div class="container pillars-container">
+    <div class="pillar-card">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </div>
+      <div class="pillar-info">
+        <h4>Heritage Weaves</h4>
+        <p>Woven by generational master artisans</p>
+      </div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+      </div>
+      <div class="pillar-info">
+        <h4>Complimentary Shipping</h4>
+        <p>Express delivery on orders over ₹2,999</p>
+      </div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+      </div>
+      <div class="pillar-info">
+        <h4>Bespoke Packaging</h4>
+        <p>Hand-packed in signature keepsake boxes</p>
+      </div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      </div>
+      <div class="pillar-info">
+        <h4>Secure Concierge</h4>
+        <p>Direct assistance via WhatsApp & phone</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="about-section">
-  <div class="container about-row">
-    <div class="about-image">
-      <img src="/images/about/about.jpg" alt="About Nirali Saree" />
+<!-- Shop By Category (Editorial Grid) -->
+<section class="section-categories section-padding">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-eyebrow">CURATED DRAPES</span>
+      <h2 class="section-title">Shop by Category</h2>
+      <p class="section-desc">Explore our signature fabric collections curated for weddings, festivals, and evening soirees.</p>
     </div>
-    <div class="about-text">
-      <span class="section-tag">OUR STORY</span>
-      <h2>Crafted with Passion</h2>
-      <p>At Nirali Saree, we believe every saree tells a story. Our collection brings together master artisans and contemporary designs to create pieces that are timeless yet modern.</p>
-      <a href="/about" class="btn-secondary">Read More</a>
+
+    <div class="categories-editorial-grid">
+      <% featuredCategories.forEach((cat, index) => { 
+        const catImg = categoryImages[cat.name] || `/images/products/saree${(index % 3) + 1}.jpg`;
+      %>
+        <a href="/shop?filter=<%= encodeURIComponent(cat.filter) %>" class="category-editorial-card <%= index === 0 ? 'category-card-large' : '' %>">
+          <div class="category-card-bg">
+            <img src="<%= catImg %>" alt="<%= cat.label %>" loading="lazy" />
+          </div>
+          <div class="category-card-overlay"></div>
+          <div class="category-card-text">
+            <span class="category-card-eyebrow">COLLECTION</span>
+            <h3 class="category-card-name"><%= cat.label %></h3>
+            <p class="category-card-desc"><%= cat.desc %></p>
+            <span class="category-explore-link">Explore Edit &rarr;</span>
+          </div>
+        </a>
+      <% }) %>
     </div>
+  </div>
+</section>
+
+<!-- Featured Products Stream (Mounted via React Widget) -->
+<section class="section-featured-products section-padding">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-eyebrow">THE NIRALI ATELIER</span>
+      <h2 class="section-title">Curated Masterpieces</h2>
+      <p class="section-desc">Every piece is thoughtfully woven with intricate zari and pure fabrics.</p>
+    </div>
+
+    <!-- React mount container -->
+    <div id="featured-products-root" data-products="<%= JSON.stringify(homeProducts) %>"></div>
+
+    <div class="section-footer-action text-center">
+      <a href="/shop" class="btn-primary">View Entire Collection</a>
+    </div>
+  </div>
+</section>
+
+<!-- Brand Story Editorial Section -->
+<section class="section-brand-story">
+  <div class="container brand-story-container">
+    <div class="brand-story-image-col">
+      <div class="story-image-frame">
+        <img src="/images/about/about.jpg" alt="Artisans at NIRALI Atelier" loading="lazy" />
+        <div class="story-image-badge">
+          <span>HERITAGE WEAVES &bull; ESTD. INDIA</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="brand-story-text-col">
+      <span class="section-eyebrow">OUR PHILOSOPHY</span>
+      <h2 class="story-title">Crafted with Passion</h2>
+      <div class="story-divider"></div>
+      <p class="story-lead">
+        At NIRALI, we believe every saree is an enduring canvas of poetry, culture, and feminine grace.
+      </p>
+      <p class="story-body">
+        Our journey began with a singular devotion: to preserve and elevate the sacred traditions of Indian handloom weaving for the modern connoisseur. From the delicate drape of whisper-soft chiffons to the timeless grandeur of pure Banarasi silks, our curations honor the generational master weavers whose hands breathe life into each thread.
+      </p>
+      <p class="story-body">
+        We marry historic motifs with contemporary color harmonies, creating timeless heirlooms designed to be cherished across generations.
+      </p>
+      <div class="story-actions">
+        <a href="/about" class="btn-secondary">Discover Our Heritage</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Client Reviews / Editorial Testimonials -->
+<section class="section-testimonials section-padding">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-eyebrow">PATRON DIARIES</span>
+      <h2 class="section-title">Words of Elegance</h2>
+      <p class="section-desc">Cherished moments and experiences shared by our valued clientele.</p>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote class="testimonial-quote">
+          “The saree arrived in the most exquisite keepsake box. The fabric feels like liquid silk and the craftsmanship exceeded every expectation. I received countless compliments at my sister’s wedding!”
+        </blockquote>
+        <div class="testimonial-author">
+          <strong>Priya Sharma</strong>
+          <span>Verified Patron &bull; New Delhi</span>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote class="testimonial-quote">
+          “NIRALI has become my sole destination for authentic handlooms. The chiffon drape is featherlight yet carries such a regal presence. Truly an heirloom piece.”
+        </blockquote>
+        <div class="testimonial-author">
+          <strong>Anjali Patel</strong>
+          <span>Verified Patron &bull; Ahmedabad</span>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote class="testimonial-quote">
+          “From ordering to doorstep delivery, the concierge team was phenomenal. The colors are rich, vibrant, and true to the photographs. Simply sublime.”
+        </blockquote>
+        <div class="testimonial-author">
+          <strong>Sneha Reddy</strong>
+          <span>Verified Patron &bull; Hyderabad</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonials-footer text-center">
+      <a href="/reviews" class="btn-text-link">Read All Patron Reviews &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter Subscription -->
+<section class="section-newsletter section-padding">
+  <div class="container text-center">
+    <span class="section-eyebrow">THE NIRALI CIRCLE</span>
+    <h2 class="section-title">Receive Private Previews</h2>
+    <p class="section-desc" style="max-width: 580px; margin: 0 auto 2rem;">Subscribe to enjoy bespoke curation announcements, styling notes, and invitations to upcoming heritage collections.</p>
+    <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thank you for joining the NIRALI Circle. Welcome to our private client registry.');">
+      <input type="email" placeholder="Enter your email address" class="newsletter-input" required />
+      <button type="submit" class="btn-primary">Join Concierge</button>
+    </form>
   </div>
 </section>

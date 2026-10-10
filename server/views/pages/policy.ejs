@@ -1,0 +1,75 @@
+<div class="policy-editorial-page section-padding">
+  <div class="container">
+    
+    <nav class="breadcrumbs" aria-label="Breadcrumbs">
+      <a href="/">Home</a>
+      <span class="separator">/</span>
+      <span>Client Services</span>
+      <span class="separator">/</span>
+      <span class="current"><%= policy.title %></span>
+    </nav>
+
+    <div class="policy-layout">
+      <!-- Sidebar Navigation -->
+      <aside class="policy-sidebar">
+        <h4 class="policy-sidebar-title">Client Services</h4>
+        <ul class="policy-nav-list">
+          <li>
+            <a href="/shipping-policy" class="<%= path === '/shipping-policy' ? 'active' : '' %>">
+              Shipping & Delivery
+            </a>
+          </li>
+          <li>
+            <a href="/return-policy" class="<%= path === '/return-policy' ? 'active' : '' %>">
+              Returns & Exchanges
+            </a>
+          </li>
+          <li>
+            <a href="/faq" class="<%= path === '/faq' ? 'active' : '' %>">
+              Frequently Asked Questions
+            </a>
+          </li>
+          <li>
+            <a href="/privacy-policy" class="<%= path === '/privacy-policy' ? 'active' : '' %>">
+              Privacy Policy
+            </a>
+          </li>
+          <li>
+            <a href="/terms" class="<%= path === '/terms' ? 'active' : '' %>">
+              Terms & Conditions
+            </a>
+          </li>
+        </ul>
+
+        <div class="policy-concierge-card">
+          <span class="concierge-tag">NEED ASSISTANCE?</span>
+          <h5>Boutique Concierge</h5>
+          <p>Our stylists are on hand to answer your queries.</p>
+          <a href="https://wa.me/917623857001" target="_blank" rel="noopener" class="btn-text-link">
+            WhatsApp Concierge &rarr;
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Policy Content -->
+      <article class="policy-content-card">
+        <div class="policy-header">
+          <span class="section-eyebrow">POLICIES & ASSURANCES</span>
+          <h1 class="policy-main-title"><%= policy.title %></h1>
+          <p class="policy-subtitle"><%= policy.subtitle %></p>
+          <div class="story-divider"></div>
+        </div>
+
+        <div class="policy-sections-body">
+          <% policy.sections.forEach((sec, idx) => { %>
+            <section class="policy-section-item">
+              <h3 class="policy-item-heading"><%= sec.heading %></h3>
+              <p class="policy-item-text"><%= sec.body %></p>
+            </section>
+          <% }) %>
+        </div>
+      </article>
+    </div>
+
+  </div>
+</div>
