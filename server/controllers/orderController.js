@@ -91,7 +91,7 @@ async function getCheckoutAmount(items) {
   }
 
   const productIds = [...new Set([...quantities.values()].map((variant) => variant.productId))];
-  const products = await Product.find({ _id: { $in: productIds }, stock: { $gt: 0 } });
+  const products = await Product.find({ _id: { $in: productIds }, stock: { $gt: 0 }, published: { $ne: false } });
   if (products.length !== productIds.length) {
     const error = new Error("One or more selected products are unavailable");
     error.status = 409;
@@ -281,7 +281,7 @@ exports.createOrder = async (req, res) => {
       }
     }
 
-    const products = await Product.find({ _id: { $in: [...requested.keys()] } });
+    const products = await Product.find({ _id: { $in: [...requested.keys()] }, published: { $ne: false } });
     if (products.length !== requested.size) return res.status(400).json({ message: "One or more products no longer exist" });
 
     const cleanItems = [];
@@ -300,7 +300,7 @@ exports.createOrder = async (req, res) => {
         for (const variant of productVariants) {
           const colorStockPath = `colorStock.${variant.color}`;
           const reservedProduct = await Product.findOneAndUpdate(
-            { _id: product._id, stock: { $gte: variant.quantity }, [colorStockPath]: { $gte: variant.quantity } },
+            { _id: product._id, stock: { $gte: variant.quantity }, published: { $ne: false }, [colorStockPath]: { $gte: variant.quantity } },
             { $inc: { stock: -variant.quantity, [colorStockPath]: -variant.quantity } },
             { returnDocument: "after" }
           );
@@ -313,7 +313,7 @@ exports.createOrder = async (req, res) => {
         }
       } else {
         const reservedProduct = await Product.findOneAndUpdate(
-          { _id: product._id, stock: { $gte: quantity } },
+          { _id: product._id, stock: { $gte: quantity }, published: { $ne: false } },
           { $inc: { stock: -quantity } },
           { returnDocument: "after" }
         );

@@ -57,7 +57,10 @@ test.describe('NIRALI Storefront E2E Tests', () => {
     const ticker = page.locator('.offers-ticker');
     await expect(hero).toBeVisible();
     await expect(hero.locator('.advert-slide.active')).toBeVisible();
-    await expect(hero.getByRole('link', { name: /Explore the Collection/ }).first()).toBeVisible();
+    const posterLink = hero.locator('.advert-poster-link').first();
+    await expect(posterLink).toBeVisible();
+    await expect(posterLink.locator('img')).toBeVisible();
+    expect(await posterLink.getAttribute('href')).toBeTruthy();
     await expect(ticker).toBeVisible();
     await expect(ticker).toContainText('Complimentary shipping on orders above ₹2,999');
 
@@ -158,7 +161,7 @@ test.describe('NIRALI Storefront E2E Tests', () => {
     await page.addInitScript(() => localStorage.setItem('nirali-theme', 'dark'));
     await page.goto('/');
     await expect(page.locator('#theme-toggle, #mobile-theme-toggle')).toHaveCount(0);
-    await expect(page.locator('.brand-logo img')).toHaveAttribute('src', '/images/branding/nirali-navbar-logo.png');
+    await expect(page.locator('.brand-logo img')).toHaveAttribute('src', '/images/branding/nirali-navbar-logo-gold.png');
 
     const colors = await page.evaluate(() => ({
       theme: document.documentElement.dataset.theme,

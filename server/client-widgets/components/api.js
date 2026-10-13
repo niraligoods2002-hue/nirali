@@ -70,29 +70,29 @@ export async function deleteUser(userId) {
 }
 
 export async function adminCreateProduct(productData) {
-  const { data } = await api.post("/products", productData);
+  const { data } = await api.post("/products", productData, { skipGlobalError: true });
   return data;
 }
 
 export async function adminFetchProducts() {
-  const { data } = await api.get("/products/admin/all");
+  const { data } = await api.get("/products/admin/all", { skipGlobalError: true });
   return data;
 }
 
 export async function uploadProductImage(imageFile) {
   const formData = new FormData();
   formData.append("image", imageFile);
-  const { data } = await api.post("/products/upload", formData);
+  const { data } = await api.post("/products/upload", formData, { skipGlobalError: true });
   return data;
 }
 
 export async function adminUpdateProduct(productId, productData) {
-  const { data } = await api.put(`/products/${productId}`, productData);
+  const { data } = await api.put(`/products/${productId}`, productData, { skipGlobalError: true });
   return data;
 }
 
 export async function adminDeleteProduct(productId) {
-  const { data } = await api.delete(`/products/${productId}`);
+  const { data } = await api.delete(`/products/${productId}`, { skipGlobalError: true });
   return data;
 }
 

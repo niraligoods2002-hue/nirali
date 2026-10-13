@@ -52,7 +52,7 @@ const createProduct = async (req, res) => {
 // GET /api/products
 const getAllProducts = async (_req, res) => {
   try {
-    const products = await Product.find({ stock: { $gt: 0 } }).sort({ createdAt: -1 });
+    const products = await Product.find({ stock: { $gt: 0 }, published: { $ne: false } }).sort({ createdAt: -1 });
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -71,7 +71,7 @@ const getAllProductsForAdmin = async (_req, res) => {
 // GET /api/products/:slug
 const getProductBySlug = async (req, res) => {
   try {
-    const product = await Product.findOne({ slug: req.params.slug, stock: { $gt: 0 } });
+    const product = await Product.findOne({ slug: req.params.slug, stock: { $gt: 0 }, published: { $ne: false } });
     if (!product) return res.status(404).json({ message: "Product not found" });
     res.json(product);
   } catch (error) {

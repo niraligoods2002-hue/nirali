@@ -18,7 +18,12 @@ const productSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
+      trim: true,
     },
+
+    collectionName: { type: String, trim: true, default: "" },
+    occasion: { type: String, trim: true, default: "" },
+    style: { type: String, trim: true, default: "" },
 
     description: {
       type: String,
@@ -90,6 +95,11 @@ const productSchema = new mongoose.Schema(
     newArrival: {
       type: Boolean,
       default: false,
+    },
+
+    published: {
+      type: Boolean,
+      default: true,
     },
 
     details: {

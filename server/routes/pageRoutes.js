@@ -23,6 +23,9 @@ function normalizeProduct(p) {
     slug: p.slug,
     name: p.name,
     category: p.category,
+    collectionName: p.collectionName || "",
+    occasion: p.occasion || "",
+    style: p.style || "",
     price: p.price,
     discountPrice: p.discountPrice,
     oldPrice: p.discountPrice || p.oldPrice,
@@ -39,6 +42,7 @@ function normalizeProduct(p) {
     stock: p.stock || 0,
     featured: p.featured,
     bestseller: p.bestseller,
+    published: p.published !== false,
     newArrival,
     details: p.details || {},
   };
@@ -51,7 +55,7 @@ function requireUserPage(req, res, next) {
 
 router.get("/", async (req, res) => {
   try {
-    const products = await Product.find({ stock: { $gt: 0 } }).limit(12);
+    const products = await Product.find({ stock: { $gt: 0 }, published: { $ne: false } }).limit(12);
     const homepageSettings = await HomepageSettings.findOne({ key: "homepage" }).lean();
     res.render("pages/home", {
       layout: "layouts/main",
@@ -86,7 +90,7 @@ router.get("/", async (req, res) => {
 
 router.get("/shop", async (req, res) => {
   try {
-    const products = await Product.find({ stock: { $gt: 0 } });
+    const products = await Product.find({ stock: { $gt: 0 }, published: { $ne: false } });
     res.render("pages/shop", {
       layout: "layouts/main",
       title: "Curated Sarees | NIRALI",
@@ -115,7 +119,7 @@ router.get("/shop", async (req, res) => {
 
 router.get("/best-sellers", async (req, res) => {
   try {
-    const products = await Product.find({ stock: { $gt: 0 } });
+    const products = await Product.find({ stock: { $gt: 0 }, published: { $ne: false } });
     res.render("pages/shop", {
       layout: "layouts/main",
       title: "Best Sellers | NIRALI Luxury Sarees",
@@ -134,7 +138,7 @@ router.get("/best-sellers", async (req, res) => {
 
 router.get("/new-arrivals", async (req, res) => {
   try {
-    const products = await Product.find({ stock: { $gt: 0 } }).sort({ createdAt: -1 });
+    const products = await Product.find({ stock: { $gt: 0 }, published: { $ne: false } }).sort({ createdAt: -1 });
     res.render("pages/shop", {
       layout: "layouts/main",
       title: "New Arrivals | NIRALI Luxury Sarees",
@@ -153,7 +157,7 @@ router.get("/new-arrivals", async (req, res) => {
 
 router.get("/products/:slug", async (req, res) => {
   try {
-    const product = await Product.findOne({ slug: req.params.slug, stock: { $gt: 0 } });
+    const product = await Product.findOne({ slug: req.params.slug, stock: { $gt: 0 }, published: { $ne: false } });
     if (!product) {
       return res.status(404).render("pages/shop", {
         layout: "layouts/main",
@@ -172,6 +176,7 @@ router.get("/products/:slug", async (req, res) => {
       _id: { $ne: product._id },
       category: product.category,
       stock: { $gt: 0 },
+      published: { $ne: false },
     }).limit(4);
 
     res.render("pages/product-detail", {
