@@ -20,28 +20,10 @@ function validUrl(value, { image = false } = {}) {
   try { return new URL(url).protocol === "https:"; } catch { return false; }
 }
 
-function defaultsFromEnvironment() {
-  const images = String(process.env.HOME_ADVERTISEMENT_IMAGES || "")
-    .split(",").map((image) => image.trim()).filter((image) => validUrl(image, { image: true })).slice(0, 5);
-  return {
-    slides: images.map((image, index) => ({
-      name: `NIRALI campaign advertisement ${index + 1}`,
-      eyebrow: "THE NIRALI FESTIVE EDIT",
-      title: "Celebrate in Heirloom Style",
-      description: "Discover handcrafted sarees made for the moments you will remember.",
-      image,
-      linkLabel: "Explore the Collection",
-      linkUrl: "/shop",
-      note: "Handpicked styles · Pan-India delivery",
-    })),
-    offers: DEFAULT_OFFERS,
-  };
-}
-
 router.get("/", async (_req, res, next) => {
   try {
     const settings = await HomepageSettings.findOne({ key: "homepage" }).lean();
-    res.json(settings ? { slides: settings.slides || [], offers: settings.offers?.length ? settings.offers : DEFAULT_OFFERS } : defaultsFromEnvironment());
+    res.json(settings ? { slides: settings.slides || [], offers: settings.offers?.length ? settings.offers : DEFAULT_OFFERS } : { slides: [], offers: DEFAULT_OFFERS });
   } catch (error) { next(error); }
 });
 
@@ -63,8 +45,8 @@ router.put("/", protect, adminOnly, async (req, res, next) => {
       note: cleanText(slide.note, 100),
     }));
     for (const slide of slides) {
-      if (!slide.title || !validUrl(slide.image, { image: true }) || !validUrl(slide.linkUrl)) {
-        return res.status(400).json({ message: "Each hero slide needs a title, a valid image URL, and a valid link (site path or HTTPS URL)." });
+      if (!validUrl(slide.image, { image: true }) || !validUrl(slide.linkUrl)) {
+        return res.status(400).json({ message: "Each hero slide needs a valid image URL and a destination (site path or HTTPS URL)." });
       }
     }
     const offers = rawOffers.map((offer) => cleanText(offer, 120)).filter(Boolean);

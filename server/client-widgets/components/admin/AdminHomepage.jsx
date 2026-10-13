@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchHomepageSettings, saveHomepageSettings, uploadProductImage } from "../api.js";
 
 const BLANK_SLIDE = {
-  name: "", eyebrow: "THE NIRALI FESTIVE EDIT", title: "", description: "", image: "",
-  linkLabel: "Explore the Collection", linkUrl: "/shop", note: "",
+  name: "", image: "", linkUrl: "/shop",
 };
 
 export default function AdminHomepage() {
@@ -64,7 +63,7 @@ export default function AdminHomepage() {
         <div>
           <span className="admin-eyebrow">STOREFRONT CONTENT</span>
           <h1>Homepage Promotions</h1>
-          <p>Manage the advertising carousel and scrolling offers shown to every visitor.</p>
+          <p>Upload hero posters, choose where each one links, and manage the scrolling offers.</p>
         </div>
       </header>
 
@@ -73,29 +72,20 @@ export default function AdminHomepage() {
       <form className="admin-form admin-homepage-form" onSubmit={save}>
         <section className="admin-panel-card">
           <div className="admin-panel-head">
-            <div><h2>Hero advertisements</h2><p>Add up to five campaign slides to the homepage carousel.</p></div>
+            <div><h2>Hero advertisements</h2><p>Add up to five image-only campaign posters. Each poster opens its own destination when clicked.</p></div>
             <button type="button" className="admin-action-btn-secondary" disabled={slides.length >= 5} onClick={() => setSlides((current) => [...current, { ...BLANK_SLIDE }])}>Add slide</button>
           </div>
-          {slides.length === 0 && <p className="admin-promo-empty">No custom hero slides yet. The homepage will show featured products until you add a campaign.</p>}
+          {slides.length === 0 && <p className="admin-promo-empty">No hero posters are published. Add an image and destination to show the carousel on the homepage.</p>}
           {slides.map((slide, index) => (
             <article className="admin-promo-slide" key={index}>
               <div className="admin-promo-slide-head"><h3>Slide {index + 1}</h3><button type="button" className="admin-promo-remove" onClick={() => setSlides((current) => current.filter((_, i) => i !== index))}>Remove</button></div>
-              <div className="admin-form-row">
-                <label>Campaign name<input value={slide.name || ""} onChange={(e) => changeSlide(index, "name", e.target.value)} placeholder="Festive edit" /></label>
-                <label>Eyebrow<input value={slide.eyebrow || ""} onChange={(e) => changeSlide(index, "eyebrow", e.target.value)} maxLength="60" /></label>
-              </div>
-              <label>Headline<input value={slide.title || ""} onChange={(e) => changeSlide(index, "title", e.target.value)} required maxLength="120" placeholder="Celebrate in Heirloom Style" /></label>
-              <label>Description<textarea rows="2" value={slide.description || ""} onChange={(e) => changeSlide(index, "description", e.target.value)} maxLength="240" /></label>
-              <div className="admin-form-row">
-                <label>Button text<input value={slide.linkLabel || ""} onChange={(e) => changeSlide(index, "linkLabel", e.target.value)} maxLength="50" /></label>
-                <label>Button destination<input value={slide.linkUrl || ""} onChange={(e) => changeSlide(index, "linkUrl", e.target.value)} required placeholder="/shop or https://..." /></label>
-              </div>
+              <label>Poster name / image description<input value={slide.name || ""} onChange={(e) => changeSlide(index, "name", e.target.value)} maxLength="100" placeholder="Example: Red embroidered saree collection" /></label>
               <div className="admin-form-row">
                 <label>Image URL<input value={slide.image || ""} onChange={(e) => changeSlide(index, "image", e.target.value)} required placeholder="Upload an image or paste an HTTPS URL" /></label>
-                <label>Upload campaign image<input type="file" accept="image/*" onChange={(e) => uploadImage(index, e.target.files?.[0])} disabled={uploading[index]} /><small className="admin-image-help">{uploading[index] ? "Uploading…" : "Use a wide banner image for best results."}</small></label>
+                <label>Upload hero poster<input type="file" accept="image/*" onChange={(e) => uploadImage(index, e.target.files?.[0])} disabled={uploading[index]} /><small className="admin-image-help">{uploading[index] ? "Uploading…" : "The uploaded poster is shown by itself and is clickable."}</small></label>
               </div>
               {slide.image && <img className="admin-promo-preview" src={slide.image} alt={`Preview of campaign slide ${index + 1}`} />}
-              <label>Small note below button<input value={slide.note || ""} onChange={(e) => changeSlide(index, "note", e.target.value)} maxLength="100" /></label>
+              <label>Image click destination<input value={slide.linkUrl || ""} onChange={(e) => changeSlide(index, "linkUrl", e.target.value)} required placeholder="/shop or https://..." /><small className="admin-image-help">Visitors go here when they click this poster. Use a site path or an HTTPS link.</small></label>
             </article>
           ))}
         </section>

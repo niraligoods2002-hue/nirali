@@ -1,12 +1,5 @@
 <%
-  const heroProducts = ((homeProducts || []).filter(product => product.bestseller || product.featured || product.newArrival).length
-    ? (homeProducts || []).filter(product => product.bestseller || product.featured || product.newArrival)
-    : (homeProducts || [])
-  ).slice(0, 3);
-
-  const advertisementSlides = (homeAdvertisementSlides || []).length ? homeAdvertisementSlides : heroProducts.length ? heroProducts : [
-    { name: "NIRALI Heritage Sarees", image: "/images/products/saree1.jpg", slug: "" },
-  ];
+  const advertisementSlides = (homeAdvertisementSlides || []).filter(slide => slide.image && slide.linkUrl);
 
   const featuredCategories = [
     { name: "Chiffon Saree", label: "Chiffon Sarees", desc: "Featherlight elegance with delicate zari borders", filter: "category:Chiffon Saree" },
@@ -25,24 +18,15 @@
   });
 %>
 
-<!-- Promotional hero: replace a slide image with campaign artwork when ready. -->
+<!-- Admin-managed image-only hero advertisements -->
+<% if (advertisementSlides.length) { %>
 <section class="advert-hero" data-masterpiece-slider aria-label="NIRALI seasonal advertisements">
   <div class="advert-slides">
     <% advertisementSlides.forEach((slide, index) => { %>
       <article class="advert-slide advert-poster advert-poster-<%= index % 5 %> <%= index === 0 ? 'active' : '' %>" data-slide aria-hidden="<%= index !== 0 %>">
-        <div class="advert-poster-ornament" aria-hidden="true"></div>
-        <div class="advert-copy">
-          <span class="advert-eyebrow"><%= slide.eyebrow || slide.category || 'THE NIRALI FESTIVE EDIT' %></span>
-          <h1 class="advert-title"><%= slide.title || slide.name || 'Celebrate in Heirloom Style' %></h1>
-          <p class="advert-description"><%= slide.description || 'Discover handcrafted sarees made for the moments you will remember.' %></p>
-          <a class="advert-cta" href="<%= slide.linkUrl || (slide.slug ? '/products/' + encodeURIComponent(slide.slug) : '/shop') %>"><%= slide.linkLabel || 'Explore the Collection' %> <span aria-hidden="true">→</span></a>
-          <span class="advert-note"><%= slide.note || 'Handpicked styles · Pan-India delivery' %></span>
-        </div>
-        <figure class="advert-artwork">
-          <span class="advert-artwork-frame" aria-hidden="true"></span>
-          <img class="advert-slide-image" src="<%= slide.image || '/images/products/saree1.jpg' %>" alt="<%= slide.name || slide.title || 'NIRALI campaign' %>" <%= index === 0 ? '' : 'loading="lazy"' %> />
-        </figure>
-        <span class="advert-slide-index"><%= String(index + 1).padStart(2, '0') %> / <%= String(advertisementSlides.length).padStart(2, '0') %></span>
+        <a class="advert-poster-link" href="<%= slide.linkUrl %>" aria-label="Open <%= slide.name || 'NIRALI campaign' %>">
+          <img class="advert-slide-image" src="<%= slide.image %>" alt="<%= slide.name || 'NIRALI campaign poster' %>" <%= index === 0 ? '' : 'loading="lazy"' %> />
+        </a>
       </article>
     <% }); %>
   </div>
@@ -57,6 +41,7 @@
     </div>
   <% } %>
 </section>
+<% } %>
 
 <!-- Continuously scrolling store offers -->
 <section class="offers-ticker" aria-label="Current store offers">

@@ -44,27 +44,6 @@ function normalizeProduct(p) {
   };
 }
 
-function getHomeAdvertisementSlides(products) {
-  const configuredImages = String(process.env.HOME_ADVERTISEMENT_IMAGES || "")
-    .split(",")
-    .map((image) => image.trim())
-    .filter((image) => image.startsWith("/images/") || image.startsWith("https://"))
-    .slice(0, 5);
-
-  if (configuredImages.length) {
-    return configuredImages.map((image, index) => ({
-      name: `NIRALI campaign advertisement ${index + 1}`,
-      image,
-      slug: "",
-    }));
-  }
-
-  return products
-    .filter((product) => product.bestseller || product.featured || product.newArrival)
-    .slice(0, 5)
-    .map(normalizeProduct);
-}
-
 function requireUserPage(req, res, next) {
   if (req.user) return next();
   return res.redirect(`/login?redirect=${encodeURIComponent(req.originalUrl)}`);
@@ -82,7 +61,7 @@ router.get("/", async (req, res) => {
       pageStyle: "home",
       widgetScript: "featured-products",
       homeProducts: products.map(normalizeProduct),
-      homeAdvertisementSlides: homepageSettings?.slides?.length ? homepageSettings.slides : getHomeAdvertisementSlides(products),
+      homeAdvertisementSlides: homepageSettings?.slides || [],
       homeOffers: homepageSettings?.offers?.length ? homepageSettings.offers : [
         "Complimentary shipping on orders above ₹2,999",
         "Explore new arrivals from our atelier",

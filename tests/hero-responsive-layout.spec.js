@@ -12,10 +12,16 @@ for (const viewport of viewports) {
     await page.goto("/");
 
     const hero = page.locator(".advert-hero");
+    if (!(await hero.count())) {
+      await expect(page.locator(".offers-ticker")).toBeVisible();
+      return;
+    }
     const slide = hero.locator(".advert-slide.active");
     await expect(slide).toBeVisible();
-    await expect(slide.locator(".advert-artwork img")).toBeVisible();
-    await expect(slide.locator(".advert-title")).toBeVisible();
+    const posterLink = slide.locator(".advert-poster-link");
+    const image = posterLink.locator("img");
+    await expect(image).toBeVisible();
+    await expect(posterLink).toHaveAttribute("href", /^(\/|https:\/\/)/);
 
     const layout = await slide.evaluate((element) => {
       const box = (selector) => {
@@ -25,26 +31,21 @@ for (const viewport of viewports) {
       const heroBox = document.querySelector(".advert-hero").getBoundingClientRect();
       return {
         hero: { top: heroBox.top, right: heroBox.right, bottom: heroBox.bottom, left: heroBox.left },
-        artwork: box(".advert-artwork"),
-        image: box(".advert-artwork img"),
-        copy: box(".advert-copy"),
+        link: box(".advert-poster-link"),
+        image: box(".advert-poster-link img"),
         viewportWidth: document.documentElement.clientWidth,
         documentWidth: document.documentElement.scrollWidth,
       };
     });
 
-    expect(layout.artwork.width).toBeGreaterThan(0);
+    expect(layout.link.width).toBeGreaterThan(0);
     expect(layout.image.height).toBeGreaterThan(0);
-    expect(layout.image.top).toBeGreaterThanOrEqual(layout.artwork.top);
-    expect(layout.image.right).toBeLessThanOrEqual(layout.artwork.right);
-    expect(layout.image.bottom).toBeLessThanOrEqual(layout.artwork.bottom);
+    expect(layout.image.top).toBeGreaterThanOrEqual(layout.hero.top);
+    expect(layout.image.right).toBeLessThanOrEqual(layout.hero.right);
+    expect(layout.image.bottom).toBeLessThanOrEqual(layout.hero.bottom);
     expect(layout.documentWidth).toBeLessThanOrEqual(layout.viewportWidth);
-    expect(layout.artwork.left).toBeGreaterThanOrEqual(layout.hero.left);
-    expect(layout.artwork.right).toBeLessThanOrEqual(layout.hero.right);
-    if (viewport.width <= 700) {
-      expect(layout.artwork.bottom).toBeLessThanOrEqual(layout.copy.top);
-      expect(layout.copy.bottom).toBeLessThanOrEqual(layout.hero.bottom - 45);
-    }
+    expect(layout.link.left).toBeGreaterThanOrEqual(layout.hero.left);
+    expect(layout.link.right).toBeLessThanOrEqual(layout.hero.right);
 
     await hero.screenshot({ path: testInfo.outputPath("hero.png") });
   });
