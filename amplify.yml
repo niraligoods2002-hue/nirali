@@ -1,0 +1,16 @@
+version: 1
+applications:
+  - appRoot: server
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm ci --omit=dev --workspaces=false
+        build:
+          commands:
+            - npm run build:production
+            - npm run build:amplify
+      artifacts:
+        baseDirectory: .amplify-hosting
+        files:
+          - '**/*'

@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "build:amplify": "node scripts/buildAmplifyBundle.js",
     "test": "node --test test/*.test.js",
     "build:widgets": "cd client-widgets && npm run build",
     "build:production": "npm --prefix client-widgets ci --include=dev && npm --prefix client-widgets run build",

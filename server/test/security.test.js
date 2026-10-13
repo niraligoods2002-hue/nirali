@@ -63,6 +63,7 @@ test("all admin client routes are served by the protected admin shell", () => {
     "/admin/orders",
     "/admin/reviews",
     "/admin/users",
+    "/admin/homepage",
   ]);
 });
 
