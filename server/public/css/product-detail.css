@@ -109,7 +109,7 @@
 
 .product-hero-title {
   font-size: clamp(2.2rem, 3.8vw, 3.2rem);
-  color: var(--color-primary);
+  color: var(--text-primary);
   line-height: 1.15;
   margin-top: 0.35rem;
   margin-bottom: 1.25rem;
@@ -129,9 +129,13 @@
   line-height: 1;
 }
 
+[data-theme="dark"] .product-current-price {
+  color: var(--color-gold);
+}
+
 .product-original-price {
   font-size: 1.15rem;
-  color: var(--text-light);
+  color: var(--text-secondary);
   text-decoration: line-through;
   margin-left: 0.6rem;
 }
@@ -171,6 +175,11 @@
 
 .variant-value {
   color: var(--color-primary);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .variant-value {
+  color: var(--color-gold);
 }
 
 .variant-stock-status {
@@ -186,7 +195,7 @@
 
 .variant-swatch-btn {
   padding: 0.6rem 1.2rem;
-  background-color: #FFFFFF;
+  background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xs);
   font-size: 0.82rem;
@@ -197,13 +206,20 @@
 }
 
 .variant-swatch-btn:hover {
-  border-color: var(--color-primary);
+  border-color: var(--color-gold);
 }
 
 .variant-swatch-btn.active {
   background-color: var(--color-primary);
   color: #FFFFFF;
   border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .variant-swatch-btn.active {
+  background-color: var(--color-gold);
+  color: #111512;
+  border-color: var(--color-gold);
+  font-weight: 600;
 }
 
 .variant-swatch-btn.out-of-stock {
@@ -222,7 +238,7 @@
 .quantity-stepper {
   display: inline-flex;
   align-items: center;
-  background-color: #FFFFFF;
+  background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xs);
   height: 48px;
@@ -235,13 +251,15 @@
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
-  color: var(--color-primary);
+  color: var(--text-primary);
   cursor: pointer;
   transition: background-color var(--transition-fast);
+  background: transparent;
+  border: none;
 }
 
 .stepper-btn:hover:not(:disabled) {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-secondary);
 }
 
 .stepper-btn:disabled {
@@ -263,11 +281,19 @@
   font-size: 0.85rem;
 }
 
+.product-buy-now-btn {
+  flex: 1;
+  height: 48px;
+  padding: 0 1.5rem;
+  font-size: 0.85rem;
+}
+
 .product-wishlist-toggle {
   width: 48px;
   height: 48px;
   border: 1px solid var(--border-subtle);
-  background-color: #FFFFFF;
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
   border-radius: var(--radius-xs);
   display: flex;
   align-items: center;
@@ -277,13 +303,22 @@
   transition: all var(--transition-fast);
 }
 
+.product-wishlist-toggle svg {
+  stroke: currentColor;
+}
+
 .product-wishlist-toggle:hover {
-  border-color: var(--color-primary);
+  border-color: var(--color-gold);
   background-color: var(--bg-secondary);
 }
 
+.product-wishlist-toggle.active {
+  color: #e11d48;
+}
+
 .product-wishlist-toggle.active svg {
-  fill: var(--color-primary);
+  fill: #e11d48;
+  stroke: #e11d48;
 }
 
 /* Trust Indicators Strip */
@@ -301,7 +336,7 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  color: var(--color-primary);
+  color: var(--text-primary);
 }
 
 .trust-card svg {
@@ -340,7 +375,7 @@
 .accordion-title {
   font-family: var(--font-serif);
   font-size: 1.25rem;
-  color: var(--color-primary);
+  color: var(--text-primary);
 }
 
 .accordion-icon {
@@ -432,7 +467,12 @@
   }
 
   .product-add-bag-btn {
-    width: 100%;
+    flex: 1 1 100%;
     order: 3;
+  }
+
+  .product-buy-now-btn {
+    flex: 1 1 100%;
+    order: 4;
   }
 }

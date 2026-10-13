@@ -165,14 +165,18 @@
               <em class="payment-badge-active">Available</em>
             </label>
 
-            <label class="payment-method-card disabled">
-              <input type="radio" name="paymentMethod" value="razorpay" disabled />
+            <label class="payment-method-card <%= razorpayEnabled ? '' : 'disabled' %>">
+              <input type="radio" name="paymentMethod" value="razorpay" <%= razorpayEnabled ? '' : 'disabled' %> />
               <span class="payment-method-icon">💳</span>
               <span class="payment-method-details">
                 <strong>Instant Online Payment</strong>
-                <small>UPI, Credit/Debit Cards, NetBanking (Gateway Integration In Progress)</small>
+                <small>UPI, Credit/Debit Cards, NetBanking (<%= razorpayEnabled ? 'Razorpay test mode' : 'Gateway Integration In Progress' %>)</small>
               </span>
-              <em class="payment-badge-soon">Coming Soon</em>
+              <% if (razorpayEnabled) { %>
+                <em class="payment-badge-active">Test Mode</em>
+              <% } else { %>
+                <em class="payment-badge-soon">Coming Soon</em>
+              <% } %>
             </label>
           </div>
         </div>
@@ -209,3 +213,6 @@
     </div>
   </div>
 </div>
+<% if (razorpayEnabled) { %>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<% } %>

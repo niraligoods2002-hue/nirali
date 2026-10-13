@@ -1,6 +1,7 @@
 const express = require("express");
 const Product = require("../models/Product");
 const Review = require("../models/Review");
+const HomepageSettings = require("../models/HomepageSettings");
 
 const router = express.Router();
 
@@ -43,6 +44,27 @@ function normalizeProduct(p) {
   };
 }
 
+function getHomeAdvertisementSlides(products) {
+  const configuredImages = String(process.env.HOME_ADVERTISEMENT_IMAGES || "")
+    .split(",")
+    .map((image) => image.trim())
+    .filter((image) => image.startsWith("/images/") || image.startsWith("https://"))
+    .slice(0, 5);
+
+  if (configuredImages.length) {
+    return configuredImages.map((image, index) => ({
+      name: `NIRALI campaign advertisement ${index + 1}`,
+      image,
+      slug: "",
+    }));
+  }
+
+  return products
+    .filter((product) => product.bestseller || product.featured || product.newArrival)
+    .slice(0, 5)
+    .map(normalizeProduct);
+}
+
 function requireUserPage(req, res, next) {
   if (req.user) return next();
   return res.redirect(`/login?redirect=${encodeURIComponent(req.originalUrl)}`);
@@ -51,6 +73,7 @@ function requireUserPage(req, res, next) {
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find({ stock: { $gt: 0 } }).limit(12);
+    const homepageSettings = await HomepageSettings.findOne({ key: "homepage" }).lean();
     res.render("pages/home", {
       layout: "layouts/main",
       title: "NIRALI | Luxury Indian Sarees & Heritage Fashion",
@@ -59,6 +82,13 @@ router.get("/", async (req, res) => {
       pageStyle: "home",
       widgetScript: "featured-products",
       homeProducts: products.map(normalizeProduct),
+      homeAdvertisementSlides: homepageSettings?.slides?.length ? homepageSettings.slides : getHomeAdvertisementSlides(products),
+      homeOffers: homepageSettings?.offers?.length ? homepageSettings.offers : [
+        "Complimentary shipping on orders above ₹2,999",
+        "Explore new arrivals from our atelier",
+        "Handcrafted heritage weaves, chosen for you",
+        "Enjoy our 5-day return and exchange promise",
+      ],
     });
   } catch (err) {
     res.render("pages/home", {
@@ -69,6 +99,8 @@ router.get("/", async (req, res) => {
       pageStyle: "home",
       widgetScript: "featured-products",
       homeProducts: [],
+      homeAdvertisementSlides: [],
+      homeOffers: ["Complimentary shipping on orders above ₹2,999", "Explore new arrivals from our atelier"],
     });
   }
 });
@@ -197,6 +229,7 @@ router.get("/checkout", requireUserPage, (req, res) => {
     user: req.user || null,
     pageStyle: "checkout",
     widgetScript: "cart-page",
+    razorpayEnabled: Boolean(process.env.RAZORPAY_KEY_ID?.startsWith("rzp_test_") && process.env.RAZORPAY_KEY_SECRET),
   });
 });
 
@@ -435,7 +468,7 @@ router.get(["/shipping-policy", "/return-policy", "/privacy-policy", "/terms", "
   });
 });
 
-router.get(["/admin", "/admin/products", "/admin/orders", "/admin/reviews", "/admin/users"], requireUserPage, (req, res) => {
+router.get(["/admin", "/admin/products", "/admin/orders", "/admin/reviews", "/admin/users", "/admin/homepage"], requireUserPage, (req, res) => {
   if (req.user.role !== "admin") return res.status(403).redirect("/");
   res.render("pages/admin", {
     layout: "layouts/admin",

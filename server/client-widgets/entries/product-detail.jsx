@@ -54,6 +54,29 @@ function ProductDetail() {
     }
   };
 
+  const handleBuyNow = () => {
+    const checkoutItem = {
+      id: product.id,
+      cartId: selectedColor ? `${product.id}:${selectedColor}` : product.id,
+      name: product.name,
+      slug: product.slug,
+      price: product.discountPrice || product.price,
+      image: product.image,
+      category: product.category,
+      color: selectedColor,
+      quantity,
+    };
+
+    sessionStorage.setItem("nirali_buy_now", JSON.stringify(checkoutItem));
+    sessionStorage.removeItem("nirali_buy_now_order_key");
+    if (!localStorage.getItem("token")) {
+      localStorage.setItem("redirectAfterLogin", "/checkout?mode=buy-now");
+      window.location.href = "/login?redirect=%2Fcheckout%3Fmode%3Dbuy-now";
+      return;
+    }
+    window.location.href = "/checkout?mode=buy-now";
+  };
+
   const handleToggleWishlist = () => {
     try {
       let wishlist = JSON.parse(
@@ -184,12 +207,21 @@ function ProductDetail() {
 
         <button
           type="button"
+          className="btn-secondary product-buy-now-btn"
+          onClick={handleBuyNow}
+          disabled={selectedColorStock <= 0}
+        >
+          Buy Now
+        </button>
+
+        <button
+          type="button"
           className={`product-wishlist-toggle ${isWishlisted ? "active" : ""}`}
           onClick={handleToggleWishlist}
           aria-label={isWishlisted ? "Remove from Wishlist" : "Save to Wishlist"}
           title={isWishlisted ? "Remove from Wishlist" : "Save to Wishlist"}
         >
-          <svg viewBox="0 0 24 24" width="20" height="20" fill={isWishlisted ? "#123D35" : "none"} stroke="#123D35" strokeWidth="1.8">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill={isWishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
         </button>

@@ -73,8 +73,17 @@ function UserDashboard() {
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
   const [noticeType, setNoticeType] = useState("success");
-  const [tab, setTab] = useState("overview");
   const [citySuggestions, setCitySuggestions] = useState([]);
+  const [tab, setTab] = useState(() => {
+    try {
+      const requestedTab = new URLSearchParams(window.location.search).get("tab");
+      if (requestedTab === "wishlist") return "wishlist";
+      if (requestedTab === "profile" || requestedTab === "addresses") return "profile";
+    } catch {
+      // fallback
+    }
+    return "orders";
+  });
 
   useEffect(() => {
     // Load wishlist from local storage
@@ -301,7 +310,6 @@ function UserDashboard() {
       {/* Navigation Tabs */}
       <nav className="account-luxury-tabs" role="tablist">
         {[
-          ["overview", "Overview"],
           ["orders", "Orders History"],
           ["profile", "Delivery Addresses"],
           ["wishlist", `Saved Pieces (${wishlist.length})`],
@@ -318,52 +326,7 @@ function UserDashboard() {
         ))}
       </nav>
 
-      {/* Tab 1: Overview */}
-      {tab === "overview" && (
-        <div className="account-tab-pane">
-          <div className="account-stats-row">
-            <article className="stat-card-luxury">
-              <span className="stat-label">Total Curations</span>
-              <strong className="stat-val">{stats.total}</strong>
-            </article>
-            <article className="stat-card-luxury">
-              <span className="stat-label">In Transit</span>
-              <strong className="stat-val">{stats.active}</strong>
-            </article>
-            <article className="stat-card-luxury">
-              <span className="stat-label">Delivered</span>
-              <strong className="stat-val">{stats.delivered}</strong>
-            </article>
-            <article className="stat-card-luxury">
-              <span className="stat-label">Collection Value</span>
-              <strong className="stat-val stat-val-gold">{money(stats.spent)}</strong>
-            </article>
-          </div>
-
-          <section className="account-card-panel">
-            <div className="panel-header-row">
-              <h3>Recent Orders</h3>
-              {orders.length > 0 && (
-                <button type="button" className="btn-text-link" onClick={() => setTab("orders")}>
-                  View All Orders &rarr;
-                </button>
-              )}
-            </div>
-
-            {orders.length ? (
-              <div className="orders-list">
-                {orders.slice(0, 3).map((order) => (
-                  <OrderCard order={order} compact key={order.id} />
-                ))}
-              </div>
-            ) : (
-              <EmptyOrders />
-            )}
-          </section>
-        </div>
-      )}
-
-      {/* Tab 2: Orders */}
+      {/* Tab 1: Orders */}
       {tab === "orders" && (
         <section className="account-card-panel">
           <div className="panel-header-row">

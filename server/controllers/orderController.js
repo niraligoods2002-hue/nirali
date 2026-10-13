@@ -2,6 +2,7 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 const Address = require("../models/Address");
 const mongoose = require("mongoose");
+const crypto = require("crypto");
 const { normalizeIndianPhone } = require("../utils/phone");
 const PDFDocument = require("pdfkit");
 const path = require("path");
@@ -26,11 +27,187 @@ function shapeOrder(order) {
     total: order.total,
     paymentMethod: order.paymentMethod,
     paymentStatus: order.paymentStatus,
+    razorpayPaymentId: order.razorpayPaymentId,
     status: order.status,
     createdAt: order.createdAt,
     user: order.user,
   };
 }
+
+function getRazorpayConfig() {
+  const keyId = process.env.RAZORPAY_KEY_ID || "";
+  const keySecret = process.env.RAZORPAY_KEY_SECRET || "";
+  if (!keyId.startsWith("rzp_test_") || !keySecret) {
+    const error = new Error("Razorpay test mode is not configured");
+    error.status = 503;
+    throw error;
+  }
+  return { keyId, keySecret };
+}
+
+async function razorpayRequest(endpoint, { method = "GET", body } = {}) {
+  const { keyId, keySecret } = getRazorpayConfig();
+  const response = await fetch(`https://api.razorpay.com/v1${endpoint}`, {
+    method,
+    headers: {
+      Authorization: `Basic ${Buffer.from(`${keyId}:${keySecret}`).toString("base64")}`,
+      ...(body ? { "Content-Type": "application/json" } : {}),
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(data.error?.description || "Razorpay could not process the payment request");
+    error.status = 502;
+    throw error;
+  }
+  return data;
+}
+
+async function getCheckoutAmount(items) {
+  if (!Array.isArray(items) || items.length === 0 || items.length > 50) {
+    const error = new Error("Checkout must contain between 1 and 50 products");
+    error.status = 400;
+    throw error;
+  }
+
+  const quantities = new Map();
+  for (const item of items) {
+    const productId = String(item.id || item.product || "");
+    const quantity = Number(item.quantity);
+    if (!mongoose.isValidObjectId(productId) || !Number.isInteger(quantity) || quantity < 1 || quantity > 10) {
+      const error = new Error("Cart contains an invalid product or quantity");
+      error.status = 400;
+      throw error;
+    }
+    const color = String(item.color || "").trim();
+    const key = `${productId}:${color}`;
+    quantities.set(key, { productId, color, quantity: (quantities.get(key)?.quantity || 0) + quantity });
+    if (quantities.get(key).quantity > 10) {
+      const error = new Error("Maximum quantity is 10 per color");
+      error.status = 400;
+      throw error;
+    }
+  }
+
+  const productIds = [...new Set([...quantities.values()].map((variant) => variant.productId))];
+  const products = await Product.find({ _id: { $in: productIds }, stock: { $gt: 0 } });
+  if (products.length !== productIds.length) {
+    const error = new Error("One or more selected products are unavailable");
+    error.status = 409;
+    throw error;
+  }
+
+  let subtotal = 0;
+  for (const variant of quantities.values()) {
+    const product = products.find((candidate) => String(candidate._id) === variant.productId);
+    if (product.colors?.length && !product.colors.includes(variant.color)) {
+      const error = new Error(`Select a valid color for ${product.name}`);
+      error.status = 400;
+      throw error;
+    }
+    if (product.colorStock?.has(variant.color) && product.colorStock.get(variant.color) < variant.quantity) {
+      const error = new Error(`${variant.color} is out of stock for ${product.name}`);
+      error.status = 409;
+      throw error;
+    }
+    subtotal += (product.discountPrice && product.discountPrice < product.price ? product.discountPrice : product.price) * variant.quantity;
+  }
+
+  const configuredShipping = Number(process.env.SHIPPING_FEE || 100);
+  const shipping = subtotal > 0 ? (Number.isFinite(configuredShipping) ? Math.max(0, configuredShipping) : 100) : 0;
+  return Math.round((subtotal + shipping) * 100);
+}
+
+exports.createRazorpayOrder = async (req, res) => {
+  try {
+    const { addressId, items, idempotencyKey } = req.body;
+    if (!mongoose.isValidObjectId(addressId)) return res.status(400).json({ message: "Select a valid delivery address" });
+    const address = await Address.findOne({ _id: addressId, user: req.user._id });
+    if (!address) return res.status(404).json({ message: "Selected delivery address was not found" });
+    if (!/^[A-Za-z0-9_-]{16,100}$/.test(String(idempotencyKey || ""))) {
+      return res.status(400).json({ message: "A valid idempotency key is required" });
+    }
+
+    const amount = await getCheckoutAmount(items);
+    const receipt = crypto.createHash("sha256").update(`${req.user._id}:${idempotencyKey}`).digest("hex").slice(0, 40);
+    const order = await razorpayRequest("/orders", {
+      method: "POST",
+      body: {
+        amount,
+        currency: "INR",
+        receipt,
+        notes: { user_id: String(req.user._id), idempotency_key: idempotencyKey },
+      },
+    });
+    res.status(201).json({ keyId: getRazorpayConfig().keyId, orderId: order.id, amount: order.amount, currency: order.currency });
+  } catch (error) {
+    res.status(error.status || 502).json({ message: error.status ? error.message : "Could not start Razorpay checkout" });
+  }
+};
+
+exports.verifyRazorpayPayment = async (req, res) => {
+  try {
+    const { addressId, items, idempotencyKey, razorpay_order_id: orderId, razorpay_payment_id: paymentId, razorpay_signature: signature } = req.body;
+    if (!orderId || !paymentId || !signature || !/^[A-Za-z0-9_-]{16,100}$/.test(String(idempotencyKey || ""))) {
+      return res.status(400).json({ message: "Payment verification details are incomplete" });
+    }
+
+    const providerOrder = await razorpayRequest(`/orders/${encodeURIComponent(orderId)}`);
+    if (providerOrder.notes?.user_id !== String(req.user._id) || providerOrder.notes?.idempotency_key !== idempotencyKey) {
+      return res.status(400).json({ message: "This payment does not match your checkout" });
+    }
+    const expectedAmount = await getCheckoutAmount(items);
+    if (providerOrder.currency !== "INR" || providerOrder.amount !== expectedAmount) {
+      return res.status(400).json({ message: "The payment amount does not match this order" });
+    }
+
+    const { keySecret } = getRazorpayConfig();
+    const expectedSignature = crypto.createHmac("sha256", keySecret).update(`${providerOrder.id}|${paymentId}`).digest("hex");
+    const expectedBuffer = Buffer.from(expectedSignature, "hex");
+    const suppliedBuffer = Buffer.from(String(signature), "hex");
+    if (expectedBuffer.length !== suppliedBuffer.length || !crypto.timingSafeEqual(expectedBuffer, suppliedBuffer)) {
+      return res.status(400).json({ message: "Razorpay payment signature could not be verified" });
+    }
+
+    let payment = await razorpayRequest(`/payments/${encodeURIComponent(paymentId)}`);
+    if (payment.order_id !== providerOrder.id) return res.status(400).json({ message: "Payment is linked to a different Razorpay order" });
+    if (payment.status === "authorized") {
+      payment = await razorpayRequest(`/payments/${encodeURIComponent(paymentId)}/capture`, {
+        method: "POST",
+        body: { amount: expectedAmount, currency: "INR" },
+      });
+    }
+    if (payment.status !== "captured") return res.status(400).json({ message: "Razorpay has not captured this payment yet" });
+
+    const originalBody = req.body;
+    req.body = { ...req.body, paymentMethod: "razorpay" };
+    req.razorpayVerified = true;
+    req.razorpayPaymentId = paymentId;
+    const orderResponse = {
+      statusCode: 200,
+      body: null,
+      status(code) { this.statusCode = code; return this; },
+      json(body) { this.body = body; return this; },
+    };
+    await exports.createOrder(req, orderResponse);
+    req.body = originalBody;
+    if (orderResponse.statusCode < 200 || orderResponse.statusCode >= 300) {
+      try {
+        await razorpayRequest(`/payments/${encodeURIComponent(paymentId)}/refund`, {
+          method: "POST",
+          body: { amount: expectedAmount },
+        });
+        return res.status(orderResponse.statusCode).json({ message: `${orderResponse.body?.message || "Order could not be created"}. The test payment has been refunded.` });
+      } catch {
+        return res.status(502).json({ message: "Payment succeeded but the order could not be created or refunded automatically. Contact support with your Razorpay payment ID." });
+      }
+    }
+    return res.status(orderResponse.statusCode).json(orderResponse.body);
+  } catch (error) {
+    res.status(error.status || 502).json({ message: error.status ? error.message : "Could not verify Razorpay payment" });
+  }
+};
 
 exports.createOrder = async (req, res) => {
   const reserved = [];
@@ -45,7 +222,9 @@ exports.createOrder = async (req, res) => {
       return res.status(400).json({ message: "A valid idempotency key is required" });
     }
     if (items.length > 50) return res.status(400).json({ message: "Too many cart items" });
-    if (paymentMethod !== "cod") return res.status(400).json({ message: "Only Cash on Delivery is currently available" });
+    if (paymentMethod !== "cod" && !(paymentMethod === "razorpay" && req.razorpayVerified === true && req.razorpayPaymentId)) {
+      return res.status(400).json({ message: "Select a supported payment method" });
+    }
 
     const existingOrder = await Order.findOne({ user: req.user._id, idempotencyKey });
     if (existingOrder) return res.status(200).json({ message: "Order already placed", duplicate: true, order: shapeOrder(existingOrder) });
@@ -154,7 +333,9 @@ exports.createOrder = async (req, res) => {
           image: product.images?.[0] || "/images/products/saree1.jpg",
           category: product.category,
           color: variant.color,
-          price: product.price,
+          price: product.discountPrice && product.discountPrice < product.price
+            ? product.discountPrice
+            : product.price,
           quantity: variant.quantity,
         });
       }
@@ -188,7 +369,8 @@ exports.createOrder = async (req, res) => {
       shipping: calculatedShipping,
       total: calculatedTotal,
       paymentMethod,
-      paymentStatus: "pending",
+      paymentStatus: paymentMethod === "razorpay" ? "paid" : "pending",
+      ...(paymentMethod === "razorpay" ? { razorpayPaymentId: req.razorpayPaymentId } : {}),
       status: "pending",
       auditLog: [{ actor: req.user._id, action: "order_created", to: { status: "pending" } }],
     });

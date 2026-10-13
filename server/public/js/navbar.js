@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const userBtn = document.getElementById('user-btn');
   const dropdown = document.getElementById('user-dropdown');
   const logoutBtns = document.querySelectorAll('#nav-logout, #mobile-logout');
-  const themeToggle = document.getElementById('theme-toggle');
   const searchToggle = document.getElementById('search-toggle');
   const headerSearch = document.getElementById('header-search');
   const searchInput = document.getElementById('header-search-input');
@@ -14,9 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const storedRedirect = localStorage.getItem('redirectAfterLogin');
     const authPages = new Set(['/login', '/signup', '/verify-email', '/forgot-password', '/reset-password']);
     const isSafeRedirect = (value) => {
-      if (!value || !value.startsWith('/') || value.startsWith('//')) return false;
+      if (!value || !value.startsWith('/') || value.startsWith('//') || value.includes('\\')) return false;
       try {
-        return !authPages.has(new URL(value, window.location.origin).pathname);
+        const target = new URL(value, window.location.origin);
+        return target.origin === window.location.origin && !authPages.has(target.pathname);
       } catch {
         return false;
       }
@@ -48,48 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         : `The server returned an unexpected response (${response.status}).`
     );
   };
-
-  const updateThemeIcons = (theme) => {
-    const isDark = theme === 'dark';
-    const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="theme-icon sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
-    const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="theme-icon moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
-
-    if (themeToggle) {
-      themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
-      themeToggle.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
-      themeToggle.innerHTML = isDark ? sunSvg : moonSvg;
-    }
-    const mobileThemeBtn = document.getElementById('mobile-theme-toggle');
-    if (mobileThemeBtn) {
-      mobileThemeBtn.innerHTML = isDark
-        ? '<span class="mobile-theme-icon-slot">☀</span><span class="theme-label-text">Light Mode</span>'
-        : '<span class="mobile-theme-icon-slot">🌙</span><span class="theme-label-text">Dark Mode</span>';
-    }
-  };
-
-  const applyTheme = (theme) => {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem('nirali-theme', theme);
-    updateThemeIcons(theme);
-  };
-
-  const initialTheme = localStorage.getItem('nirali-theme') || document.documentElement.dataset.theme || 'light';
-  applyTheme(initialTheme);
-
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-      applyTheme(nextTheme);
-    });
-  }
-
-  const mobileThemeBtn = document.getElementById('mobile-theme-toggle');
-  if (mobileThemeBtn) {
-    mobileThemeBtn.addEventListener('click', () => {
-      const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-      applyTheme(nextTheme);
-    });
-  }
 
   // Product search
   if (searchToggle && headerSearch && searchInput) {
@@ -270,10 +228,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Login form
   const loginForm = document.getElementById('login-form');
   if (loginForm) {
+    const status = document.getElementById('auth-status');
+    const submitButton = loginForm.querySelector('button[type="submit"]');
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
+      submitButton.disabled = true;
+      if (status) { status.className = 'auth-status'; status.textContent = 'Signing in...'; }
 
       try {
         const res = await fetch('/api/auth/login', {
@@ -297,7 +259,9 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('redirectAfterLogin');
         window.location.href = redirect;
       } catch (err) {
-        alert(err.message);
+        if (status) { status.className = 'auth-status error'; status.textContent = err.message; }
+      } finally {
+        submitButton.disabled = false;
       }
     });
   }
@@ -305,21 +269,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Signup form
   const signupForm = document.getElementById('signup-form');
   if (signupForm) {
+    const status = document.getElementById('auth-status');
+    const submitButton = signupForm.querySelector('button[type="submit"]');
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-
-      if (password !== confirmPassword) {
-        alert('Passwords do not match');
+      if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+        if (status) { status.className = 'auth-status error'; status.textContent = 'Password must contain at least 8 characters, including a letter and a number'; }
         return;
       }
-      if (password.length < 8) {
-        alert('Password must be at least 8 characters');
-        return;
-      }
+      submitButton.disabled = true;
+      if (status) { status.className = 'auth-status'; status.textContent = 'Creating your account...'; }
 
       try {
         const res = await fetch('/api/auth/register', {
@@ -340,7 +302,9 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('redirectAfterLogin');
         window.location.href = redirect;
       } catch (err) {
-        alert(err.message);
+        if (status) { status.className = 'auth-status error'; status.textContent = err.message; }
+      } finally {
+        submitButton.disabled = false;
       }
     });
   }
@@ -351,6 +315,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('verify-email');
     const otpInput = document.getElementById('verify-otp');
     const resendBtn = document.getElementById('resend-otp');
+    const verifyStatus = document.getElementById('verify-status');
+    const verifyButton = verifyEmailForm.querySelector('button[type="submit"]');
     const emailFromUrl = new URLSearchParams(window.location.search).get('email');
     emailInput.value = emailFromUrl || localStorage.getItem('pendingVerificationEmail') || '';
     let resendTimer;
@@ -378,6 +344,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     verifyEmailForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      verifyButton.disabled = true;
+      if (verifyStatus) { verifyStatus.className = 'auth-status'; verifyStatus.textContent = 'Verifying your email...'; }
 
       try {
         const res = await fetch('/api/auth/verify-email', {
@@ -398,11 +366,15 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('redirectAfterLogin');
         window.location.href = redirect;
       } catch (err) {
-        alert(err.message);
+        if (verifyStatus) { verifyStatus.className = 'auth-status error'; verifyStatus.textContent = err.message; }
+      } finally {
+        verifyButton.disabled = false;
       }
     });
 
     resendBtn?.addEventListener('click', async () => {
+      resendBtn.disabled = true;
+      if (verifyStatus) { verifyStatus.className = 'auth-status'; verifyStatus.textContent = 'Sending a new code...'; }
       try {
         const res = await fetch('/api/auth/resend-otp', {
           method: 'POST',
@@ -415,9 +387,10 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error(data.message || 'Could not resend OTP');
         }
         startResendCountdown(60);
-        alert(data.message || 'OTP sent');
+        if (verifyStatus) { verifyStatus.className = 'auth-status success'; verifyStatus.textContent = data.message || 'A new verification code was sent.'; }
       } catch (err) {
-        alert(err.message);
+        if (verifyStatus) { verifyStatus.className = 'auth-status error'; verifyStatus.textContent = err.message; }
+        if (Number(localStorage.getItem(otpCooldownKey(emailInput.value)) || 0) <= Date.now()) resendBtn.disabled = false;
       }
     });
   }
@@ -579,9 +552,11 @@ document.addEventListener('DOMContentLoaded', () => {
       activeSlide = index;
       slides.forEach((slide, slideIndex) => {
         slide.classList.toggle('active', slideIndex === activeSlide);
+        slide.setAttribute('aria-hidden', String(slideIndex !== activeSlide));
       });
       dots.forEach((dot, dotIndex) => {
         dot.classList.toggle('active', dotIndex === activeSlide);
+        dot.setAttribute('aria-current', String(dotIndex === activeSlide));
       });
     };
 

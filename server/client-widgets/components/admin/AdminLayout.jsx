@@ -32,6 +32,12 @@ const UsersIcon = () => (
   </svg>
 );
 
+const PromoIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5A1.5 1.5 0 014.5 6h15A1.5 1.5 0 0121 7.5v9a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 16.5v-9zM3 9h18M7.5 15h3" />
+  </svg>
+);
+
 const ArrowLeftIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -70,6 +76,7 @@ const SIDEBAR_LINKS = [
   { to: "/orders", label: "Client Orders", icon: OrdersIcon },
   { to: "/reviews", label: "Testimonials", icon: ReviewsIcon },
   { to: "/users", label: "Patron Accounts", icon: UsersIcon },
+  { to: "/homepage", label: "Homepage Promotions", icon: PromoIcon },
 ];
 
 export default function AdminLayout({ user }) {
@@ -116,7 +123,7 @@ export default function AdminLayout({ user }) {
           <a href="/" className="admin-brand-link">
             <div className="admin-brand-logo-wrap">
               <img
-                src="/images/nirali-logo-dark.png"
+                src="/images/branding/nirali-navbar-logo-gold.png"
                 alt="NIRALI"
                 className="admin-brand-logo"
               />

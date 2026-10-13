@@ -4,6 +4,10 @@
     : (homeProducts || [])
   ).slice(0, 3);
 
+  const advertisementSlides = (homeAdvertisementSlides || []).length ? homeAdvertisementSlides : heroProducts.length ? heroProducts : [
+    { name: "NIRALI Heritage Sarees", image: "/images/products/saree1.jpg", slug: "" },
+  ];
+
   const featuredCategories = [
     { name: "Chiffon Saree", label: "Chiffon Sarees", desc: "Featherlight elegance with delicate zari borders", filter: "category:Chiffon Saree" },
     { name: "Georgette Saree", label: "Georgette Sarees", desc: "Flowing silhouettes crafted for royal celebrations", filter: "category:Georgette Saree" },
@@ -21,79 +25,52 @@
   });
 %>
 
-<!-- Editorial Luxury Hero Section -->
-<section class="hero-editorial" data-masterpiece-slider>
-  <div class="hero-editorial-grid">
-    
-    <!-- Hero Text Content -->
-    <div class="hero-content-col">
-      <div class="hero-badge-wrap">
-        <span class="badge-gold">HERITAGE COUTURE</span>
-      </div>
-      <h1 class="hero-headline">Tradition, Refined.</h1>
-      <p class="hero-editorial-sub">
-        Timeless Indian elegance, thoughtfully curated.
-      </p>
-
-      <div class="hero-cta-group">
-        <a href="/shop" class="btn-primary">Explore the Collection</a>
-        <a href="/about" class="btn-secondary">The Atelier Story</a>
-      </div>
-
-      <!-- Quick Curations -->
-      <div class="hero-quick-curations">
-        <span class="curation-label">Explore Edits:</span>
-        <a href="/new-arrivals" class="curation-pill">New Arrivals ✦</a>
-        <a href="/best-sellers" class="curation-pill">Best Sellers ★</a>
-      </div>
-
-      <!-- Hero Assurance Points -->
-      <div class="hero-meta-strip">
-        <div class="meta-item">
-          <strong>100%</strong>
-          <span>Authentic Handlooms</span>
+<!-- Promotional hero: replace a slide image with campaign artwork when ready. -->
+<section class="advert-hero" data-masterpiece-slider aria-label="NIRALI seasonal advertisements">
+  <div class="advert-slides">
+    <% advertisementSlides.forEach((slide, index) => { %>
+      <article class="advert-slide advert-poster advert-poster-<%= index % 5 %> <%= index === 0 ? 'active' : '' %>" data-slide aria-hidden="<%= index !== 0 %>">
+        <div class="advert-poster-ornament" aria-hidden="true"></div>
+        <div class="advert-copy">
+          <span class="advert-eyebrow"><%= slide.eyebrow || slide.category || 'THE NIRALI FESTIVE EDIT' %></span>
+          <h1 class="advert-title"><%= slide.title || slide.name || 'Celebrate in Heirloom Style' %></h1>
+          <p class="advert-description"><%= slide.description || 'Discover handcrafted sarees made for the moments you will remember.' %></p>
+          <a class="advert-cta" href="<%= slide.linkUrl || (slide.slug ? '/products/' + encodeURIComponent(slide.slug) : '/shop') %>"><%= slide.linkLabel || 'Explore the Collection' %> <span aria-hidden="true">→</span></a>
+          <span class="advert-note"><%= slide.note || 'Handpicked styles · Pan-India delivery' %></span>
         </div>
-        <div class="meta-divider"></div>
-        <div class="meta-item">
-          <strong>Pan-India</strong>
-          <span>Express Shipping</span>
-        </div>
-        <div class="meta-divider"></div>
-        <div class="meta-item">
-          <strong>Curated</strong>
-          <span>Artisanal Weaves</span>
-        </div>
-      </div>
+        <figure class="advert-artwork">
+          <span class="advert-artwork-frame" aria-hidden="true"></span>
+          <img class="advert-slide-image" src="<%= slide.image || '/images/products/saree1.jpg' %>" alt="<%= slide.name || slide.title || 'NIRALI campaign' %>" <%= index === 0 ? '' : 'loading="lazy"' %> />
+        </figure>
+        <span class="advert-slide-index"><%= String(index + 1).padStart(2, '0') %> / <%= String(advertisementSlides.length).padStart(2, '0') %></span>
+      </article>
+    <% }); %>
+  </div>
+
+  <% if (advertisementSlides.length > 1) { %>
+    <button type="button" class="advert-arrow advert-arrow-prev" data-slide-prev aria-label="Previous advertisement">‹</button>
+    <button type="button" class="advert-arrow advert-arrow-next" data-slide-next aria-label="Next advertisement">›</button>
+    <div class="advert-dots" role="group" aria-label="Choose advertisement">
+      <% advertisementSlides.forEach((slide, index) => { %>
+        <button type="button" class="advert-dot <%= index === 0 ? 'active' : '' %>" data-slide-dot="<%= index %>" aria-label="Show advertisement <%= index + 1 %>" aria-current="<%= index === 0 ? 'true' : 'false' %>"></button>
+      <% }); %>
     </div>
+  <% } %>
+</section>
 
-    <!-- Hero Visual Showcase -->
-    <div class="hero-visual-col">
-      <% if (heroProducts.length > 0) { %>
-        <div class="hero-showcase-frame">
-          <div class="hero-image-wrapper">
-            <img
-              src="<%= heroProducts[0].image %>"
-              alt="<%= heroProducts[0].name %>"
-              class="hero-featured-image"
-              id="hero-active-image"
-            />
-          </div>
-          <div class="hero-floating-card">
-            <span class="floating-tag">CURATOR'S CHOICE</span>
-            <h3 class="floating-title"><%= heroProducts[0].name %></h3>
-            <div class="floating-price">₹<%= Number(heroProducts[0].price || 0).toLocaleString('en-IN') %></div>
-            <a href="/products/<%= heroProducts[0].slug %>" class="btn-text-link">View Piece &rarr;</a>
-          </div>
+<!-- Continuously scrolling store offers -->
+<section class="offers-ticker" aria-label="Current store offers">
+  <span class="offers-ticker-label">NIRALI OFFERS</span>
+  <div class="offers-ticker-window">
+    <div class="offers-ticker-track">
+      <% [0, 1].forEach((copyIndex) => { %>
+        <div class="offers-ticker-group" aria-hidden="<%= copyIndex === 1 ? 'true' : 'false' %>">
+          <% (homeOffers || ['Complimentary shipping on orders above ₹2,999']).forEach((offer) => { %>
+            <span><%= offer %></span><i>✦</i>
+          <% }); %>
         </div>
-      <% } else { %>
-        <div class="hero-showcase-frame">
-          <div class="hero-image-wrapper">
-            <img src="/images/products/saree1.jpg" alt="NIRALI Luxury Saree" class="hero-featured-image" />
-          </div>
-        </div>
-      <% } %>
+      <% }); %>
     </div>
-
   </div>
 </section>
 

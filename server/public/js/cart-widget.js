@@ -63,6 +63,25 @@ function getCartTotals() {
   return { subtotal, shipping, total, cart };
 }
 
+function getCheckoutTotals() {
+  const isBuyNow = new URLSearchParams(window.location.search).get('mode') === 'buy-now';
+  if (isBuyNow) {
+    try {
+      const item = JSON.parse(sessionStorage.getItem('nirali_buy_now') || 'null');
+      if (item && item.id && Number(item.price) > 0 && Number(item.quantity) > 0) {
+        const cart = [item];
+        const subtotal = Number(item.price) * Number(item.quantity);
+        const shipping = subtotal > 0 ? 100 : 0;
+        return { subtotal, shipping, total: subtotal + shipping, cart };
+      }
+    } catch {
+      // An invalid direct-purchase payload must not turn into a cart checkout.
+    }
+    return { subtotal: 0, shipping: 0, total: 0, cart: [] };
+  }
+  return getCartTotals();
+}
+
 // Expose globally
 window.LuxoraCart = {
   getCart,
@@ -71,5 +90,6 @@ window.LuxoraCart = {
   updateQuantity,
   removeFromCart,
   clearCart,
-  getCartTotals
+  getCartTotals,
+  getCheckoutTotals,
 };

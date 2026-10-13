@@ -100,9 +100,9 @@
 }
 
 .admin-brand-logo {
-  height: 38px;
+  height: 48px;
   width: auto;
-  max-width: 130px;
+  max-width: 180px;
   object-fit: contain;
 }
 
@@ -1365,6 +1365,31 @@
   margin-top: 12px;
   border-top: 1px solid var(--admin-border-subtle);
   padding-top: 20px;
+}
+
+.admin-homepage-form { gap: 24px; }
+.admin-promo-notice {
+  margin: 0 0 20px; padding: 13px 16px; border: 1px solid var(--admin-border);
+  border-radius: 6px; background: var(--admin-card-bg); color: var(--admin-text-dark); font-size: 13px;
+}
+.admin-promo-slide { padding: 24px 0; border-top: 1px solid var(--admin-border-subtle); }
+.admin-promo-slide-head, .admin-promo-offer, .admin-promo-save-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.admin-promo-slide-head { margin-bottom: 20px; }
+.admin-promo-slide-head h3 { margin: 0; font-family: var(--admin-font-serif); font-size: 20px; }
+.admin-promo-remove { flex: 0 0 auto; border: 0; background: transparent; color: var(--admin-danger); cursor: pointer; font: inherit; font-size: 12px; font-weight: 700; }
+.admin-promo-preview { display: block; width: min(100%, 560px); max-height: 220px; margin: 14px 0 4px; border-radius: 6px; object-fit: cover; background: var(--admin-canvas-bg); }
+.admin-promo-empty { color: var(--admin-text-muted); font-size: 13px; }
+.admin-promo-offers { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+.admin-promo-offer label { flex: 1; }
+.admin-promo-save-row { border-top: 1px solid var(--admin-border); padding-top: 20px; }
+.admin-promo-save-row span { color: var(--admin-text-muted); font-size: 12px; }
+.admin-promo-save-row .admin-save-btn { padding: 12px 22px; }
+
+@media (max-width: 680px) {
+  .admin-promo-offer, .admin-promo-save-row { align-items: stretch; flex-direction: column; }
+  .admin-promo-save-row .admin-save-btn { width: 100%; }
 }
 
 .admin-cancel-btn {

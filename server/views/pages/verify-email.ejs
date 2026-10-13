@@ -13,14 +13,20 @@
       <p class="auth-subtitle">A verification code has been dispatched to your email address.</p>
     </div>
 
-    <form class="auth-form" id="verify-form">
+    <form class="auth-form" id="verify-email-form">
       <div class="form-group">
-        <label for="otp" class="form-label">Verification OTP</label>
-        <input type="text" name="otp" id="otp" class="form-input" required maxlength="6" placeholder="6-digit code" />
+        <label for="verify-email" class="form-label">Email Address</label>
+        <input type="email" name="email" id="verify-email" class="form-input" required autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <label for="verify-otp" class="form-label">Verification OTP</label>
+        <input type="text" name="otp" id="verify-otp" class="form-input" required minlength="6" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" autocomplete="one-time-code" placeholder="6-digit code" />
       </div>
 
       <button type="submit" class="btn-primary btn-block auth-submit-btn">Verify & Continue</button>
-      <p class="auth-status" id="verify-status" role="status"></p>
+      <button type="button" class="btn-secondary btn-block" id="resend-otp" style="margin-top: 10px;">Resend OTP</button>
+      <p class="auth-status" id="verify-status" role="status" aria-live="polite"></p>
 
       <div class="auth-footer-nav text-center">
         <a href="/login" class="btn-text-link">&larr; Return to Sign In</a>

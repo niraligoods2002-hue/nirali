@@ -15,6 +15,7 @@ const reviewRoutes = require("./routes/api/reviewRoutes");
 const addressRoutes = require("./routes/api/addressRoutes");
 const expressLayouts = require("express-ejs-layouts");
 const pageRoutes = require("./routes/pageRoutes");
+const homepageRoutes = require("./routes/api/homepageRoutes");
 const { attachUser } = require("./middleware/authMiddleware");
 
 const app = express();
@@ -59,6 +60,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // API Routes
 app.use("/api/products", productRoutes);
+app.use("/api/homepage", homepageRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);

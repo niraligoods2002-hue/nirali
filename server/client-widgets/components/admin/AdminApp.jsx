@@ -6,6 +6,7 @@ import AdminProducts from "./AdminProducts.jsx";
 import AdminOrders from "./AdminOrders.jsx";
 import AdminReviews from "./AdminReviews.jsx";
 import AdminUsers from "./AdminUsers.jsx";
+import AdminHomepage from "./AdminHomepage.jsx";
 import { getProfile } from "../api.js";
 
 export default function AdminApp() {
@@ -51,6 +52,7 @@ export default function AdminApp() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="reviews" element={<AdminReviews />} />
           <Route path="users" element={<AdminUsers currentUser={user} />} />
+          <Route path="homepage" element={<AdminHomepage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

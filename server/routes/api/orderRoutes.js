@@ -2,6 +2,8 @@ const router = require("express").Router();
 
 const {
   createOrder,
+  createRazorpayOrder,
+  verifyRazorpayPayment,
   getMyOrders,
   getAllOrders,
   updateOrderStatus,
@@ -21,6 +23,8 @@ router.get("/location/city/:city", protect, locationLimiter, lookupCity);
 router.get("/location/:pincode", protect, locationLimiter, lookupPincode);
 router.get("/checkout-details", protect, getCheckoutDetails);
 router.put("/checkout-details", protect, updateCheckoutDetails);
+router.post("/razorpay/order", protect, orderLimiter, createRazorpayOrder);
+router.post("/razorpay/verify", protect, orderLimiter, verifyRazorpayPayment);
 router.post("/", protect, orderLimiter, createOrder);
 router.get("/my", protect, getMyOrders);
 router.get("/", protect, adminOnly, getAllOrders);

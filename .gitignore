@@ -9,3 +9,11 @@
 server/tmp/
 server/cloudflared-windows-amd64.exe
 *.log
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

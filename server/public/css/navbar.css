@@ -8,7 +8,7 @@
    1. ANNOUNCEMENT BAR
    -------------------------------------------------------------------------- */
 .announcement-bar {
-  background-color: var(--color-primary, #123D35);
+  background-color: #171614;
   color: #FFFFFF;
   font-family: var(--font-sans, 'Manrope', sans-serif);
   font-size: 0.72rem;
@@ -17,7 +17,7 @@
   text-transform: uppercase;
   text-align: center;
   padding: 0.55rem 1.25rem;
-  border-bottom: 1px solid rgba(184, 154, 98, 0.25);
+  border-bottom: 1px solid rgba(214, 183, 113, 0.3);
   position: relative;
   z-index: 105;
   transition: background-color var(--transition-fast, 0.2s ease), color var(--transition-fast, 0.2s ease);
@@ -50,10 +50,10 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: rgba(248, 246, 240, 0.96);
+  background-color: rgba(23, 22, 20, 0.97);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border-subtle, #EFE9DE);
+  border-bottom: 1px solid rgba(214, 183, 113, 0.28);
   z-index: 100;
   transition: background-color var(--transition-fast, 0.2s ease), border-color var(--transition-fast, 0.2s ease);
 }
@@ -90,9 +90,9 @@
 }
 
 .brand-logo-img {
-  height: 48px;
+  height: 68px;
   width: auto;
-  max-width: 220px;
+  max-width: 250px;
   object-fit: contain;
   transition: transform var(--transition-fast, 0.2s ease);
 }
@@ -118,7 +118,7 @@
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-primary, #242521);
+  color: #F8F6F0;
   text-decoration: none;
   position: relative;
   padding: 0.6rem 0;
@@ -149,7 +149,7 @@
 
 .nav-link:hover,
 .nav-link.active {
-  color: var(--color-gold, #B89A62);
+  color: #D8B66C;
 }
 
 .nav-link:hover::after,
@@ -475,7 +475,7 @@
   justify-content: center;
   width: 38px;
   height: 38px;
-  color: var(--text-primary, #242521);
+  color: #F8F6F0;
   border-radius: var(--radius-full, 999px);
   transition: all var(--transition-fast, 0.2s ease);
   cursor: pointer;
@@ -484,8 +484,8 @@
 }
 
 .icon-btn:hover {
-  color: var(--color-gold, #B89A62);
-  background-color: var(--bg-secondary, #EFE9DE);
+  color: #D8B66C;
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .icon-btn:hover {
@@ -493,18 +493,6 @@
 }
 
 /* Theme Toggle Button */
-.theme-toggle-btn {
-  color: var(--color-gold, #B89A62);
-}
-
-.theme-toggle-btn svg {
-  transition: transform 0.3s ease;
-}
-
-.theme-toggle-btn:hover svg {
-  transform: rotate(20deg);
-}
-
 /* Expandable Search Input */
 .header-search {
   position: absolute;
@@ -587,8 +575,8 @@
 .avatar {
   width: 32px;
   height: 32px;
-  background-color: var(--color-primary, #123D35);
-  color: #FFFFFF;
+  background-color: #D8B66C;
+  color: #171614;
   border-radius: var(--radius-full, 999px);
   display: flex;
   align-items: center;
@@ -705,15 +693,15 @@
   position: relative;
   width: 38px;
   height: 38px;
-  color: var(--text-primary, #242521);
+  color: #F8F6F0;
   border-radius: var(--radius-full, 999px);
   text-decoration: none;
   transition: all var(--transition-fast, 0.2s ease);
 }
 
 .cart-btn:hover {
-  color: var(--color-gold, #B89A62);
-  background-color: var(--bg-secondary, #EFE9DE);
+  color: #D8B66C;
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="dark"] .cart-btn:hover {
@@ -727,8 +715,8 @@
   min-width: 17px;
   height: 17px;
   padding: 0 4px;
-  background-color: var(--color-primary, #123D35);
-  color: #FFFFFF;
+  background-color: #D8B66C;
+  color: #171614;
   border-radius: var(--radius-full, 999px);
   font-family: var(--font-sans, 'Manrope', sans-serif);
   font-size: 0.62rem;
@@ -751,7 +739,7 @@
   justify-content: center;
   width: 38px;
   height: 38px;
-  color: var(--text-primary, #242521);
+  color: #F8F6F0;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -814,7 +802,7 @@
 }
 
 .mobile-drawer-logo img {
-  height: 40px;
+  height: 52px;
   width: auto;
   object-fit: contain;
 }
@@ -956,39 +944,6 @@
   border-top-color: #2D362F;
 }
 
-.mobile-theme-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.mobile-theme-title {
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-secondary, #77766F);
-}
-
-.mobile-theme-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0.45rem 1rem;
-  border-radius: var(--radius-xs, 4px);
-  border: 1px solid var(--border-subtle, #EFE9DE);
-  background: var(--bg-secondary, #EFE9DE);
-  color: var(--text-primary, #242521);
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-[data-theme="dark"] .mobile-theme-pill {
-  background-color: #222B25;
-  border-color: #343D36;
-}
-
 .mobile-auth-block {
   display: flex;
   flex-direction: column;
@@ -1110,8 +1065,8 @@
   }
 
   .brand-logo-img {
-    height: 42px;
-    max-width: 175px;
+    height: 56px;
+    max-width: 210px;
   }
 
   .header-search {
@@ -1127,8 +1082,8 @@
   }
 
   .brand-logo-img {
-    height: 36px;
-    max-width: 140px;
+    height: 50px;
+    max-width: 185px;
   }
 
   .actions {

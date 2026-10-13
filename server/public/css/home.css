@@ -2,7 +2,319 @@
    NIRALI - LUXURY HOMEPAGE EDITORIAL STYLES
    ========================================================================== */
 
-/* Hero Section */
+/* Advertisement carousel */
+.advert-hero {
+  position: relative;
+  width: min(1600px, calc(100% - 48px));
+  height: clamp(360px, 38vw, 560px);
+  margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: #18221d;
+}
+
+.advert-slides,
+.advert-slide { position: absolute; inset: 0; }
+
+.advert-slide {
+  --poster-bg: #18221d;
+  --poster-text: #F8F6F0;
+  --poster-muted: rgba(248, 246, 240, .82);
+  --poster-gold: #D8B66C;
+  --poster-cta-bg: #F8F6F0;
+  --poster-cta-text: #171614;
+  background: var(--poster-bg);
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 700ms ease, visibility 700ms ease;
+}
+
+.advert-slide.active { opacity: 1; visibility: visible; z-index: 1; }
+
+.advert-slide::before {
+  position: absolute;
+  top: -52%;
+  right: -8%;
+  width: min(68vw, 880px);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--poster-gold) 42%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 24px color-mix(in srgb, var(--poster-gold) 5%, transparent), 0 0 0 72px color-mix(in srgb, var(--poster-gold) 4%, transparent);
+  content: "";
+  pointer-events: none;
+}
+
+.advert-poster-1 {
+  --poster-bg: #eee5d2;
+  --poster-text: #2b261e;
+  --poster-muted: rgba(43, 38, 30, .78);
+  --poster-gold: #96713c;
+  --poster-cta-bg: #123D35;
+  --poster-cta-text: #F8F6F0;
+}
+
+.advert-poster-2 {
+  --poster-bg: #4b252f;
+  --poster-text: #fff7ec;
+  --poster-muted: rgba(255, 247, 236, .8);
+  --poster-gold: #e2bf7b;
+  --poster-cta-bg: #f5ead5;
+  --poster-cta-text: #35242a;
+}
+
+.advert-poster-3 {
+  --poster-bg: #d9e3dd;
+  --poster-text: #1f332b;
+  --poster-muted: rgba(31, 51, 43, .78);
+  --poster-gold: #947341;
+  --poster-cta-bg: #1f3a30;
+  --poster-cta-text: #fffaf0;
+}
+
+.advert-poster-4 {
+  --poster-bg: #29333d;
+  --poster-text: #fbf5e9;
+  --poster-muted: rgba(251, 245, 233, .8);
+  --poster-gold: #d8b66c;
+  --poster-cta-bg: #fbf5e9;
+  --poster-cta-text: #202832;
+}
+
+.advert-poster-ornament {
+  position: absolute;
+  z-index: 1;
+  top: 12%;
+  bottom: 12%;
+  left: 3%;
+  width: 2px;
+  background: linear-gradient(transparent, var(--poster-gold), transparent);
+  opacity: .65;
+}
+
+.advert-slide-image {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 20px 26px rgba(0, 0, 0, .24));
+}
+
+.advert-artwork {
+  position: absolute;
+  top: 11%;
+  right: clamp(2rem, 7vw, 7rem);
+  z-index: 2;
+  display: grid;
+  width: 41%;
+  height: 78%;
+  margin: 0;
+  padding: clamp(1rem, 2vw, 1.75rem);
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--poster-gold) 70%, transparent);
+  background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--poster-gold) 18%, transparent), transparent 67%);
+  box-sizing: border-box;
+}
+
+.advert-artwork-frame {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid color-mix(in srgb, var(--poster-gold) 34%, transparent);
+  pointer-events: none;
+}
+
+.advert-copy {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: clamp(2rem, 7vw, 7rem);
+  width: min(510px, 44%);
+  color: var(--poster-text);
+  transform: translateY(-50%);
+}
+
+.advert-eyebrow {
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--poster-gold);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+.advert-title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin: 0 0 .8rem;
+  color: var(--poster-text);
+  font-family: var(--font-serif);
+  font-size: clamp(2.7rem, 5.4vw, 5.4rem);
+  font-weight: 500;
+  line-height: .98;
+}
+
+.advert-description {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  max-width: 390px;
+  margin: 0 0 1.6rem;
+  color: var(--poster-muted);
+  font-size: clamp(.88rem, 1.15vw, 1.05rem);
+  line-height: 1.65;
+}
+
+.advert-cta {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0 1.35rem;
+  background: var(--poster-cta-bg);
+  color: var(--poster-cta-text);
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.advert-cta:hover { background: #D8B66C; }
+.advert-cta span { font-size: 1.2rem; }
+
+.advert-note {
+  display: block;
+  margin-top: 1rem;
+  color: var(--poster-muted);
+  font-size: .7rem;
+  letter-spacing: .08em;
+}
+
+.advert-slide-index {
+  position: absolute;
+  right: 2rem;
+  bottom: 1.6rem;
+  z-index: 3;
+  color: var(--poster-text);
+  font-size: .75rem;
+  letter-spacing: .12em;
+}
+
+.advert-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 4;
+  display: grid;
+  width: 44px;
+  height: 56px;
+  place-items: center;
+  border: 0;
+  background: rgba(248, 246, 240, .94);
+  color: #18221d;
+  cursor: pointer;
+  font-family: var(--font-serif);
+  font-size: 2.3rem;
+  line-height: 1;
+  transform: translateY(-50%);
+  transition: background-color 180ms ease;
+}
+
+.advert-arrow:hover { background: #D8B66C; }
+.advert-arrow-prev { left: 0; }
+.advert-arrow-next { right: 0; }
+
+.advert-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 1.6rem;
+  z-index: 4;
+  display: flex;
+  gap: .5rem;
+  transform: translateX(-50%);
+}
+
+.advert-dot {
+  width: 24px;
+  height: 3px;
+  padding: 0;
+  border: 0;
+  background: rgba(248, 246, 240, .5);
+  cursor: pointer;
+}
+
+.advert-dot.active { background: #D8B66C; }
+
+/* Seamless offers ticker immediately below the campaign banner */
+.offers-ticker {
+  display: flex;
+  min-height: 54px;
+  align-items: stretch;
+  overflow: hidden;
+  margin: 0 auto clamp(2.5rem, 5vw, 4.5rem);
+  background: #F0EBDD;
+  border-bottom: 1px solid #DED9CF;
+  color: #242521;
+}
+
+.offers-ticker-label {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0 1.5rem;
+  background: #123D35;
+  color: #F8F6F0;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+.offers-ticker-window { display: flex; min-width: 0; align-items: center; overflow: hidden; }
+.offers-ticker-track,
+.offers-ticker-group { display: flex; width: max-content; flex: 0 0 auto; align-items: center; }
+.offers-ticker-track { animation: offersTickerScroll 36s linear infinite; }
+.offers-ticker:hover .offers-ticker-track { animation-play-state: paused; }
+
+.offers-ticker-group {
+  gap: clamp(1.5rem, 3vw, 3rem);
+  padding: 0 clamp(1.5rem, 3vw, 3rem);
+  white-space: nowrap;
+}
+
+.offers-ticker-group span { font-size: .72rem; font-weight: 600; letter-spacing: .04em; }
+.offers-ticker-group i { color: #B89A62; font-size: .9rem; font-style: normal; }
+@keyframes offersTickerScroll { to { transform: translateX(-50%); } }
+
+@media (max-width: 700px) {
+  .advert-hero { width: calc(100% - 24px); height: clamp(610px, 150vw, 700px); margin-top: .75rem; }
+  .advert-artwork { top: 5%; right: 9%; width: 82%; height: 39%; padding: 1rem; }
+  .advert-copy { top: auto; bottom: 4.5rem; left: 1.5rem; width: calc(100% - 3rem); transform: none; }
+  .advert-title { max-width: 560px; font-size: clamp(2.3rem, 10vw, 3.6rem); }
+  .advert-description { max-width: 440px; margin-bottom: 1rem; -webkit-line-clamp: 3; }
+  .advert-note { margin-top: .7rem; }
+  .advert-slide::before { top: -20%; right: -32%; width: 100vw; }
+  .advert-arrow { width: 34px; height: 46px; }
+  .advert-slide-index { right: 1rem; bottom: 1.4rem; }
+  .advert-dots { left: 1.5rem; bottom: 1.6rem; transform: none; }
+  .offers-ticker { min-height: 48px; margin-bottom: 2.5rem; }
+  .offers-ticker-label { padding: 0 .85rem; font-size: .6rem; }
+  .offers-ticker-group { gap: 1.25rem; padding: 0 1.25rem; }
+  .offers-ticker-group span { font-size: .66rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .offers-ticker-track { animation: none; }
+}
+
+/* Previous Hero Section */
 .hero-editorial {
   position: relative;
   background-color: var(--bg-primary);

@@ -96,10 +96,30 @@ export async function adminDeleteProduct(productId) {
   return data;
 }
 
+export async function fetchHomepageSettings() {
+  const { data } = await api.get("/homepage");
+  return data;
+}
+
+export async function saveHomepageSettings(settings) {
+  const { data } = await api.put("/homepage", settings);
+  return data;
+}
+
 export async function createOrder(orderData) {
   const { data } = await api.post("/orders", orderData, {
     headers: { "Idempotency-Key": orderData.idempotencyKey },
   });
+  return data;
+}
+
+export async function createRazorpayOrder(orderData) {
+  const { data } = await api.post("/orders/razorpay/order", orderData);
+  return data;
+}
+
+export async function verifyRazorpayPayment(paymentData) {
+  const { data } = await api.post("/orders/razorpay/verify", paymentData);
   return data;
 }
 

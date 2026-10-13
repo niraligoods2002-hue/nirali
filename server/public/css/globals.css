@@ -186,20 +186,28 @@ ol {
   list-style: none;
 }
 
-/* ==========================================================================
-   Logo Dark/Light Image Switching
-   ========================================================================== */
-.brand-logo-img.logo-dark {
+/* Logo Dark/Light Image Switching */
+.logo-dark,
+.brand-logo-img.logo-dark,
+.auth-logo-img.logo-dark {
   display: none;
 }
-.brand-logo-img.logo-light {
+
+.logo-light,
+.brand-logo-img.logo-light,
+.auth-logo-img.logo-light {
   display: block;
 }
 
-[data-theme="dark"] .brand-logo-img.logo-dark {
+[data-theme="dark"] .logo-dark,
+[data-theme="dark"] .brand-logo-img.logo-dark,
+[data-theme="dark"] .auth-logo-img.logo-dark {
   display: block;
 }
-[data-theme="dark"] .brand-logo-img.logo-light {
+
+[data-theme="dark"] .logo-light,
+[data-theme="dark"] .brand-logo-img.logo-light,
+[data-theme="dark"] .auth-logo-img.logo-light {
   display: none;
 }
 

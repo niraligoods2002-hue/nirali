@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import { createOrder, lookupPincode, lookupCity, suggestCities, getCheckoutDetails, getAddresses, createAddress, updateAddress, deleteAddress, setDefaultAddress } from "../components/api.js";
+import { createOrder, createRazorpayOrder, verifyRazorpayPayment, lookupPincode, lookupCity, suggestCities, getCheckoutDetails, getAddresses, createAddress, updateAddress, deleteAddress, setDefaultAddress } from "../components/api.js";
 
 function CartPage() {
   const [cart, setCart] = useState([]);
@@ -36,6 +36,8 @@ function CartPage() {
   };
 
   const startCheckout = () => {
+    sessionStorage.removeItem("nirali_buy_now");
+    sessionStorage.removeItem("nirali_buy_now_order_key");
     if (!localStorage.getItem("token")) {
       localStorage.setItem("redirectAfterLogin", "/checkout");
       window.location.href = "/login?redirect=/checkout";
@@ -113,7 +115,7 @@ if (checkoutSummary) {
 
     useEffect(() => {
       if (window.LuxoraCart) {
-        setTotals(window.LuxoraCart.getCartTotals());
+        setTotals(window.LuxoraCart.getCheckoutTotals());
       }
     }, []);
 
@@ -403,11 +405,17 @@ if (checkoutForm) {
     if (button) { button.disabled = busy; button.textContent = label; }
   };
 
-  const finishOrder = async (orderData) => {
+  const finishOrder = async (orderData, paymentAlreadyVerified = false) => {
     setSubmitState(true, "Placing Order...");
-    await createOrder(orderData);
+    if (!paymentAlreadyVerified) await createOrder(orderData);
     alert("Order placed successfully! Thank you for shopping with Nirali Saree.");
-    window.LuxoraCart?.clearCart();
+    const isBuyNow = new URLSearchParams(window.location.search).get("mode") === "buy-now";
+    if (isBuyNow) {
+      sessionStorage.removeItem("nirali_buy_now");
+      sessionStorage.removeItem("nirali_buy_now_order_key");
+    } else {
+      window.LuxoraCart?.clearCart();
+    }
     sessionStorage.removeItem("checkoutOrderKey");
     window.location.href = "/shop";
   };
@@ -433,7 +441,7 @@ if (checkoutForm) {
   checkoutForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const totals = window.LuxoraCart?.getCartTotals();
+    const totals = window.LuxoraCart?.getCheckoutTotals();
     if (!totals || totals.cart.length === 0) {
       alert("Your cart is empty");
       window.location.href = "/shop";
@@ -452,15 +460,62 @@ if (checkoutForm) {
         return;
       }
       const selectedAddress = addressById(selectedAddressId);
+      const isBuyNow = new URLSearchParams(window.location.search).get("mode") === "buy-now";
+      const orderKeyStorage = isBuyNow ? "nirali_buy_now_order_key" : "checkoutOrderKey";
       pendingOrder = {
-        idempotencyKey: sessionStorage.getItem("checkoutOrderKey") || window.crypto?.randomUUID?.().replaceAll("-", "") || `${Date.now()}_${Math.random().toString(36).slice(2)}`,
+        idempotencyKey: sessionStorage.getItem(orderKeyStorage) || window.crypto?.randomUUID?.().replaceAll("-", "") || `${Date.now()}_${Math.random().toString(36).slice(2)}`,
         addressId: selectedAddressId,
         customer: { phone: addressPhone(selectedAddress.phone) },
         items: totals.cart,
         paymentMethod: formData.get("paymentMethod") || "cod",
       };
-      sessionStorage.setItem("checkoutOrderKey", pendingOrder.idempotencyKey);
-      await finishOrder(pendingOrder);
+      sessionStorage.setItem(orderKeyStorage, pendingOrder.idempotencyKey);
+      if (pendingOrder.paymentMethod === "razorpay") {
+        if (!window.Razorpay) throw new Error("Razorpay Checkout did not load. Please try again.");
+        const gatewayOrder = await createRazorpayOrder({
+          addressId: pendingOrder.addressId,
+          items: pendingOrder.items,
+          idempotencyKey: pendingOrder.idempotencyKey,
+        });
+        const checkout = new window.Razorpay({
+          key: gatewayOrder.keyId,
+          amount: gatewayOrder.amount,
+          currency: gatewayOrder.currency,
+          name: "NIRALI",
+          description: "Secure payment for your saree order",
+          order_id: gatewayOrder.orderId,
+          prefill: {
+            name: selectedAddress.fullName,
+            email: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).email : "",
+            contact: addressPhone(selectedAddress.phone),
+          },
+          theme: { color: "#174d3e" },
+          handler: async (paymentResponse) => {
+            try {
+              setSubmitState(true, "Verifying Payment...");
+              await verifyRazorpayPayment({
+                ...paymentResponse,
+                addressId: pendingOrder.addressId,
+                items: pendingOrder.items,
+                idempotencyKey: pendingOrder.idempotencyKey,
+              });
+              await finishOrder(null, true);
+            } catch (error) {
+              setSubmitState(false);
+              const message = error.response?.data?.message || error.message || "Payment verification failed. Contact support before retrying.";
+              alert(message);
+            }
+          },
+          modal: { ondismiss: () => setSubmitState(false) },
+        });
+        checkout.on("payment.failed", (event) => {
+          setSubmitState(false);
+          alert(event.error?.description || "Payment failed. You can try again.");
+        });
+        checkout.open();
+      } else {
+        await finishOrder(pendingOrder);
+      }
     } catch {
       setSubmitState(false);
     }
