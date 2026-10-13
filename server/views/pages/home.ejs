@@ -2,11 +2,11 @@
   const advertisementSlides = (homeAdvertisementSlides || []).filter(slide => slide.image && slide.linkUrl);
 
   const featuredCategories = [
-    { name: "Chiffon Saree", label: "Chiffon Sarees", desc: "Featherlight elegance with delicate zari borders", filter: "category:Chiffon Saree" },
-    { name: "Georgette Saree", label: "Georgette Sarees", desc: "Flowing silhouettes crafted for royal celebrations", filter: "category:Georgette Saree" },
-    { name: "Cotton Saree", label: "Cotton Sarees", desc: "Breathable handloom weaves for daytime sophistication", filter: "category:Cotton Saree" },
-    { name: "Designer Saree", label: "Designer Sarees", desc: "Statement couture pieces tailored for weddings", filter: "category:Designer Saree" },
-    { name: "Printed Saree", label: "Printed Sarees", desc: "Artisanal floral and geometric handprints", filter: "category:Printed Saree" },
+    { name: "Chiffon Saree", label: "Chiffon Sarees", filter: "category:Chiffon Saree" },
+    { name: "Georgette Saree", label: "Georgette Sarees", filter: "category:Georgette Saree" },
+    { name: "Cotton Saree", label: "Cotton Sarees", filter: "category:Cotton Saree" },
+    { name: "Designer Saree", label: "Designer Sarees", filter: "category:Designer Saree" },
+    { name: "Printed Saree", label: "Printed Sarees", filter: "category:Printed Saree" },
   ];
 
   // Map each category to a representative product image
@@ -59,48 +59,6 @@
   </div>
 </section>
 
-<!-- Brand Assurance Bar (Pillars of NIRALI) -->
-<section class="luxury-pillars-bar">
-  <div class="container pillars-container">
-    <div class="pillar-card">
-      <div class="pillar-icon">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-      </div>
-      <div class="pillar-info">
-        <h4>Heritage Weaves</h4>
-        <p>Woven by generational master artisans</p>
-      </div>
-    </div>
-    <div class="pillar-card">
-      <div class="pillar-icon">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-      </div>
-      <div class="pillar-info">
-        <h4>Complimentary Shipping</h4>
-        <p>Express delivery on orders over ₹2,999</p>
-      </div>
-    </div>
-    <div class="pillar-card">
-      <div class="pillar-icon">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-      </div>
-      <div class="pillar-info">
-        <h4>Bespoke Packaging</h4>
-        <p>Hand-packed in signature keepsake boxes</p>
-      </div>
-    </div>
-    <div class="pillar-card">
-      <div class="pillar-icon">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-      </div>
-      <div class="pillar-info">
-        <h4>Secure Concierge</h4>
-        <p>Direct assistance via WhatsApp & phone</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- Shop By Category (Editorial Grid) -->
 <section class="section-categories section-padding">
   <div class="container">
@@ -120,10 +78,8 @@
           </div>
           <div class="category-card-overlay"></div>
           <div class="category-card-text">
-            <span class="category-card-eyebrow">COLLECTION</span>
             <h3 class="category-card-name"><%= cat.label %></h3>
-            <p class="category-card-desc"><%= cat.desc %></p>
-            <span class="category-explore-link">Explore Edit &rarr;</span>
+            <span class="category-explore-link">Explore &rarr;</span>
           </div>
         </a>
       <% }) %>

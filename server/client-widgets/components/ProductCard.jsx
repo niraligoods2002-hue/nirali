@@ -19,6 +19,11 @@ export default function ProductCard({ product }) {
   const displayPrice = product.discountPrice || product.price;
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
   const imageSource = imageFailed ? "/images/products/saree1.jpg" : product.image;
+  const defaultColor = product.colors?.[0] || "";
+  const availableStock = defaultColor && product.colorStock?.[defaultColor] !== undefined
+    ? Number(product.colorStock[defaultColor])
+    : Number(product.stock);
+  const isUnavailable = Number.isFinite(availableStock) && availableStock <= 0;
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -27,6 +32,29 @@ export default function ProductCard({ product }) {
       setAddedToCart(true);
       window.setTimeout(() => setAddedToCart(false), 2000);
     }
+  };
+
+  const handleBuyNow = () => {
+    const selectedColor = defaultColor;
+    const item = {
+      id: product.id,
+      cartId: selectedColor ? `${product.id}:${selectedColor}` : product.id,
+      name: product.name,
+      slug: product.slug,
+      price: displayPrice,
+      image: imageSource,
+      category: product.category,
+      color: selectedColor,
+      quantity: 1,
+    };
+    sessionStorage.setItem("nirali_buy_now", JSON.stringify(item));
+    sessionStorage.removeItem("nirali_buy_now_order_key");
+    if (!localStorage.getItem("token")) {
+      localStorage.setItem("redirectAfterLogin", "/checkout?mode=buy-now");
+      window.location.href = "/login?redirect=%2Fcheckout%3Fmode%3Dbuy-now";
+      return;
+    }
+    window.location.href = "/checkout?mode=buy-now";
   };
 
   const handleToggleWishlist = (e) => {
@@ -70,16 +98,6 @@ export default function ProductCard({ product }) {
           />
         </a>
 
-        {/* Badges */}
-        <div className="product-card-badges">
-          {product.badge && <span className="product-badge badge-gold">{product.badge}</span>}
-          {hasDiscount && (
-            <span className="product-badge badge-discount">
-              {Math.round(((product.price - product.discountPrice) / product.price) * 100)}% Off
-            </span>
-          )}
-        </div>
-
         {/* Wishlist Button */}
         <button
           type="button"
@@ -93,16 +111,6 @@ export default function ProductCard({ product }) {
           </svg>
         </button>
 
-        {/* Quick Action Overlay on Desktop */}
-        <div className="product-quick-actions">
-          <button
-            type="button"
-            className={`product-add-cart-btn ${addedToCart ? "added" : ""}`}
-            onClick={handleAddToCart}
-          >
-            {addedToCart ? "Added to Bag ✓" : "Add to Bag"}
-          </button>
-        </div>
       </div>
 
       <div className="product-card-info">
@@ -116,6 +124,19 @@ export default function ProductCard({ product }) {
           {hasDiscount && (
             <span className="price-original">₹{Number(product.price).toLocaleString("en-IN")}</span>
           )}
+        </div>
+        <div className="product-card-actions">
+          <button
+            type="button"
+            className={`product-add-cart-btn ${addedToCart ? "added" : ""}`}
+            onClick={handleAddToCart}
+            disabled={isUnavailable}
+          >
+            {isUnavailable ? "Sold Out" : addedToCart ? "Added to Bag ✓" : "Add to Bag"}
+          </button>
+          <button type="button" className="product-buy-now-card-btn" onClick={handleBuyNow} disabled={isUnavailable}>
+            {isUnavailable ? "Sold Out" : "Buy Now"}
+          </button>
         </div>
       </div>
     </article>

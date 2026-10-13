@@ -137,7 +137,7 @@
   min-height: 54px;
   align-items: stretch;
   overflow: hidden;
-  margin: 0 auto clamp(2.5rem, 5vw, 4.5rem);
+  margin: 0 auto;
   background: #F0EBDD;
   border-bottom: 1px solid #DED9CF;
   color: #242521;
@@ -177,7 +177,7 @@
   .advert-hero { width: calc(100% - 24px); height: clamp(460px, 135vw, 650px); margin-top: .75rem; }
   .advert-arrow { width: 34px; height: 46px; }
   .advert-dots { left: 1.5rem; bottom: 1.6rem; transform: none; }
-  .offers-ticker { min-height: 48px; margin-bottom: 2.5rem; }
+  .offers-ticker { min-height: 48px; }
   .offers-ticker-label { padding: 0 .85rem; font-size: .6rem; }
   .offers-ticker-group { gap: 1.25rem; padding: 0 1.25rem; }
   .offers-ticker-group span { font-size: .66rem; }
@@ -362,49 +362,6 @@
 }
 
 /* ==========================================================================
-   Luxury Pillars Bar
-   ========================================================================== */
-.luxury-pillars-bar {
-  background-color: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 2.2rem 0;
-}
-
-.pillars-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-}
-
-.pillar-card {
-  display: flex;
-  align-items: center;
-  gap: 1.1rem;
-}
-
-.pillar-icon {
-  color: var(--color-gold);
-  flex-shrink: 0;
-}
-
-.pillar-info h4 {
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-primary);
-  margin-bottom: 0.2rem;
-}
-
-.pillar-info p {
-  font-size: 0.76rem;
-  color: var(--text-secondary);
-  line-height: 1.4;
-  margin-bottom: 0;
-}
-
-/* ==========================================================================
    Shop By Category (Editorial Grid)
    ========================================================================== */
 .section-header {
@@ -429,7 +386,7 @@
 .categories-editorial-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 320px;
+  grid-auto-rows: 280px;
   gap: 1.5rem;
 }
 
@@ -482,28 +439,12 @@
   color: #FFFFFF;
 }
 
-.category-card-eyebrow {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: var(--color-gold-light);
-  display: block;
-  margin-bottom: 0.35rem;
-}
-
 .category-card-name {
   font-family: var(--font-serif);
   font-size: 1.6rem;
   color: #FFFFFF;
   line-height: 1.2;
   margin-bottom: 0.4rem;
-}
-
-.category-card-desc {
-  font-size: 0.8rem;
-  color: rgba(248, 246, 240, 0.82);
-  line-height: 1.4;
-  margin-bottom: 0.8rem;
 }
 
 .category-explore-link {
@@ -608,8 +549,12 @@
 
 .track-card-wrapper {
   flex: 0 0 calc(25% - 1.15rem);
-  min-width: 260px;
+  min-width: 0;
   scroll-snap-align: start;
+}
+
+@media (max-width: 1200px) {
+  .track-card-wrapper { flex-basis: calc(33.333% - 1rem); }
 }
 
 .section-footer-action {
@@ -785,10 +730,6 @@
     justify-content: center;
   }
 
-  .pillars-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .categories-editorial-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -812,18 +753,20 @@
   }
 
   .track-card-wrapper {
-    flex: 0 0 calc(50% - 0.75rem);
+    flex: 0 0 calc(33.333% - 1rem);
+  }
+}
+
+@media (max-width: 900px) {
+  .track-card-wrapper {
+    flex-basis: calc(50% - 0.5rem);
   }
 }
 
 @media (max-width: 600px) {
-  .pillars-container {
-    grid-template-columns: 1fr;
-  }
-
   .categories-editorial-grid {
     grid-template-columns: 1fr;
-    grid-auto-rows: 280px;
+    grid-auto-rows: 230px;
   }
 
   .category-card-large {
@@ -837,7 +780,7 @@
   }
 
   .track-card-wrapper {
-    flex: 0 0 80%;
+    flex-basis: calc(50% - 0.5rem);
   }
 
   .collection-row-header {
