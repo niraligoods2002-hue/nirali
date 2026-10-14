@@ -7,6 +7,11 @@
   min-height: 80vh;
 }
 
+.shop-editorial-page.section-padding {
+  padding-top: clamp(1.25rem, 2.5vw, 2rem);
+  padding-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
 .luxury-shop-wrapper {
   display: flex;
   flex-direction: column;
@@ -98,8 +103,8 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1.25rem;
-  margin-bottom: 2.5rem;
-  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-subtle);
 }
 

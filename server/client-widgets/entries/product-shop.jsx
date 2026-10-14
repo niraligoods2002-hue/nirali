@@ -26,15 +26,6 @@ function ProductShop() {
 
   const [filter, setFilter] = useState(normalizedInitialFilter);
 
-  // Active Category Name (for title/breadcrumbs)
-  const currentCategoryName = useMemo(() => {
-    if (filter.startsWith("category:")) return filter.slice("category:".length);
-    if (filter === "new") return "New Arrivals";
-    if (filter === "bestseller") return "Best Sellers";
-    if (filter === "featured") return "Featured Masterpieces";
-    return "";
-  }, [filter]);
-
   // Filter & Sort Logic
   const filteredAndSorted = useMemo(() => {
     let result = [...products];
@@ -90,39 +81,6 @@ function ProductShop() {
 
   return (
     <div className="luxury-shop-wrapper">
-      
-      {/* Editorial Header & Breadcrumbs */}
-      <nav className="breadcrumbs" aria-label="Breadcrumbs">
-        <a href="/">Home</a>
-        <span className="separator">/</span>
-        <a href="/shop">Shop</a>
-        {currentCategoryName && (
-          <>
-            <span className="separator">/</span>
-            <span className="current">{currentCategoryName}</span>
-          </>
-        )}
-      </nav>
-
-      <div className="shop-editorial-header">
-        <div className="shop-title-block">
-          <span className="section-eyebrow">THE NIRALI ARCHIVE</span>
-          <h1 className="shop-page-title">
-            {currentCategoryName ? currentCategoryName : "All Handcrafted Sarees"}
-          </h1>
-          <p className="shop-page-sub">
-            {currentCategoryName
-              ? `Discover masterfully curated ${currentCategoryName.toLowerCase()} crafted for discerning celebrations.`
-              : "Explore our complete repertoire of timeless handlooms, gossamer chiffons, and heirloom zari weaves."}
-          </p>
-        </div>
-
-        <div className="shop-meta-counter">
-          <span className="count-number">{filteredAndSorted.length}</span>
-          <span className="count-label">Curations Available</span>
-        </div>
-      </div>
-
       {/* Active Search Notification */}
       {searchQuery && (
         <div className="shop-search-banner">
