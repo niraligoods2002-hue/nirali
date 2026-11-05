@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Product = require("../models/Product");
 const { imagekit, isConfigured } = require("../config/imagekit");
 
@@ -84,6 +85,9 @@ const getProductBySlug = async (req, res) => {
 // PUT /api/products/:id  (admin only)
 const updateProduct = async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid product ID" });
+    }
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -108,6 +112,9 @@ const updateProduct = async (req, res) => {
 // DELETE /api/products/:id  (admin only)
 const deleteProduct = async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid product ID" });
+    }
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });

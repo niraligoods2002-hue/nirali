@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Address = require("../models/Address");
 const { normalizeIndianPhone } = require("../utils/phone");
 
@@ -79,6 +80,9 @@ exports.createAddress = async (req, res) => {
 
 exports.updateAddress = async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid address ID" });
+    }
     const address = await Address.findOne({ _id: req.params.id, user: req.user._id });
     if (!address) return res.status(404).json({ message: "Address not found" });
     const parsed = clean(req.body, req.user, address.phone);
@@ -98,6 +102,9 @@ exports.updateAddress = async (req, res) => {
 
 exports.deleteAddress = async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid address ID" });
+    }
     const address = await Address.findOneAndDelete({ _id: req.params.id, user: req.user._id });
     if (!address) return res.status(404).json({ message: "Address not found" });
     if (address.isDefault) {
@@ -113,6 +120,9 @@ exports.deleteAddress = async (req, res) => {
 
 exports.setDefaultAddress = async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid address ID" });
+    }
     const address = await Address.findOne({ _id: req.params.id, user: req.user._id });
     if (!address) return res.status(404).json({ message: "Address not found" });
     await clearDefault(req.user._id, address._id);

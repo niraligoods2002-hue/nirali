@@ -476,6 +476,9 @@ exports.updateCheckoutDetails = async (req, res) => {
 
 exports.downloadDeliveryLabel = async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid order ID" });
+    }
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: "Order not found" });
 
@@ -580,6 +583,10 @@ exports.updateOrderStatus = async (req, res) => {
         return res.status(400).json({ message: "Invalid payment status" });
       }
       update.paymentStatus = paymentStatus;
+    }
+
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid order ID" });
     }
 
     const order = await Order.findById(req.params.id);

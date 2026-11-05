@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const mongoose = require("mongoose");
 const User = require("../models/User");
 const { sendOtpEmail, sendPasswordResetEmail } = require("../utils/email");
 
@@ -108,6 +109,9 @@ exports.register = async (req, res) => {
         .status(400)
         .json({ message: "Name, email, and password are required" });
     }
+    if (typeof name !== "string" || typeof email !== "string" || typeof password !== "string") {
+      return res.status(400).json({ message: "Name, email, and password must be valid text" });
+    }
     if (String(name).trim().length < 2 || String(name).trim().length > 50) return res.status(400).json({ message: "Name must be between 2 and 50 characters" });
     if (String(password).length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
       return res.status(400).json({ message: "Password must contain at least 8 characters, including a letter and a number" });
@@ -185,6 +189,9 @@ exports.login = async (req, res) => {
         .status(400)
         .json({ message: "Email and password are required" });
     }
+    if (typeof email !== "string" || typeof password !== "string") {
+      return res.status(400).json({ message: "Email and password must be valid text" });
+    }
 
     const user = await User.findOne({ email: String(email).trim().toLowerCase() }).select("+password +emailVerificationOtpLastSentAt +emailVerificationOtpAttempts");
     if (!user) {
@@ -233,6 +240,9 @@ exports.verifyEmailOtp = async (req, res) => {
 
     if (!email || !otp) {
       return res.status(400).json({ message: "Email and OTP are required" });
+    }
+    if (typeof email !== "string" || typeof otp !== "string") {
+      return res.status(400).json({ message: "Email and OTP must be valid text" });
     }
 
     const user = await User.findOne({ email: email.toLowerCase().trim() }).select(
@@ -284,8 +294,8 @@ exports.resendEmailOtp = async (req, res) => {
   try {
     const { email } = req.body;
 
-    if (!email) {
-      return res.status(400).json({ message: "Email is required" });
+    if (!email || typeof email !== "string") {
+      return res.status(400).json({ message: "Email is required and must be valid text" });
     }
 
     const user = await User.findOne({ email: email.toLowerCase().trim() }).select(
@@ -314,8 +324,10 @@ exports.resendEmailOtp = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   const genericMessage = "If an account exists for that email, a password reset link has been sent.";
   try {
-    const normalizedEmail = String(req.body.email || "").trim().toLowerCase();
-    if (!normalizedEmail) return res.status(400).json({ message: "Email is required" });
+    if (!req.body.email || typeof req.body.email !== "string") {
+      return res.status(400).json({ message: "Email is required" });
+    }
+    const normalizedEmail = String(req.body.email).trim().toLowerCase();
 
     const user = await User.findOne({ email: normalizedEmail }).select(
       "+passwordResetTokenHash +passwordResetTokenExpires"
@@ -349,9 +361,10 @@ exports.forgotPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   try {
-    const token = String(req.body.token || "");
-    const password = String(req.body.password || "");
-    if (!token || !password) return res.status(400).json({ message: "Reset token and new password are required" });
+    const { token, password } = req.body;
+    if (!token || !password || typeof token !== "string" || typeof password !== "string") {
+      return res.status(400).json({ message: "Reset token and new password are required" });
+    }
     if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
       return res.status(400).json({ message: "Password must contain at least 8 characters, including a letter and a number" });
     }
@@ -424,6 +437,13 @@ exports.getAllUsers = async (req, res) => {
 // ─── UPDATE USER ROLE (admin only) ───────────────────────────────────────────
 exports.updateUserRole = async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+    if (req.user && req.user._id.toString() === String(req.params.id)) {
+      return res.status(403).json({ message: "You cannot change your own role" });
+    }
+
     const { role } = req.body;
     if (!["user", "admin"].includes(role)) {
       return res.status(400).json({ message: "Invalid role" });
@@ -449,6 +469,13 @@ exports.updateUserRole = async (req, res) => {
 // ─── DELETE USER (admin only) ────────────────────────────────────────────────
 exports.deleteUser = async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+    if (req.user && req.user._id.toString() === String(req.params.id)) {
+      return res.status(403).json({ message: "You cannot delete your own account" });
+    }
+
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
