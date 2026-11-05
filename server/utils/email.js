@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 
 function senderDetails() {
   const configured = String(process.env.EMAIL_FROM || "").trim();
-  const fallbackEmail = process.env.EMAIL_USER || "no-reply@luxora.com";
+  const fallbackEmail = process.env.EMAIL_USER || "no-reply@niralisaree.com";
   const match = configured.match(/^(?:"?([^"<]+)"?\s*)?<([^>]+)>$/);
 
   if (match) {
@@ -69,16 +69,6 @@ async function sendWithSmtp({ to, subject, text, html }) {
 
   const sender = senderDetails();
 
-  if (transportOverride) {
-    return transportOverride.sendMail({
-      from: `"${sender.name}" <${sender.email}>`,
-      to,
-      subject,
-      text,
-      html,
-    });
-  }
-
   if (!host || !user || !pass) {
     const missing = [];
     if (!host) missing.push("EMAIL_HOST");
@@ -129,6 +119,16 @@ async function sendWithSmtp({ to, subject, text, html }) {
 }
 
 async function sendTransactionalEmail(message) {
+  if (transportOverride) {
+    const sender = senderDetails();
+    return transportOverride.sendMail({
+      from: `"${sender.name}" <${sender.email}>`,
+      to: message.to,
+      subject: message.subject,
+      text: message.text,
+      html: message.html,
+    });
+  }
   if (process.env.BREVO_API_KEY) return sendWithBrevo(message);
   return sendWithSmtp(message);
 }

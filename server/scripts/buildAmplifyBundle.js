@@ -39,14 +39,19 @@ for (const entry of runtimeFiles) {
   });
 }
 
+const dotenv = require("dotenv");
+
 // Generate runtime .env for Amplify compute environment from build-time environment
 const runtimeEnvKeys = [
   "PORT",
   "NODE_ENV",
   "PUBLIC_BASE_URL",
+  "ALLOWED_ORIGINS",
   "MONGO_URI",
   "JWT_SECRET",
   "JWT_EXPIRES_IN",
+  "FREE_SHIPPING_THRESHOLD",
+  "SHIPPING_FEE",
   "IMAGEKIT_PUBLIC_KEY",
   "IMAGEKIT_PRIVATE_KEY",
   "IMAGEKIT_URL_ENDPOINT",
@@ -67,18 +72,9 @@ const runtimeEnvKeys = [
 ];
 
 const localEnvPath = path.join(appRoot, ".env");
-const localEnv = {};
-if (fs.existsSync(localEnvPath)) {
-  const content = fs.readFileSync(localEnvPath, "utf-8");
-  for (const line of content.split(/\r?\n/)) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const eqIdx = trimmed.indexOf("=");
-    if (eqIdx !== -1) {
-      localEnv[trimmed.slice(0, eqIdx).trim()] = trimmed.slice(eqIdx + 1).trim();
-    }
-  }
-}
+const localEnv = fs.existsSync(localEnvPath)
+  ? dotenv.parse(fs.readFileSync(localEnvPath, "utf-8"))
+  : {};
 
 const envLines = ["# AWS Amplify Compute Runtime Environment"];
 for (const key of runtimeEnvKeys) {
