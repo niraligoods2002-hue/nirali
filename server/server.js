@@ -46,6 +46,14 @@ app.use(cookieParser());
 app.use(requireTrustedOrigin);
 app.use("/api", rateLimit({ windowMs: 60_000, max: 120 }));
 
+// Ensure database connection is ready for serverless compute invocations
+app.use(async (_req, _res, next) => {
+  if (mongoose.connection.readyState !== 1) {
+    await connectDB().catch(() => {});
+  }
+  next();
+});
+
 // Hosting providers use this endpoint to verify both the app and database.
 app.get("/health", (_req, res) => {
   const databaseReady = mongoose.connection.readyState === 1;
