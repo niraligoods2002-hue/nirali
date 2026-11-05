@@ -39,6 +39,57 @@ for (const entry of runtimeFiles) {
   });
 }
 
+// Generate runtime .env for Amplify compute environment from build-time environment
+const runtimeEnvKeys = [
+  "PORT",
+  "NODE_ENV",
+  "PUBLIC_BASE_URL",
+  "MONGO_URI",
+  "JWT_SECRET",
+  "JWT_EXPIRES_IN",
+  "IMAGEKIT_PUBLIC_KEY",
+  "IMAGEKIT_PRIVATE_KEY",
+  "IMAGEKIT_URL_ENDPOINT",
+  "EMAIL_USER",
+  "EMAIL_PASS",
+  "EMAIL_HOST",
+  "EMAIL_PORT",
+  "EMAIL_SECURE",
+  "EMAIL_FROM",
+  "BREVO_API_KEY",
+  "RAZORPAY_KEY_ID",
+  "RAZORPAY_KEY_SECRET",
+  "TWILIO_ACCOUNT_SID",
+  "TWILIO_AUTH_TOKEN",
+  "TWILIO_SMS_FROM",
+  "TWILIO_WHATSAPP_FROM",
+  "TWILIO_WHATSAPP_CONTENT_SID",
+];
+
+const localEnvPath = path.join(appRoot, ".env");
+const localEnv = {};
+if (fs.existsSync(localEnvPath)) {
+  const content = fs.readFileSync(localEnvPath, "utf-8");
+  for (const line of content.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eqIdx = trimmed.indexOf("=");
+    if (eqIdx !== -1) {
+      localEnv[trimmed.slice(0, eqIdx).trim()] = trimmed.slice(eqIdx + 1).trim();
+    }
+  }
+}
+
+const envLines = ["# AWS Amplify Compute Runtime Environment"];
+for (const key of runtimeEnvKeys) {
+  const value = process.env[key] || localEnv[key];
+  if (value !== undefined && value !== "") {
+    envLines.push(`${key}=${value}`);
+  }
+}
+
+fs.writeFileSync(path.join(computeRoot, ".env"), envLines.join("\n") + "\n", "utf-8");
+
 fs.copyFileSync(
   path.join(appRoot, "deploy-manifest.json"),
   path.join(outputRoot, "deploy-manifest.json"),

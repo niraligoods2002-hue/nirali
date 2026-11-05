@@ -1,8 +1,8 @@
 const nodemailer = require("nodemailer");
 
 function senderDetails() {
-  const fallbackEmail = process.env.EMAIL_USER;
   const configured = String(process.env.EMAIL_FROM || "").trim();
+  const fallbackEmail = process.env.EMAIL_USER || "no-reply@luxora.com";
   const match = configured.match(/^(?:"?([^"<]+)"?\s*)?<([^>]+)>$/);
 
   if (match) {
@@ -48,30 +48,84 @@ async function sendWithBrevo({ to, subject, text, html }) {
   }
 }
 
-async function sendWithSmtp({ to, subject, text, html }) {
-  const { EMAIL_HOST, EMAIL_PORT, EMAIL_SECURE, EMAIL_USER, EMAIL_PASS } = process.env;
-  if (!EMAIL_HOST || !EMAIL_USER || !EMAIL_PASS) {
-    throw new Error("Nodemailer SMTP configuration is incomplete");
-  }
+let transportOverride = null;
 
-  const transporter = nodemailer.createTransport({
-    host: EMAIL_HOST,
-    port: Number(EMAIL_PORT || 587),
-    secure: EMAIL_SECURE === "true",
-    auth: { user: EMAIL_USER, pass: EMAIL_PASS },
-    connectionTimeout: 10_000,
-    greetingTimeout: 10_000,
-    socketTimeout: 15_000,
-  });
+function setTransportOverride(override) {
+  if (process.env.NODE_ENV !== "test" && process.env.NODE_ENV !== undefined) {
+    return;
+  }
+  transportOverride = override;
+}
+
+async function sendWithSmtp({ to, subject, text, html }) {
+  const host = process.env.EMAIL_HOST || "smtp.gmail.com";
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
+  const port = Number(process.env.EMAIL_PORT || 465);
+  const secure =
+    process.env.EMAIL_SECURE !== undefined
+      ? process.env.EMAIL_SECURE === "true"
+      : port === 465;
 
   const sender = senderDetails();
-  await transporter.sendMail({
-    from: `"${sender.name}" <${sender.email}>`,
-    to,
-    subject,
-    text,
-    html,
-  });
+
+  if (transportOverride) {
+    return transportOverride.sendMail({
+      from: `"${sender.name}" <${sender.email}>`,
+      to,
+      subject,
+      text,
+      html,
+    });
+  }
+
+  if (!host || !user || !pass) {
+    const missing = [];
+    if (!host) missing.push("EMAIL_HOST");
+    if (!user) missing.push("EMAIL_USER");
+    if (!pass) missing.push("EMAIL_PASS");
+    throw new Error(`Nodemailer SMTP configuration is incomplete: ${missing.join(", ")} missing in environment variables`);
+  }
+
+  const sendAttempt = async (targetPort, isSecure) => {
+    const transporter = nodemailer.createTransport({
+      host,
+      port: targetPort,
+      secure: isSecure,
+      auth: { user, pass },
+      connectionTimeout: 5_000,
+      greetingTimeout: 5_000,
+      socketTimeout: 8_000,
+    });
+
+    return transporter.sendMail({
+      from: `"${sender.name}" <${sender.email}>`,
+      to,
+      subject,
+      text,
+      html,
+    });
+  };
+
+  try {
+    return await sendAttempt(port, secure);
+  } catch (err) {
+    const isNetworkError =
+      err.code === "ECONNECTION" ||
+      err.code === "ETIMEDOUT" ||
+      err.code === "ESOCKET" ||
+      err.code === "ECONNREFUSED" ||
+      err.code === "ECONNRESET" ||
+      err.command === "CONN";
+
+    if (isNetworkError) {
+      const fallbackPort = port === 465 ? 587 : 465;
+      const fallbackSecure = fallbackPort === 465;
+      console.warn(`SMTP port ${port} connection failed (${err.message}), retrying on port ${fallbackPort}...`);
+      return await sendAttempt(fallbackPort, fallbackSecure);
+    }
+    throw err;
+  }
 }
 
 async function sendTransactionalEmail(message) {
@@ -120,4 +174,5 @@ module.exports = {
   sendPasswordResetEmail,
   sendTransactionalEmail,
   senderDetails,
+  setTransportOverride,
 };

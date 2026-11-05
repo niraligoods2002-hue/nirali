@@ -43,10 +43,12 @@ function otpCooldownSeconds(user) {
 }
 
 async function sendEmailOtp(email, otp) {
+  console.log(`[AUTH] Dispatching verification OTP email to ${email}`);
   try {
     await sendOtpEmail(email, otp);
+    console.log(`[AUTH] Verification OTP email successfully dispatched to ${email}`);
   } catch (error) {
-    console.error("OTP email delivery failed:", error.message);
+    console.error(`[AUTH] OTP email delivery failed for ${email}:`, error.message);
     const deliveryError = new Error(
       "We could not send the verification email. Please check the email settings and try again."
     );
