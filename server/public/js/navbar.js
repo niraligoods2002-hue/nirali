@@ -548,6 +548,18 @@ document.addEventListener('DOMContentLoaded', () => {
     let autoSlideTimer;
     let touchStartX = 0;
 
+    const fitActivePoster = () => {
+      const image = slides[activeSlide]?.querySelector('.advert-slide-image');
+      if (!image?.naturalWidth || !image?.naturalHeight) return;
+      masterpieceSlider.classList.toggle('poster-portrait', image.naturalWidth / image.naturalHeight < 0.9);
+    };
+
+    slides.forEach((slide) => {
+      const image = slide.querySelector('.advert-slide-image');
+      if (image?.complete) fitActivePoster();
+      else image?.addEventListener('load', fitActivePoster, { once: true });
+    });
+
     const showSlide = (index) => {
       activeSlide = index;
       slides.forEach((slide, slideIndex) => {
@@ -558,6 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dot.classList.toggle('active', dotIndex === activeSlide);
         dot.setAttribute('aria-current', String(dotIndex === activeSlide));
       });
+      fitActivePoster();
     };
 
     dots.forEach((dot) => {

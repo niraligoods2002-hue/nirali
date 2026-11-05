@@ -295,3 +295,43 @@
     right: 1rem;
   }
 }
+
+
+/* ==========================================================================
+   Complimentary Shipping Progress Bar & Luxury Details
+   ========================================================================== */
+.shipping-progress-container {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(184, 154, 98, 0.08);
+  border: 1px solid rgba(184, 154, 98, 0.25);
+  border-radius: var(--radius-xs);
+}
+
+.shipping-progress-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.shipping-progress-label .free-shipping-unlocked {
+  color: var(--status-success);
+  font-weight: 700;
+}
+
+.shipping-progress-track {
+  width: 100%;
+  height: 6px;
+  background: var(--border-subtle);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.shipping-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-gold), var(--color-primary));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}

@@ -20,9 +20,10 @@
         <div class="product-main-view">
           <img
             id="product-main-image"
-            src="<%= product.images?.[0] || product.image %>"
+            src="<%= product.images?.[0] || product.image || '/images/products/saree-placeholder.svg' %>"
             alt="<%= product.name %>"
             class="product-featured-img"
+            onerror="this.onerror=null;this.src='/images/products/saree-placeholder.svg'"
           />
           <% if (product.badge) { %>
             <div class="product-featured-badge">
@@ -40,7 +41,7 @@
                 data-product-image="<%= img %>"
                 aria-label="View angle <%= idx + 1 %>"
               >
-                <img src="<%= img %>" alt="<%= product.name %> thumbnail <%= idx + 1 %>" loading="lazy" />
+                <img src="<%= img %>" alt="<%= product.name %> thumbnail <%= idx + 1 %>" loading="lazy" onerror="this.onerror=null;this.src='/images/products/saree-placeholder.svg'" />
               </button>
             <% }) %>
           </div>

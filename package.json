@@ -5,7 +5,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "npm --prefix server run dev",
     "start": "npm --prefix server start",
+    "build:widgets": "npm --prefix server run build:widgets",
     "test": "playwright test"
   },
   "workspaces": [

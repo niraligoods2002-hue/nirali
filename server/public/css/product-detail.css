@@ -476,3 +476,90 @@
     order: 4;
   }
 }
+
+
+/* ==========================================================================
+   Mobile Sticky Conversion Bar
+   ========================================================================== */
+.pdp-mobile-sticky-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .pdp-mobile-sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    background: rgba(248, 246, 240, 0.98);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-subtle);
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
+  }
+
+  .pdp-mobile-sticky-bar.visible {
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .pdp-sticky-product-info {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+
+  .pdp-sticky-thumb {
+    width: 38px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: var(--radius-xs);
+    border: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+
+  .pdp-sticky-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .pdp-sticky-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+  }
+
+  .pdp-sticky-price {
+    font-family: var(--font-serif);
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .pdp-sticky-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .pdp-sticky-btn {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+}

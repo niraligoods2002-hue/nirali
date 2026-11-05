@@ -1,7 +1,7 @@
 # Nirali Saree hosting
 
 The repository is ready for a Render Node web service. MongoDB Atlas stores
-application data, Cloudinary stores uploaded product images, and Nodemailer
+application data, ImageKit stores uploaded product images, and Nodemailer
 sends account emails.
 
 ## Deploy on Render
@@ -26,7 +26,7 @@ comma-separated.
 - `MONGO_URI`
 - `JWT_SECRET` (Render generates this when using the Blueprint)
 - `EMAIL_USER`, `EMAIL_PASS`, and `EMAIL_FROM`
-- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and
-  `CLOUDINARY_API_SECRET`
+- `IMAGEKIT_PUBLIC_KEY`, `IMAGEKIT_PRIVATE_KEY`, and
+  `IMAGEKIT_URL_ENDPOINT`
 
 Never commit the real `.env` file or paste secret values into `render.yaml`.

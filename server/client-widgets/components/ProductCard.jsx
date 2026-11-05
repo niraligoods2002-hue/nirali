@@ -18,7 +18,7 @@ export default function ProductCard({ product }) {
 
   const displayPrice = product.discountPrice || product.price;
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
-  const imageSource = imageFailed ? "/images/products/saree1.jpg" : product.image;
+  const imageSource = imageFailed ? "/images/products/saree-placeholder.svg" : (product.image || "/images/products/saree-placeholder.svg");
   const defaultColor = product.colors?.[0] || "";
   const availableStock = defaultColor && product.colorStock?.[defaultColor] !== undefined
     ? Number(product.colorStock[defaultColor])
@@ -28,7 +28,8 @@ export default function ProductCard({ product }) {
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (window.LuxoraCart?.addToCart && window.LuxoraCart.addToCart(product)) {
+    const cartApi = window.NiraliCart || window.LuxoraCart;
+    if (cartApi?.addToCart && cartApi.addToCart(product)) {
       setAddedToCart(true);
       window.setTimeout(() => setAddedToCart(false), 2000);
     }
@@ -86,7 +87,7 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <article className="product-card">
+    <article className="product-card" data-product-id={product.id || product._id}>
       <div className="product-card-media">
         <a href={`/products/${product.slug}`} className="product-card-image-link" aria-label={`View details of ${product.name}`}>
           <img

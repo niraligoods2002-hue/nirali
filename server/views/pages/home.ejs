@@ -1,5 +1,7 @@
 <%
   const advertisementSlides = (homeAdvertisementSlides || []).filter(slide => slide.image && slide.linkUrl);
+  const fallbackProduct = (homeProducts || []).find(product => product.image);
+  const storyProduct = (homeProducts || []).find(product => product.image && product.id !== fallbackProduct?.id) || fallbackProduct;
 
   const featuredCategories = [
     { name: "Chiffon Saree", label: "Chiffon Sarees", filter: "category:Chiffon Saree" },
@@ -70,11 +72,11 @@
 
     <div class="categories-editorial-grid">
       <% featuredCategories.forEach((cat, index) => { 
-        const catImg = categoryImages[cat.name] || `/images/products/saree${(index % 3) + 1}.jpg`;
+        const catImg = categoryImages[cat.name] || '';
       %>
         <a href="/shop?filter=<%= encodeURIComponent(cat.filter) %>" class="category-editorial-card <%= index === 0 ? 'category-card-large' : '' %>">
-          <div class="category-card-bg">
-            <img src="<%= catImg %>" alt="<%= cat.label %>" loading="lazy" />
+          <div class="category-card-bg <%= catImg ? '' : `category-card-bg-empty tone-${index % 5}` %>">
+            <% if (catImg) { %><img src="<%= catImg %>" alt="" loading="lazy" /><% } %>
           </div>
           <div class="category-card-overlay"></div>
           <div class="category-card-text">
@@ -96,8 +98,32 @@
       <p class="section-desc">Every piece is thoughtfully woven with intricate zari and pure fabrics.</p>
     </div>
 
-    <!-- React mount container -->
-    <div id="featured-products-root" data-products="<%= JSON.stringify(homeProducts) %>"></div>
+    <!-- React mount container with initial SSR skeleton/cards -->
+    <div id="featured-products-root" data-products="<%= JSON.stringify(homeProducts) %>">
+      <div class="featured-editorial-grid initial-ssr-grid">
+        <% (homeProducts || []).slice(0, 8).forEach(product => { %>
+          <article class="product-card" data-product-id="<%= product.id || product._id %>">
+            <div class="product-card-media">
+              <a href="/products/<%= product.slug %>" class="product-card-image-link" aria-label="View <%= product.name %>">
+                <img src="<%= product.image || '/images/products/saree-placeholder.svg' %>" alt="<%= product.name %>" class="product-card-img" loading="lazy" />
+              </a>
+            </div>
+            <div class="product-card-info">
+              <span class="product-card-category"><%= product.category || 'Curated Masterpiece' %></span>
+              <h3 class="product-card-title">
+                <a href="/products/<%= product.slug %>"><%= product.name %></a>
+              </h3>
+              <div class="product-card-pricing">
+                <span class="price-current">₹<%= Number(product.discountPrice || product.price).toLocaleString("en-IN") %></span>
+                <% if (product.discountPrice && product.discountPrice < product.price) { %>
+                  <span class="price-original">₹<%= Number(product.price).toLocaleString("en-IN") %></span>
+                <% } %>
+              </div>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    </div>
 
     <div class="section-footer-action text-center">
       <a href="/shop" class="btn-primary">View Entire Collection</a>
@@ -110,7 +136,7 @@
   <div class="container brand-story-container">
     <div class="brand-story-image-col">
       <div class="story-image-frame">
-        <img src="/images/about/about.jpg" alt="Artisans at NIRALI Atelier" loading="lazy" />
+        <img src="<%= storyProduct?.image || '/images/branding/nirali-woman-mark.png' %>" alt="<%= storyProduct?.name || 'NIRALI artisan mark' %>" loading="lazy" />
         <div class="story-image-badge">
           <span>HERITAGE WEAVES &bull; ESTD. INDIA</span>
         </div>

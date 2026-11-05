@@ -1,10 +1,10 @@
 const Product = require("../models/Product");
-const { cloudinary, isConfigured } = require("../config/cloudinary");
+const { imagekit, isConfigured } = require("../config/imagekit");
 
 // POST /api/products/upload (admin only)
 const uploadProductImage = async (req, res) => {
   if (!isConfigured()) {
-    return res.status(500).json({ message: "Cloudinary is not configured on the server" });
+    return res.status(500).json({ message: "ImageKit is not configured on the server" });
   }
 
   if (!req.file) {
@@ -12,21 +12,23 @@ const uploadProductImage = async (req, res) => {
   }
 
   try {
-    const result = await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: "luxora/products",
-          resource_type: "image",
-          transformation: [{ width: 1600, height: 1600, crop: "limit" }],
-        },
-        (error, uploadedImage) => (error ? reject(error) : resolve(uploadedImage))
-      );
-      uploadStream.end(req.file.buffer);
+    const sanitizedOriginalName = (req.file.originalname || "image.jpg").replace(/[^a-zA-Z0-9.-]/g, "_");
+    const fileName = `product-${Date.now()}-${sanitizedOriginalName}`;
+
+    const result = await imagekit.upload({
+      file: req.file.buffer,
+      fileName,
+      folder: "/luxora/products",
+      useUniqueFileName: true,
     });
 
-    res.status(201).json({ url: result.secure_url, publicId: result.public_id });
+    res.status(201).json({
+      url: result.url,
+      publicId: result.fileId,
+      fileId: result.fileId,
+    });
   } catch (error) {
-    console.error("Cloudinary upload error:", error);
+    console.error("ImageKit upload error:", error);
     res.status(500).json({ message: "Could not upload image. Please try again." });
   }
 };

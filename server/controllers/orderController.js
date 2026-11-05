@@ -114,8 +114,11 @@ async function getCheckoutAmount(items) {
     subtotal += (product.discountPrice && product.discountPrice < product.price ? product.discountPrice : product.price) * variant.quantity;
   }
 
+  const FREE_SHIPPING_THRESHOLD = Number(process.env.FREE_SHIPPING_THRESHOLD || 2999);
   const configuredShipping = Number(process.env.SHIPPING_FEE || 100);
-  const shipping = subtotal > 0 ? (Number.isFinite(configuredShipping) ? Math.max(0, configuredShipping) : 100) : 0;
+  const shipping = (subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD)
+    ? (Number.isFinite(configuredShipping) ? Math.max(0, configuredShipping) : 100)
+    : 0;
   return Math.round((subtotal + shipping) * 100);
 }
 
@@ -345,8 +348,11 @@ exports.createOrder = async (req, res) => {
       (sum, item) => sum + item.price * item.quantity,
       0
     );
+    const FREE_SHIPPING_THRESHOLD = Number(process.env.FREE_SHIPPING_THRESHOLD || 2999);
     const configuredShipping = Number(process.env.SHIPPING_FEE || 100);
-    const calculatedShipping = calculatedSubtotal > 0 ? (Number.isFinite(configuredShipping) ? Math.max(0, configuredShipping) : 100) : 0;
+    const calculatedShipping = (calculatedSubtotal > 0 && calculatedSubtotal < FREE_SHIPPING_THRESHOLD)
+      ? (Number.isFinite(configuredShipping) ? Math.max(0, configuredShipping) : 100)
+      : 0;
     const calculatedTotal = calculatedSubtotal + calculatedShipping;
 
     const order = await Order.create({

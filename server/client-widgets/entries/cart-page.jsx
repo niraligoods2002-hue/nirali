@@ -7,8 +7,8 @@ function CartPage() {
   const [totals, setTotals] = useState({ subtotal: 0, shipping: 0, total: 0 });
 
   const refresh = () => {
-    if (window.LuxoraCart) {
-      const { cart: c, subtotal, shipping, total } = window.LuxoraCart.getCartTotals();
+    if ((window.NiraliCart || window.LuxoraCart)) {
+      const { cart: c, subtotal, shipping, total } = (window.NiraliCart || window.LuxoraCart).getCartTotals();
       setCart(c);
       setTotals({ subtotal, shipping, total });
     }
@@ -26,12 +26,12 @@ function CartPage() {
   }, [cart]);
 
   const updateQty = (id, qty) => {
-    window.LuxoraCart.updateQuantity(id, qty);
+    (window.NiraliCart || window.LuxoraCart).updateQuantity(id, qty);
     refresh();
   };
 
   const remove = (id) => {
-    window.LuxoraCart.removeFromCart(id);
+    (window.NiraliCart || window.LuxoraCart).removeFromCart(id);
     refresh();
   };
 
@@ -83,6 +83,21 @@ function CartPage() {
 
       <div className="cart-summary">
         <h3>Order Summary</h3>
+        <div className="shipping-progress-container">
+          <div className="shipping-progress-label">
+            {totals.subtotal >= 2999 ? (
+              <span className="free-shipping-unlocked">✨ You have unlocked Complimentary Express Delivery!</span>
+            ) : (
+              <span>Add ₹{(2999 - totals.subtotal).toLocaleString()} more for Complimentary Delivery</span>
+            )}
+          </div>
+          <div className="shipping-progress-track">
+            <div
+              className="shipping-progress-fill"
+              style={{ width: `${Math.min(100, (totals.subtotal / 2999) * 100)}%` }}
+            />
+          </div>
+        </div>
         <div className="summary-row">
           <span>Subtotal</span>
           <span>₹{totals.subtotal.toLocaleString()}</span>
@@ -114,8 +129,8 @@ if (checkoutSummary) {
     const [totals, setTotals] = useState({ subtotal: 0, shipping: 0, total: 0, cart: [] });
 
     useEffect(() => {
-      if (window.LuxoraCart) {
-        setTotals(window.LuxoraCart.getCheckoutTotals());
+      if ((window.NiraliCart || window.LuxoraCart)) {
+        setTotals((window.NiraliCart || window.LuxoraCart).getCheckoutTotals());
       }
     }, []);
 
@@ -123,7 +138,7 @@ if (checkoutSummary) {
       <>
         <div className="checkout-items">
           {totals.cart.map((item) => (
-            <div className="checkout-item" key={item.id}>
+            <div className="checkout-item" key={item.cartId || item.id}>
               <img src={item.image} alt={item.name} />
               <div>
                 <span className="checkout-item-name">{item.name}</span>
@@ -414,7 +429,7 @@ if (checkoutForm) {
       sessionStorage.removeItem("nirali_buy_now");
       sessionStorage.removeItem("nirali_buy_now_order_key");
     } else {
-      window.LuxoraCart?.clearCart();
+      (window.NiraliCart || window.LuxoraCart)?.clearCart();
     }
     sessionStorage.removeItem("checkoutOrderKey");
     window.location.href = "/shop";
@@ -441,7 +456,7 @@ if (checkoutForm) {
   checkoutForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const totals = window.LuxoraCart?.getCheckoutTotals();
+    const totals = (window.NiraliCart || window.LuxoraCart)?.getCheckoutTotals();
     if (!totals || totals.cart.length === 0) {
       alert("Your cart is empty");
       window.location.href = "/shop";

@@ -1102,3 +1102,24 @@
     right: -10px;
   }
 }
+
+/* Paper-and-forest storefront header refresh */
+.announcement-bar { background: #173a31; color: #f5edda; border-bottom-color: rgba(196,164,105,.55); }
+.header { background: rgba(250,248,242,.97); border-bottom: 1px solid #dfd8ca; box-shadow: 0 4px 20px rgba(35,45,37,.045); }
+.brand-logo-img { height: 62px; }
+.nav-link { color: #2e3f34; font-size: .7rem; letter-spacing: .13em; }
+.nav-link:hover, .nav-link.active { color: #94723d; }
+.icon-btn, .cart-btn, .user-btn, .menu-btn { color: #294238; }
+.cart-badge { background: #a67c3e; color: #fff; }
+.header .mega-menu { box-shadow: 0 18px 35px rgba(25,37,29,.12); }
+.mobile-drawer { background: #faf8f2; }
+.mobile-drawer-header { background: #173a31; }
+.mobile-drawer .mobile-nav-list a, .mobile-drawer .mobile-accordion-trigger { color: #243b31; }
+.mobile-drawer-close { color: #f5edda; }
+.header-search { background: #faf8f2; border-color: #d8d0c1; }
+.header-search input { color: #263a30; }
+
+@media (max-width: 900px) {
+  .header-container { height: 70px; }
+  .brand-logo-img { height: 55px; }
+}

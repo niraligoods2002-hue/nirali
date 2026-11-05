@@ -1,11 +1,20 @@
-const CART_KEY = 'luxora_cart';
+const PRIMARY_CART_KEY = 'nirali_cart';
+const LEGACY_CART_KEY = 'luxora_cart';
 
 function getCart() {
-  return JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+  const raw = localStorage.getItem(PRIMARY_CART_KEY) || localStorage.getItem(LEGACY_CART_KEY) || '[]';
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
 }
 
 function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  const serialized = JSON.stringify(cart);
+  localStorage.setItem(PRIMARY_CART_KEY, serialized);
+  localStorage.setItem(LEGACY_CART_KEY, serialized);
   if (window.updateCartCount) window.updateCartCount();
 }
 
@@ -51,14 +60,15 @@ function removeFromCart(id) {
 }
 
 function clearCart() {
-  localStorage.removeItem(CART_KEY);
+  localStorage.removeItem(PRIMARY_CART_KEY);
+  localStorage.removeItem(LEGACY_CART_KEY);
   if (window.updateCartCount) window.updateCartCount();
 }
 
 function getCartTotals() {
   const cart = getCart();
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = subtotal > 0 ? 100 : 0;
+  const shipping = subtotal > 0 ? (subtotal >= 2999 ? 0 : 100) : 0;
   const total = subtotal + shipping;
   return { subtotal, shipping, total, cart };
 }
@@ -71,7 +81,7 @@ function getCheckoutTotals() {
       if (item && item.id && Number(item.price) > 0 && Number(item.quantity) > 0) {
         const cart = [item];
         const subtotal = Number(item.price) * Number(item.quantity);
-        const shipping = subtotal > 0 ? 100 : 0;
+        const shipping = subtotal > 0 ? (subtotal >= 2999 ? 0 : 100) : 0;
         return { subtotal, shipping, total: subtotal + shipping, cart };
       }
     } catch {
@@ -82,7 +92,7 @@ function getCheckoutTotals() {
   return getCartTotals();
 }
 
-// Expose globally
+// Expose globally under both names for complete backward compatibility
 window.LuxoraCart = {
   getCart,
   saveCart,
@@ -93,3 +103,4 @@ window.LuxoraCart = {
   getCartTotals,
   getCheckoutTotals,
 };
+window.NiraliCart = window.LuxoraCart;

@@ -4,10 +4,10 @@ const Product = require("../models/Product");
 
 dotenv.config();
 
-const { cloudinary, isConfigured } = require("../config/cloudinary");
+const { imagekit, isConfigured } = require("../config/imagekit");
 
 // Pexels provides these stock photos for free use. This script downloads each
-// source file into memory, then stores a copy in this project's Cloudinary account.
+// source file into memory, then stores a copy in this project's ImageKit account.
 const stockImages = [
   "https://images.pexels.com/photos/8229219/pexels-photo-8229219.jpeg?auto=compress&cs=tinysrgb&w=1200",
   "https://images.pexels.com/photos/34107842/pexels-photo-34107842.jpeg?auto=compress&cs=tinysrgb&w=1200",
@@ -46,19 +46,14 @@ async function uploadLicensedStockImage(sourceUrl, publicId) {
   if (!response.ok) throw new Error(`Could not download stock image (${response.status})`);
   const imageBuffer = Buffer.from(await response.arrayBuffer());
 
-  return new Promise((resolve, reject) => {
-    const upload = cloudinary.uploader.upload_stream(
-      {
-        folder: "luxora/category-catalog",
-        public_id: publicId,
-        overwrite: true,
-        resource_type: "image",
-        transformation: [{ width: 1200, height: 1600, crop: "limit" }],
-      },
-      (error, result) => (error ? reject(error) : resolve(result))
-    );
-    upload.end(imageBuffer);
+  const result = await imagekit.upload({
+    file: imageBuffer,
+    fileName: `${publicId}.jpg`,
+    folder: "/luxora/category-catalog",
+    useUniqueFileName: false,
   });
+
+  return { url: result.url, secure_url: result.url, fileId: result.fileId };
 }
 
 function buildProducts(category, categoryIndex, imageUrl) {
@@ -102,7 +97,7 @@ function buildProducts(category, categoryIndex, imageUrl) {
 
 async function importCategoryCatalog() {
   if (!process.env.MONGO_URI) throw new Error("MONGO_URI is missing from server/.env");
-  if (!isConfigured()) throw new Error("Cloudinary credentials are missing from server/.env");
+  if (!isConfigured()) throw new Error("ImageKit credentials are missing from server/.env");
   await mongoose.connect(process.env.MONGO_URI);
   let newProducts = 0;
 

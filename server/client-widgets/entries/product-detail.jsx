@@ -9,6 +9,7 @@ function ProductDetail() {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || "");
   const [openSection, setOpenSection] = useState("details");
+  const [scrolledPastHero, setScrolledPastHero] = useState(false);
 
   const details = product.details || {};
   const colorImages = product.colorImages || {};
@@ -27,6 +28,19 @@ function ProductDetail() {
       // safe fallback
     }
   }, [product.id]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const purchaseRow = document.querySelector(".product-purchase-row");
+      if (purchaseRow) {
+        const rect = purchaseRow.getBoundingClientRect();
+        setScrolledPastHero(rect.bottom < 0);
+      }
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const showColorImage = (color) => {
     setSelectedColor(color);
@@ -48,7 +62,8 @@ function ProductDetail() {
 
   const handleAddToCart = () => {
     const cartProduct = { ...product, selectedColor };
-    if (window.LuxoraCart?.addToCart && window.LuxoraCart.addToCart(cartProduct, quantity)) {
+    const cartApi = window.NiraliCart || window.LuxoraCart;
+    if (cartApi?.addToCart && cartApi.addToCart(cartProduct, quantity)) {
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
     }
@@ -123,7 +138,7 @@ function ProductDetail() {
     { id: "description", label: "Artisanal Narrative", content: <p className="narrative-text">{product.description}</p> },
     { id: "shipping", label: "Complimentary Delivery & Packaging", content: (
       <div className="policy-block">
-        <p>• Complimentary express shipping across India on this piece.</p>
+        <p>• Complimentary express shipping across India on orders above ₹2,999.</p>
         <p>• Dispatched within 24–48 hours in our signature gilded keepsake box.</p>
         <p>• Real-time SMS & WhatsApp tracking updates provided upon dispatch.</p>
       </div>
@@ -173,7 +188,7 @@ function ProductDetail() {
         </div>
       )}
 
-      {/* Action Row: Quantity + Add to Bag + Wishlist */}
+      {/* Action Row: Quantity + Add to Bag + Buy Now + Wishlist */}
       <div className="product-purchase-row">
         <div className="quantity-stepper">
           <button
@@ -261,6 +276,27 @@ function ProductDetail() {
             )}
           </div>
         ))}
+      </div>
+
+      {/* Mobile Sticky Bottom Conversion Bar */}
+      <div className={`pdp-mobile-sticky-bar ${scrolledPastHero ? "visible" : ""}`}>
+        <div className="pdp-sticky-product-info">
+          <img src={colorImages[selectedColor] || product.image || "/images/products/saree-placeholder.svg"} alt={product.name} className="pdp-sticky-thumb" />
+          <div className="pdp-sticky-meta">
+            <span className="pdp-sticky-title">{product.name}</span>
+            <span className="pdp-sticky-price">₹{Number(product.discountPrice || product.price).toLocaleString("en-IN")}</span>
+          </div>
+        </div>
+        <div className="pdp-sticky-actions">
+          <button
+            type="button"
+            className="btn-primary pdp-sticky-btn"
+            onClick={handleAddToCart}
+            disabled={added || selectedColorStock <= 0}
+          >
+            {added ? "Added ✓" : "Add to Bag"}
+          </button>
+        </div>
       </div>
 
     </div>

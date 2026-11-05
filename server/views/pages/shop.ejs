@@ -1,5 +1,37 @@
 <div class="shop-editorial-page section-padding">
   <div class="container">
-    <div id="shop-root" data-products="<%= JSON.stringify(products) %>" data-filter="<%= filter || '' %>" data-search="<%= search || '' %>"></div>
+    <% const shopHeading = path === '/new-arrivals' ? 'New arrivals' : path === '/best-sellers' ? 'Best-loved drapes' : 'The saree collection'; %>
+    <header class="shop-intro">
+      <span class="section-eyebrow">THE NIRALI COLLECTION</span>
+      <h1><%= shopHeading %></h1>
+      <p>Find a drape to treasure, chosen for its craft, character, and the moments it will become part of.</p>
+      <span class="shop-intro-count"><%= (products || []).length %> pieces, thoughtfully selected</span>
+    </header>
+    <div id="shop-root" data-products="<%= JSON.stringify(products) %>" data-filter="<%= filter || '' %>" data-search="<%= search || '' %>">
+      <!-- Server-rendered initial catalog grid prevents FOUC and ensures instant visual delivery -->
+      <div class="shop-editorial-grid initial-ssr-grid">
+        <% (products || []).forEach(product => { %>
+          <article class="product-card" data-product-id="<%= product.id || product._id %>">
+            <div class="product-card-media">
+              <a href="/products/<%= product.slug %>" class="product-card-image-link" aria-label="View <%= product.name %>">
+                <img src="<%= product.image || '/images/products/saree-placeholder.svg' %>" alt="<%= product.name %>" class="product-card-img" loading="lazy" />
+              </a>
+            </div>
+            <div class="product-card-info">
+              <span class="product-card-category"><%= product.category || 'Heritage Saree' %></span>
+              <h3 class="product-card-title">
+                <a href="/products/<%= product.slug %>"><%= product.name %></a>
+              </h3>
+              <div class="product-card-pricing">
+                <span class="price-current">₹<%= Number(product.discountPrice || product.price).toLocaleString("en-IN") %></span>
+                <% if (product.discountPrice && product.discountPrice < product.price) { %>
+                  <span class="price-original">₹<%= Number(product.price).toLocaleString("en-IN") %></span>
+                <% } %>
+              </div>
+            </div>
+          </article>
+        <% }); %>
+      </div>
+    </div>
   </div>
 </div>

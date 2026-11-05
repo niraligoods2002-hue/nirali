@@ -882,3 +882,94 @@
   border-color: var(--border-subtle);
 }
 
+
+
+/* ==========================================================================
+   Featured Products SSR Initial Grid (Prevents FOUC & CLS)
+   ========================================================================== */
+.featured-editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .featured-editorial-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .featured-editorial-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* NIRALI storefront refresh: quiet heritage palette and editorial collections. */
+.advert-hero { width: min(1480px, calc(100% - 48px)); height: clamp(210px, 24vw, 340px); margin-top: 1.25rem; background: #e9e3d7; }
+.advert-slide { background: #e9e3d7; }
+.advert-slide-image { max-width: 100%; }
+.advert-hero.poster-portrait { width: min(520px, calc(100% - 48px)); height: clamp(330px, 39vw, 470px); margin-right: auto; margin-left: auto; }
+
+.section-categories { padding-top: clamp(3.5rem, 7vw, 6rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
+.section-categories .section-header { max-width: 700px; margin-right: auto; margin-bottom: 2.2rem; margin-left: auto; }
+.section-eyebrow { color: #9a7742; }
+.section-title { color: #193d33; font-size: clamp(2.2rem, 3.4vw, 3.5rem); letter-spacing: -.025em; }
+.section-desc { color: #686d64; }
+.categories-editorial-grid { grid-template-columns: repeat(6, 1fr); grid-auto-rows: 235px; gap: 1rem; }
+.category-editorial-card { grid-column: span 2; border: 0; }
+.category-card-large { grid-column: span 2; grid-row: span 2; }
+.category-card-bg-empty { background-color: #665643; background-image: radial-gradient(ellipse at 68% 18%, rgba(223,195,140,.46), transparent 35%), repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 1px, transparent 1px 12px), linear-gradient(145deg, #526658, #1c382e 68%, #7f6540); }
+.category-card-bg-empty::before { position: absolute; top: 13%; left: 17%; width: 66%; height: 75%; border: 1px solid rgba(240,220,179,.3); border-radius: 48% 48% 8% 8%; content: ""; transform: rotate(-9deg); }
+.category-card-bg-empty.tone-1 { background-image: radial-gradient(ellipse at 30% 22%, rgba(221,186,138,.5), transparent 34%), repeating-linear-gradient(45deg, rgba(255,255,255,.05) 0 1px, transparent 1px 10px), linear-gradient(145deg, #715048, #3e2931 68%, #b08b53); }
+.category-card-bg-empty.tone-2 { background-image: radial-gradient(ellipse at 68% 18%, rgba(226,211,165,.48), transparent 35%), repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 1px, transparent 1px 12px), linear-gradient(145deg, #66756c, #293f3b 68%, #92764f); }
+.category-card-bg-empty.tone-3 { background-image: radial-gradient(ellipse at 30% 22%, rgba(235,208,165,.45), transparent 34%), repeating-linear-gradient(45deg, rgba(255,255,255,.05) 0 1px, transparent 1px 10px), linear-gradient(145deg, #8b684c, #49362e 68%, #a68b5c); }
+.category-card-bg-empty.tone-4 { background-image: radial-gradient(ellipse at 68% 18%, rgba(223,195,140,.46), transparent 35%), repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 1px, transparent 1px 12px), linear-gradient(145deg, #58665f, #263832 68%, #756046); }
+.category-card-overlay { background: linear-gradient(0deg, rgba(17,38,30,.88), rgba(17,38,30,.05) 80%); }
+.category-card-text { padding: .3rem; }
+.category-card-name { font-size: clamp(1.5rem, 2.2vw, 2.1rem); }
+.category-editorial-card:focus-visible { outline: 3px solid #ab8242; outline-offset: 4px; }
+
+.section-featured-products { padding: clamp(3rem, 6vw, 5rem) 0; background: #f0ece3; }
+.section-featured-products .section-header { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: .5rem 2rem; margin-bottom: 2rem; text-align: left; }
+.section-featured-products .section-eyebrow { grid-column: 1 / -1; }
+.section-featured-products .section-title { margin: 0; }
+.section-featured-products .section-desc { grid-column: 1; margin: 0; }
+.featured-editorial-grid { gap: 1.2rem; }
+.featured-editorial-grid .product-card { border: 0; background: transparent; }
+.featured-editorial-grid .product-card:hover { transform: translateY(-4px); box-shadow: none; }
+.featured-editorial-grid .product-card-media { background: #e3ded2; }
+.featured-editorial-grid .product-card-info { padding: .95rem .1rem .5rem; }
+.featured-editorial-grid .product-card-category { color: #8b7045; font-size: .6rem; }
+.featured-editorial-grid .product-card-title { font-family: var(--font-sans); font-size: .91rem; font-weight: 600; }
+.featured-editorial-grid .price-current { color: #173a31; font-size: .96rem; }
+.section-footer-action { margin-top: 2.5rem; }
+.section-footer-action .btn-primary { display: inline-flex; align-items: center; min-height: 48px; padding: .8rem 1.5rem; background: #173a31; color: #fffdf8; }
+.section-footer-action .btn-primary:hover { background: #285447; }
+.section-brand-story { padding: clamp(3.5rem, 7vw, 6rem) 0; background: #173a31; color: #f6f1e6; }
+.section-brand-story .story-title, .section-brand-story .story-lead { color: #f6f1e6; }
+.section-brand-story .story-body { color: rgba(246,241,230,.75); }
+.section-brand-story .section-eyebrow { color: #d0b276; }
+.section-testimonials { padding-top: clamp(3rem, 6vw, 5rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
+.testimonial-card { border: 1px solid #ddd5c6; background: #f8f6f0; }
+.testimonial-stars { color: #a98342; }
+.section-newsletter { padding: clamp(3rem, 6vw, 5rem) 0; background: #e9e2d5; }
+.section-newsletter .section-title { margin-bottom: .6rem; }
+
+@media (max-width: 900px) {
+  .categories-editorial-grid { grid-auto-rows: 210px; }
+}
+@media (max-width: 640px) {
+  .advert-hero { width: calc(100% - 24px); height: clamp(180px, 66vw, 270px); margin-top: .75rem; }
+  .advert-hero.poster-portrait { width: min(340px, calc(100% - 24px)); height: clamp(300px, 92vw, 380px); margin-right: auto; margin-left: auto; }
+  .categories-editorial-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 210px; gap: .7rem; }
+  .category-editorial-card, .category-card-large { grid-column: span 1; grid-row: span 1; padding: 1rem; }
+  .category-card-name { font-size: 1.35rem; }
+  .section-featured-products .section-header { display: block; text-align: center; }
+  .section-featured-products .section-title { margin: .35rem 0 .7rem; }
+  .section-featured-products .section-desc { margin: 0 auto; }
+}
+
