@@ -15,7 +15,6 @@ const runtimeFiles = [
   "node_modules",
   "public",
   "routes",
-  "services",
   "utils",
   "views",
 ];
