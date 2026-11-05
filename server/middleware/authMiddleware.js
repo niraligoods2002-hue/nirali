@@ -1,11 +1,20 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
+const JWT_FALLBACK_SECRET = "nirali_saree_production_fallback_jwt_secret_key_2026_secure";
+
+function getJwtSecret() {
+  if (process.env.JWT_SECRET && process.env.JWT_SECRET.length >= 32) {
+    return process.env.JWT_SECRET;
+  }
+  return JWT_FALLBACK_SECRET;
+}
+
 const attachUser = async (req, _res, next) => {
   try {
     const token = req.cookies?.token;
     if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, getJwtSecret());
       req.user = await User.findById(decoded.id);
       if (req.user && (decoded.sessionVersion ?? 0) !== (req.user.sessionVersion || 0)) req.user = null;
     }
@@ -37,7 +46,7 @@ const protect = async (req, res, next) => {
         .json({ message: "Not authorized \u2013 no token provided" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, getJwtSecret());
     req.user = await User.findById(decoded.id);
 
     if (!req.user) {

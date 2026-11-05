@@ -3,9 +3,18 @@ const crypto = require("crypto");
 const User = require("../models/User");
 const { sendOtpEmail, sendPasswordResetEmail } = require("../utils/email");
 
+const JWT_FALLBACK_SECRET = "nirali_saree_production_fallback_jwt_secret_key_2026_secure";
+
+function getJwtSecret() {
+  if (process.env.JWT_SECRET && process.env.JWT_SECRET.length >= 32) {
+    return process.env.JWT_SECRET;
+  }
+  return JWT_FALLBACK_SECRET;
+}
+
 // Generate JWT token
 function signToken(user) {
-  return jwt.sign({ id: user._id, sessionVersion: user.sessionVersion || 0 }, process.env.JWT_SECRET, {
+  return jwt.sign({ id: user._id, sessionVersion: user.sessionVersion || 0 }, getJwtSecret(), {
     expiresIn: process.env.JWT_EXPIRES_IN || "7d",
   });
 }
@@ -26,7 +35,7 @@ function generateOtp() {
 function hashOtp(otp) {
   return crypto
     .createHash("sha256")
-    .update(`${otp}${process.env.JWT_SECRET || "nirali"}`)
+    .update(`${otp}${getJwtSecret()}`)
     .digest("hex");
 }
 
@@ -265,7 +274,9 @@ exports.verifyEmailOtp = async (req, res) => {
     });
   } catch (error) {
     console.error("Verify email OTP error:", error);
-    res.status(500).json({ message: "Server error verifying email" });
+    const status = error.status || (error.name === "ValidationError" ? 400 : 500);
+    const message = error.status || error.name === "ValidationError" ? error.message : "Server error verifying email";
+    res.status(status).json({ message });
   }
 };
 
@@ -294,7 +305,7 @@ exports.resendEmailOtp = async (req, res) => {
   } catch (error) {
     console.error("Resend email OTP error:", error);
     res.status(error.status || 500).json({
-      message: error.status ? error.message : "Server error sending OTP",
+      message: error.status ? error.message : (error.message || "Server error sending OTP"),
       ...(error.retryAfter ? { retryAfter: error.retryAfter } : {}),
     });
   }
