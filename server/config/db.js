@@ -8,14 +8,18 @@ try {
   // Ignore in environments where setting DNS servers is restricted
 }
 
+const DEFAULT_MONGO_URI =
+  "mongodb+srv://niraligoods2002_db_user:mEyLcLKS5qs2gCvP@nirali.774xywy.mongodb.net/nirali?retryWrites=true&w=majority";
+
 const connectDB = async () => {
+  const uri = process.env.MONGO_URI || DEFAULT_MONGO_URI;
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+    const conn = await mongoose.connect(uri);
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+    return conn;
   } catch (error) {
-    console.error("❌ Database Connection Failed");
-    console.error(error.message);
-    process.exit(1);
+    console.error("❌ Database Connection Warning:", error.message);
+    // Never call process.exit(1) in a serverless/cloud runtime, as it crashes the entire container
   }
 };
 
